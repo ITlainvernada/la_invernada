@@ -12,16 +12,24 @@
                     <button type="object" string="Cambiar Fecha de Envasado" name="change_date_packing"/>
                     <button type="object" string="Cambiar Fecha de Consumir Preferentemente antes de"
                             name="change_date_best"/>
+                    <button name="test" type="object" string="Test"/>
                 </header>
             </xpath>
             <group name="main_group" position="inside">
-
                 <field name="is_prd_lot" invisible="1"/>
                 <field name="is_standard_weight" invisible="1" readonly="1"/>
                 <field name="standard_weight"
                        attrs="{'invisible':['|',('is_standard_weight','=',False)]}"
                        readonly="1"
                 />
+                <field name="temporary_serial_ids">
+                    <tree>
+                        <field name="product_id"/>
+                        <field name="producer_id"/>
+                        <field name="name"/>
+                        <field name="gross_weight"/>
+                    </tree>
+                </field>
                 <button name="check_duplicate" type="object" string="verificar series duplicadas"
                         groups="base.group_no_one"/>
                 <field name="producer_ids" invisible="1"/>
@@ -220,7 +228,7 @@
         <field name="name">Vista General Despelonado Entrada</field>
         <field name="res_model">stock.production.lot</field>
         <field name="view_mode">tree</field>
-        <field name="domain">[('unpelled_state', 'in', ['waiting', 'drying'])]</field>
+        <field name="domain">[('unpelled_state', 'in', ['draft','waiting', 'drying'])]</field>
         <field name="view_id" ref="stock_production_lot_in_dashboard_tree_view"/>
     </record>
     <menuitem name="Vista General Despelonado Entrada"
