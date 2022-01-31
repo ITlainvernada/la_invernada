@@ -34,3 +34,28 @@ class CustomTemporarySerial(models.Model):
         return self.env.ref(
             'dimabe_manufacturing.action_print_temporary_serial'
         ).report_action(self)
+
+    @api.multi
+    def get_full_url(self):
+        for item in self:
+            return self.env["ir.config_parameter"].sudo().get_param("web.base.url")
+
+    @api.model
+    def create(self, values):
+        res = super(CustomTemporarySerial, self).create(values)
+        production_id = self.env['mrp.workorder'].search([('final_lot_id.id', '=', res.lot_id.id)]).production_id
+        canning_id = self.get_possible_canning_id(production_id.id)[0]
+        res['gross_weight'] = res.net_weight + canning_id.weight
+        return res
+
+    def get_possible_canning_id(self, production_id):
+        production_id = self.env['mrp.production'].search([('id', '=', production_id)])
+        return production_id.bom_id.bom_line_ids.filtered(
+            lambda a: 'envases' in str.lower(a.product_id.categ_id.name) or
+                      'embalaje' in str.lower(a.product_id.categ_id.name)
+                      or (
+                              a.product_id.categ_id.parent_id and (
+                              'envases' in str.lower(a.product_id.categ_id.parent_id.name) or
+                              'embalaje' in str.lower(a.product_id.categ_id.parent_id.name))
+                      )
+        ).mapped('product_id')

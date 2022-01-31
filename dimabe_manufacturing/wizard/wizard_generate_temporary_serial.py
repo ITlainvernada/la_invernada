@@ -7,6 +7,8 @@ class WizardGenerateTemporarySerial(models.TransientModel):
 
     lot_id = fields.Many2one('stock.production.lot', 'Lote')
 
+    production_id = fields.Many2one('mrp.production','Produccion')
+
     qty_to_generate = fields.Integer('Cantidad a generar')
 
     @api.multi

@@ -1,7 +1,7 @@
 from odoo import fields, models, api
 from odoo.addons import decimal_precision as dp
 from datetime import date, datetime
-
+from dateutil.relativedelta import relativedelta
 
 class StockProductionLot(models.Model):
     _inherit = 'stock.production.lot'
@@ -262,26 +262,34 @@ class StockProductionLot(models.Model):
 
     unpelled_dried_id = fields.Many2one('unpelled.dried', 'Proceso de Secado')
 
-    temporary_serial_ids = fields.One2many('custom.temporary.serial', 'lot_id')
+    qty_serial_without_lot = fields.Integer(string='Cantidad de Series sin Pallet')
+
+    temporary_serial_ids = fields.One2many('custom.temporary.serial', 'lot_id',string='Series sin lote')
 
     @api.multi
-    def test(self):
+    def print_all_temporary_serial(self):
         for item in self:
-            wiz_id = self.env['wizard.generate.temporary.serial'].create({
-                'lot_id': item.id
+            return self.env.ref(
+                'dimabe_manufacturing.action_print_temporary_serial'
+            ).report_action(self.temporary_serial_ids)
+
+    @api.multi
+    def generate_temporary_serial(self):
+        counter = 1
+        for serial in range(self.qty_serial_without_lot):
+            zeros = '00' if counter < 1000 else '0'
+            self.env['custom.temporary.serial'].create({
+                'product_id': self.product_id.id,
+                'producer_id': self.producer_id.id,
+                'lot_id': self.id,
+                'name': f'{self.name}{zeros}{counter}',
+                'best_before_date': fields.Date.today() + relativedelta(
+                    months=self.label_durability_id.month_qty),
+                'harvest': fields.Date.today().year,
+                'label_durability_id': self.label_durability_id.id,
+                'net_weight': self.standard_weight,
             })
-            view_id = self.env.ref('dimabe_manufacturing.wizard_generate_temporary_serial_form_2')
-            return {
-                'name': "Generacion de Etiqueta",
-                'type': "ir.actions.act_window",
-                'view_type': 'form',
-                'view_model': 'form',
-                'res_model': 'wizard.generate.temporary.serial',
-                'views': [(view_id.id, 'form')],
-                'target': 'new',
-                'res_id': wiz_id.id,
-                'context': self.env.context
-            }
+            counter += 1
 
     def do_change_date_best(self):
         for item in self:
