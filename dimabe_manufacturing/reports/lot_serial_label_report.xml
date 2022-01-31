@@ -526,7 +526,7 @@
                                 REGIÓN
                             </div>
                             <div>
-                                <span t-esc="lot_serial_id.producer_id.region_address_id_address"/>
+                                <span t-esc="serial.producer_id.region_address_id_address"/>
                             </div>
                         </td>
                     </tr>
