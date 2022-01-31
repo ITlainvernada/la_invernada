@@ -29,3 +29,8 @@ class CustomTemporarySerial(models.Model):
 
     production_id = fields.Many2one('mrp.production')
 
+    @api.multi
+    def do_print(self):
+        return self.env.ref(
+            'dimabe_manufacturing.action_print_temporary_serial'
+        ).report_action(self)
