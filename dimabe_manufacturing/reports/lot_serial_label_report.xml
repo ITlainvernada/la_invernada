@@ -477,71 +477,73 @@
     </template>
     <template id="report_custom_temporary_serial">
         <t t-call="web.html_container">
-            <t t-foreach="docs" t-as="serial">
-                <div style="text-align:right;font-size:8px;">
-                    <t t-if="'Con' in serial.product_id.get_species()">
-                        <strong>CONTAINS INSHELL WALNUT - CONTIENE NUEZ CON CÁSCARA</strong>
-                    </t>
-                    <t t-elif="'Sin' in serial.product_id.get_species()">
-                        <strong>CONTAINS SHELLED WALNUT - CONTIENE NUEZ SIN CÁSCARA</strong>
-                    </t>
-                    <t t-else="">
-                        <strong>CONTAINS WALNUT - CONTIENE NUEZ</strong>
-                    </t>
-                </div>
-                <table style="font-size: 14px;">
-                    <tr>
-                        <th style="border-top: solid 1px;border-bottom:solid 1px;" colspan="2">
-                            <t t-if="serial.product_id.label_name">
-                                <span t-field="serial.product_id.label_name"/>
-                            </t>
-                            <t t-else="">
-                                <span t-field="serial.product_id.display_name"/>
-                            </t>
-                        </th>
-                    </tr>
-                    <tr>
-                        <td style="border-right: solid 1px: border-bottom: solid 1px;">
-                            <div>GROWER/PRODUCTOR:</div>
-                            <div>
-                                <span t-field="serial.producer_id"/>
-                            </div>
-                            <div>CSG:</div>
-                            <div>
-                                <span t-field="serial.producer_id.sag_code"/>
-                            </div>
-                            <div>
-                                PROVINCE/PROVINCIA:
-                            </div>
-                            <div>
-                                <span t-field="serial.producer_id.state_id_address"/>
-                            </div>
-                            <div>
-                                TOWNSHIP/COMUNA:
-                            </div>
-                            <div>
-                                <span t-field="serial.producer_id.city_address"/>
-                            </div>
-                            <div>
-                                REGIÓN
-                            </div>
-                            <div>
-                                <span t-esc="serial.producer_id.region_address_id_address"/>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colspan="2">
-                            <div>
-                                VARIETY (VARIEDAD):
-                            </div>
-                            <div>
-                                <span t-esc="serial.product_id.get_variety()"/>
-                            </div>
-                        </td>
-                    </tr>
-                </table>
-            </t>
+            <div class="page">
+                <t t-foreach="docs" t-as="serial">
+                    <div style="text-align:right;font-size:8px;">
+                        <t t-if="'Con' in serial.product_id.get_species()">
+                            <strong>CONTAINS INSHELL WALNUT - CONTIENE NUEZ CON CÁSCARA</strong>
+                        </t>
+                        <t t-elif="'Sin' in serial.product_id.get_species()">
+                            <strong>CONTAINS SHELLED WALNUT - CONTIENE NUEZ SIN CÁSCARA</strong>
+                        </t>
+                        <t t-else="">
+                            <strong>CONTAINS WALNUT - CONTIENE NUEZ</strong>
+                        </t>
+                    </div>
+                    <table style="font-size:14px;">
+                        <tr>
+                            <th style="border-top: solid 1px;border-bottom:solid 1px;" colspan="2">
+                                <t t-if="serial.product_id.label_name">
+                                    <span t-field="serial.product_id.label_name"/>
+                                </t>
+                                <t t-else="">
+                                    <span t-field="serial.product_id.display_name"/>
+                                </t>
+                            </th>
+                        </tr>
+                        <tr>
+                            <td style="border-right: solid 1px: border-bottom: solid 1px;">
+                                <div>GROWER/PRODUCTOR:</div>
+                                <div>
+                                    <span t-field="serial.producer_id"/>
+                                </div>
+                                <div>CSG:</div>
+                                <div>
+                                    <span t-field="serial.producer_id.sag_code"/>
+                                </div>
+                                <div>
+                                    PROVINCE/PROVINCIA:
+                                </div>
+                                <div>
+                                    <span t-field="serial.producer_id.state_id_address"/>
+                                </div>
+                                <div>
+                                    TOWNSHIP/COMUNA:
+                                </div>
+                                <div>
+                                    <span t-field="serial.producer_id.city_address"/>
+                                </div>
+                                <div>
+                                    REGIÓN
+                                </div>
+                                <div>
+                                    <span t-esc="serial.producer_id.region_address_id_address"/>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                <div>
+                                    VARIETY (VARIEDAD):
+                                </div>
+                                <div>
+                                    <span t-esc="serial.product_id.get_variety()"/>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </t>
+            </div>
         </t>
     </template>
     <record id="paper_format_10_x_7"
