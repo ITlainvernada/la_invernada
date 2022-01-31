@@ -544,7 +544,7 @@
                             <td colspan="2">
                                 <div>
                                     VARIETY (VARIEDAD):
-                                    <span t-esc="lot_serial_id.product_variety"/>
+                                    <span t-esc="lot_serial_id.product_id.get_variety()"/>
                                 </div>
                                 <div>
                                     CROP (AÑO DE COSECHA):
