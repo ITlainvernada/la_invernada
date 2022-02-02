@@ -270,9 +270,15 @@ class StockProductionLot(models.Model):
     @api.multi
     def print_all_temporary_serial(self):
         for item in self:
+            serials = self.temporary_serial_ids.filtered(lambda x: not x.printed)
+            serials.write({
+                'printed': True
+            })
+            if not serials:
+                raise models.ValidationError('Ya se imprimieron todas las series')
             return self.env.ref(
                 'dimabe_manufacturing.action_print_temporary_serial'
-            ).report_action(self.temporary_serial_ids)
+            ).report_action(serials)
 
     @api.multi
     def generate_temporary_serial(self):

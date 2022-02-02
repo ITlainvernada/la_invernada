@@ -29,6 +29,8 @@ class CustomTemporarySerial(models.Model):
 
     production_id = fields.Many2one('mrp.production',string='Produccion')
 
+    printed = fields.Boolean('Impresa')
+
     @api.multi
     def do_print(self):
         return self.env.ref(
