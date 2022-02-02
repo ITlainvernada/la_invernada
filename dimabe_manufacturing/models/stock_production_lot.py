@@ -1,4 +1,3 @@
-import temporary as temporary
 from odoo import fields, models, api
 from odoo.addons import decimal_precision as dp
 from datetime import date, datetime
