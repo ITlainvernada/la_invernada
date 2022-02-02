@@ -5,3 +5,11 @@ def get_zeros(counter):
         return '0'
     else:
         return ''
+
+
+def remove_zeros(number):
+    for item in number:
+        if int(item) > 0 or not item:
+            index = number.index(item)
+            return number[index:]
+        continue
