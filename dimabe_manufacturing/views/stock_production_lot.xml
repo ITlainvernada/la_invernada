@@ -12,7 +12,6 @@
                     <button type="object" string="Cambiar Fecha de Envasado" name="change_date_packing"/>
                     <button type="object" string="Cambiar Fecha de Consumir Preferentemente antes de"
                             name="change_date_best"/>
-                    <button name="test" type="object" string="Test"/>
                 </header>
             </xpath>
             <group name="main_group" position="inside">
@@ -24,11 +23,12 @@
                        readonly="1"
                 />
                 <field name="qty_serial_without_lot"/>
-                <button type="object" string="Generar Series" name="generate_temporary_serial"/>
-                <button type="object" string="Imprimir Todo" name="print_all_temporary_serial"/>
-
-                <field name="temporary_serial_ids" nolabel="1">
-                    <tree>
+                <button type="object" string="Generar Series" name="generate_temporary_serial"
+                        attrs="{'invisible': [('is_standard_weight','=',False)]}"/>
+                <button type="object" string="Imprimir Todo" name="print_all_temporary_serial"
+                        attrs="{'invisible': [('is_standard_weight','=',False)]}"/>
+                <field name="temporary_serial_ids" attrs="{'invisible': [('is_standard_weight','=',False)]}">
+                    <tree limit="10">
                         <field name="product_id"/>
                         <field name="producer_id"/>
                         <field name="name"/>
@@ -37,7 +37,7 @@
                     </tree>
                 </field>
                 <button name="check_duplicate" type="object" string="verificar series duplicadas"
-                        groups="base.group_no_one"/>
+                        groups="base.group_no_one" invisible="1"/>
                 <field name="producer_ids" invisible="1"/>
                 <field name="producer_id" required="1"
                        options="{'no_create': True, 'no_create_edit':True,'no_quick_create':True}"
@@ -45,15 +45,17 @@
                 <field name="qty_standard_serial"
                        attrs="{'invisible':['|',('is_standard_weight','=',False),('can_add_serial','=',False)]}"
                 />
-                <button string="Generar Pallet" class="oe_highlight"
-                        attrs="{'invisible':['|',('is_standard_weight','=',False),('can_add_serial','=',False)]}"
-                        type="object"
-                        name="generate_standard_pallet"
-                />
+                <button name="generate_new_pallet" string="Generar Pallet" type="object" class="oe_highlight"
+                        attrs="{'invisible': [('is_standard_weight','=',False)]}"/>
+                <!--                <button string="Generar Pallet" class="oe_highlight"-->
+                <!--                        attrs="{'invisible':['|',('is_standard_weight','=',False),('can_add_serial','=',False)]}"-->
+                <!--                        type="object"-->
+                <!--                        name="generate_standard_pallet"-->
+                <!--                />-->
                 <field name="can_add_serial"
                        groups="base.group_system"
                 />
-                <button string="Debug" type="object" name="check_all_existence" groups="base.group_no_one"/>
+                <button string="Debug" type="object" name="check_all_existence" groups="base.group_no_one" invisible="1"/>
                 <field name="is_prd_lot"
                        groups="base.group_system"
                 />
@@ -72,7 +74,7 @@
                 <field name="change_packaging" invisible="1"/>
                 <button type="object" name="do_change_date_packing" string="Cambiar Fecha"
                         attrs="{'invisible':[('change_packaging','=',False)]}"/>
-                <field name="best_before_date" />
+                <field name="best_before_date"/>
                 <field name="change_best" invisible="1"/>
                 <button type="object" name="do_change_date_best" string="Cambiar Fecha"
                         attrs="{'invisible':[('change_best','=',False)]}"/>

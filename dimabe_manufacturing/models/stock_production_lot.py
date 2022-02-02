@@ -1,7 +1,9 @@
+import temporary as temporary
 from odoo import fields, models, api
 from odoo.addons import decimal_precision as dp
 from datetime import date, datetime
 from dateutil.relativedelta import relativedelta
+from ..utils import serial_utils
 
 class StockProductionLot(models.Model):
     _inherit = 'stock.production.lot'
@@ -264,7 +266,7 @@ class StockProductionLot(models.Model):
 
     qty_serial_without_lot = fields.Integer(string='Cantidad de Series sin Pallet')
 
-    temporary_serial_ids = fields.One2many('custom.temporary.serial', 'lot_id',string='Series sin lote')
+    temporary_serial_ids = fields.One2many('custom.temporary.serial', 'lot_id', string='Series sin palletizar')
 
     @api.multi
     def print_all_temporary_serial(self):
@@ -277,7 +279,7 @@ class StockProductionLot(models.Model):
     def generate_temporary_serial(self):
         counter = 1
         for serial in range(self.qty_serial_without_lot):
-            zeros = '00' if counter < 1000 else '0'
+            zeros = serial_utils.get_zeros(counter)
             self.env['custom.temporary.serial'].create({
                 'product_id': self.product_id.id,
                 'producer_id': self.producer_id.id,
@@ -290,6 +292,21 @@ class StockProductionLot(models.Model):
                 'net_weight': self.standard_weight,
             })
             counter += 1
+
+    @api.multi
+    def generate_new_pallet(self):
+        for item in self:
+            pallet_id = self.env['manufacturing.pallet'].create({
+                'producer_id': item.producer_id.id,
+                'lot_id': item.id,
+                'sale_order_id': item.sale_order_id.id if item.sale_order_id else None,
+            })
+            temporary_ids =self.env['custom.temporary.serial'].search([('lot_id', '=', item.id)],limit=item.qty_standard_serial)
+            for temp in temporary_ids:
+                temp.create_serial(pallet_id.id)
+            pallet_id.write({
+                'state': 'close'
+            })
 
     def do_change_date_best(self):
         for item in self:
@@ -760,51 +777,6 @@ class StockProductionLot(models.Model):
             #         item.check_duplicate()
             return res
 
-    @api.multi
-    def generate_standard_pallet(self):
-        for item in self:
-            if not item.sale_order_id:
-                item.write({
-                    'sale_order_id': self.env['mrp.workorder'].search([('final_lot_id', '=', item.id)]).sale_order_id.id
-                })
-
-            if not item.producer_id:
-                raise models.ValidationError('debe seleccionar un productor')
-            if not self.env['mrp.workorder'].search([('final_lot_id', '=', item.id)]):
-                pallet = self.env['manufacturing.pallet'].create({
-                    'producer_id': item.producer_id.id,
-                    'sale_order_id': self.env['mrp.workorder'].search(
-                        [('final_lot_id', '=', item.id)]).sale_order_id.id,
-                    'lot_id': self.id
-                })
-            else:
-                pallet = self.env['manufacturing.pallet'].create({
-                    'producer_id': item.producer_id.id,
-                    'lot_id': self.id
-                })
-
-            for counter in range(item.qty_standard_serial):
-                tmp = '00{}'.format(1 + len(item.stock_production_lot_serial_ids))
-
-                item.env['stock.production.lot.serial'].create({
-                    'stock_production_lot_id': item.id,
-                    'display_weight': item.product_id.weight,
-                    'serial_number': item.name + tmp[-3:],
-                    'belongs_to_prd_lot': True,
-                    'pallet_id': pallet.id,
-                    'product_id': pallet.product_id.id,
-                    'producer_id': pallet.producer_id.id
-                })
-            if len(item.pallet_ids) == 1:
-                item.write({
-                    'start_date': datetime.now()
-                })
-            if len(item.stock_production_lot_serial_ids) > 999:
-                item.check_duplicate()
-            pallet.update({
-                'state': 'close'
-            })
-
     @api.model
     def get_stock_quant(self, location_id=None):
         if self.location_id:
@@ -1140,4 +1112,3 @@ class StockProductionLot(models.Model):
             quant = self.env['stock.quant'].search([('lot_id.id', '=', lot.id), ('location_id.usage', '=', 'internal')])
             if quant:
                 quant.sudo().unlink()
-

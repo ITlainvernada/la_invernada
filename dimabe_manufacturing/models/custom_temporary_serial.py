@@ -11,7 +11,7 @@ class CustomTemporarySerial(models.Model):
 
     lot_id = fields.Many2one('stock.production.lot', 'Lote')
 
-    producer_id = fields.Many2one('res.partner')
+    producer_id = fields.Many2one('res.partner',string='Productor')
 
     packaging_date = fields.Date('Fecha Produccion', default=fields.Date.today())
 
@@ -27,7 +27,7 @@ class CustomTemporarySerial(models.Model):
 
     label_durability_id = fields.Many2one('label.durability', 'Durabilidad Etiqueta')
 
-    production_id = fields.Many2one('mrp.production')
+    production_id = fields.Many2one('mrp.production',string='Produccion')
 
     @api.multi
     def do_print(self):
@@ -59,3 +59,18 @@ class CustomTemporarySerial(models.Model):
                               'embalaje' in str.lower(a.product_id.categ_id.parent_id.name))
                       )
         ).mapped('product_id')
+
+    def create_serial(self, pallet_id):
+        for item in self:
+            self.env['stock.production.lot.serial'].create({
+                'serial_number': item.name,
+                'product_id': item.product_id.id,
+                'display_weight': item.net_weight,
+                'belongs_to_prd_lot': True,
+                'pallet_id': pallet_id,
+                'producer_id': item.producer_id.id,
+                'best_before_date_new': item.best_before_date,
+                'packaging_date': item.packaging_date,
+                'stock_production_lot_id': item.lot_id.id,
+            })
+            item.unlink()

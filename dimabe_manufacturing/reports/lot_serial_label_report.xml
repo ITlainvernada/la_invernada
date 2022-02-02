@@ -552,7 +552,7 @@
                                 </div>
                                 <div>
                                     PACKAGING DATE (FECHA DE ENVASADO):
-                                    <span t-field="serial.best_before_date"/>
+                                    <span t-field="serial.packaging_date"/>
                                 </div>
                                 <div>BEST BEFORE DATE (CONSUMIR PREFERENTEMENTE ANTES DE):
                                     <span t-field="serial.best_before_date"/>
