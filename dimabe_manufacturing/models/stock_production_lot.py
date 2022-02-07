@@ -312,7 +312,7 @@ class StockProductionLot(models.Model):
 
     @api.multi
     def generate_temporary_serial(self):
-        counter = self.get_last_serial() if len(self.temporary_serial_ids) > 0 or self.last_serial_number != '' else 1
+        counter = self.get_last_serial() if len(self.temporary_serial_ids) > 0 and self.last_serial_number != '' else 1
         for serial in range(self.qty_serial_without_lot):
             zeros = serial_utils.get_zeros(counter)
             self.env['custom.temporary.serial'].create({
