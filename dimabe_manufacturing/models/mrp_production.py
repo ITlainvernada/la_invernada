@@ -239,6 +239,9 @@ class MrpProduction(models.Model):
     @api.multi
     def button_mark_done(self):
         self.calculate_done()
+        final_lot_id = self.finished_move_line_ids.filtered(lambda x: x.product_id.id == self.product_id.id)
+        if len(final_lot_id.lot_id.temporary_serial_ids) > 0:
+            final_lot_id.lot_id.temporary_serial_ids.unlink()
         for item in self.workorder_ids:
             item.organize_move_line()
         for fin in self.finished_move_line_ids:

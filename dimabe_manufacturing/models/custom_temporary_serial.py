@@ -11,7 +11,7 @@ class CustomTemporarySerial(models.Model):
 
     lot_id = fields.Many2one('stock.production.lot', 'Lote')
 
-    producer_id = fields.Many2one('res.partner',string='Productor')
+    producer_id = fields.Many2one('res.partner', string='Productor')
 
     packaging_date = fields.Date('Fecha Produccion', default=fields.Date.today())
 
@@ -27,7 +27,9 @@ class CustomTemporarySerial(models.Model):
 
     label_durability_id = fields.Many2one('label.durability', 'Durabilidad Etiqueta')
 
-    production_id = fields.Many2one('mrp.production',string='Produccion')
+    production_id = fields.Many2one('mrp.production', string='Produccion')
+
+    to_print = fields.Boolean('A Imprimir')
 
     printed = fields.Boolean('Impresa')
 

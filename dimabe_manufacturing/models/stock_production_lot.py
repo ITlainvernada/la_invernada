@@ -4,6 +4,7 @@ from datetime import date, datetime
 from dateutil.relativedelta import relativedelta
 from ..utils import serial_utils
 
+
 class StockProductionLot(models.Model):
     _inherit = 'stock.production.lot'
     _sql_constraints = [
@@ -267,6 +268,8 @@ class StockProductionLot(models.Model):
 
     temporary_serial_ids = fields.One2many('custom.temporary.serial', 'lot_id', string='Series sin palletizar')
 
+    do_print_selection_serial = fields.Boolean('Imprimir Series Seleccionadas')
+
     @api.multi
     def print_all_temporary_serial(self):
         for item in self:
@@ -279,6 +282,31 @@ class StockProductionLot(models.Model):
             return self.env.ref(
                 'dimabe_manufacturing.action_print_temporary_serial'
             ).report_action(serials)
+
+    @api.multi
+    def print_selection_serial(self):
+        for item in self:
+            serials = item.temporary_serial_ids.filtered(lambda x: x.to_print)
+            serials.write({
+                'to_print': False,
+                'printed': True
+            })
+            item.write({
+                'do_print_selection_serial': False
+            })
+            return self.env.ref(
+                'dimabe_manufacturing.action_print_temporary_serial'
+            ).report_action(serials)
+
+    @api.model
+    def selected_serials_to_print(self, selected_ids):
+        serials = self.env['custom.temporary.serial'].search([('id', '=', selected_ids)])
+        serials.write({
+            'to_print': True
+        })
+        serials.mapped('lot_id').write({
+            'do_print_selection_serial': True
+        })
 
     @api.multi
     def generate_temporary_serial(self):
@@ -298,7 +326,6 @@ class StockProductionLot(models.Model):
             })
             counter += 1
 
-
     @api.multi
     def get_last_serial(self):
         if len(self.temporary_serial_ids) > 999:
@@ -309,17 +336,23 @@ class StockProductionLot(models.Model):
     @api.multi
     def generate_new_pallet(self):
         for item in self:
+            if len(item.temporary_serial_ids) < item.qty_standard_serial:
+                raise models.ValidationError(
+                    f"Series insuficientes para completar el pallet \n "
+                    f"Cantidad de Series Disponible {len(item.temporary_serial_ids)}")
             pallet_id = self.env['manufacturing.pallet'].create({
                 'producer_id': item.producer_id.id,
                 'lot_id': item.id,
                 'sale_order_id': item.sale_order_id.id if item.sale_order_id else None,
             })
-            temporary_ids =self.env['custom.temporary.serial'].search([('lot_id', '=', item.id)],limit=item.qty_standard_serial)
+            temporary_ids = self.env['custom.temporary.serial'].search([('lot_id', '=', item.id)],
+                                                                       limit=item.qty_standard_serial)
             for temp in temporary_ids:
                 temp.create_serial(pallet_id.id)
             pallet_id.write({
                 'state': 'close'
             })
+            self.update_kg(self.id)
 
     def do_change_date_best(self):
         for item in self:
@@ -372,7 +405,7 @@ class StockProductionLot(models.Model):
                 item.serial_without_pallet_ids.sudo().unlink()
 
     @api.multi
-    def unlink_selecction(self):
+    def unlink_selection(self):
         for item in self:
             if not item.serial_without_pallet_ids.filtered(lambda a: a.to_unlink):
                 raise models.UserError("No ha seleccionado nada")
