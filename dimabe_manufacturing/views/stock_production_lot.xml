@@ -44,7 +44,7 @@
                     <field name="temporary_serial_ids" widget="one2many_selectable"
                            attrs="{'invisible': [('is_standard_weight','=',False)]}"
                            readonly="1">
-                        <tree limit="10" decoration-danger="printed == True">
+                        <tree limit="10" decoration-danger="printed == True" editable="bottom">
                             <field name="product_id"/>
                             <field name="producer_id"/>
                             <field name="name"/>
@@ -52,17 +52,18 @@
                             <field name="gross_weight"/>
                             <field name="net_weight"/>
                             <button type="object" name="do_print" string="Imprimir"/>
+                            <button type="object" name="unlink" string="Eliminar"/>
                         </tree>
                     </field>
 
                 </group>
                 <group>
                     <field name="qty_standard_serial" attrs="{'invisible': [('is_standard_weight','=',False)]}"/>
-                    <button type="object" name="generate_new_pallet" context="{'is_pallet': True}" string="Generar Pallet" class="oe_highlight"
+                    <button type="object" name="generate_new_pallet" context="{'is_pallet': True}"
+                            string="Generar Pallet" class="oe_highlight"
                             attrs="{'invisible': [('is_standard_weight','=',False)]}"/>
                 </group>
                 <group>
-
                     <field name="can_add_serial"/>
                     <field name="is_prd_lot" readonly="1"/>
                     <field name="is_dried_lot" readonly="1"/>
@@ -105,7 +106,7 @@
                 </group>
                 <group>
                     <field name="all_pallet_ids" string="Pallets"
-                           attrs="{'invisible': [('is_standard_weight','=',False)]}">
+                           attrs="{'invisible': [('is_standard_weight','=',False)]}" readonly="1">
                         <tree>
                             <field name="name" readonly="1"/>
                             <field name="total_content_weight" readonly="1"/>

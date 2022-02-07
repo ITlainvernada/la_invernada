@@ -270,6 +270,8 @@ class StockProductionLot(models.Model):
 
     do_print_selection_serial = fields.Boolean('Imprimir Series Seleccionadas')
 
+    last_serial_number = fields.Char('Ultima serie temporal creado')
+
     @api.multi
     def print_all_temporary_serial(self):
         for item in self:
@@ -310,7 +312,7 @@ class StockProductionLot(models.Model):
 
     @api.multi
     def generate_temporary_serial(self):
-        counter = self.get_last_serial() if len(self.temporary_serial_ids) > 0 else 1
+        counter = self.get_last_serial() if len(self.temporary_serial_ids) > 0 or self.last_serial_number != '' else 1
         for serial in range(self.qty_serial_without_lot):
             zeros = serial_utils.get_zeros(counter)
             self.env['custom.temporary.serial'].create({
@@ -325,13 +327,28 @@ class StockProductionLot(models.Model):
                 'net_weight': self.standard_weight,
             })
             counter += 1
+        self.write({
+            'last_serial_number': self.temporary_serial_ids[-1].name
+        })
 
     @api.multi
     def get_last_serial(self):
-        if len(self.temporary_serial_ids) > 999:
-            return int(self.temporary_serial_ids[-1].name[-4:]) + 1
+        if self.temporary_serial_ids:
+            if self.last_serial_number == self.temporary_serial_ids[-1].name:
+                if len(self.temporary_serial_ids) > 999:
+                    return int(self.temporary_serial_ids[-1].name[-4:]) + 1
+                else:
+                    return int(self.temporary_serial_ids[-1].name[-3:]) + 1
+            else:
+                if len(self.temporary_serial_ids) > 999:
+                    return int(self.last_serial_number[-4:]) + 1
+                else:
+                    return int(self.last_serial_number[-3:]) + 1
         else:
-            return int(self.temporary_serial_ids[-1].name[-3:]) + 1
+            if len(self.temporary_serial_ids) > 999:
+                return int(self.last_serial_number[-4:]) + 1
+            else:
+                return int(self.last_serial_number[-3:]) + 1
 
     @api.multi
     def generate_new_pallet(self):
