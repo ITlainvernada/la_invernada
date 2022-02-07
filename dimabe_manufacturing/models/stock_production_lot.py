@@ -333,7 +333,7 @@ class StockProductionLot(models.Model):
 
     @api.multi
     def get_last_serial(self):
-        if self.temporary_serial_ids:
+        if self.temporary_serial_ids or not self.last_serial_number:
             if self.last_serial_number == self.temporary_serial_ids[-1].name:
                 if len(self.temporary_serial_ids) > 999:
                     return int(self.temporary_serial_ids[-1].name[-4:]) + 1
