@@ -309,6 +309,10 @@ class StockProductionLot(models.Model):
         serials.mapped('lot_id').write({
             'do_print_selection_serial': True
         })
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'reload',
+        }
 
     @api.multi
     def generate_temporary_serial(self):
