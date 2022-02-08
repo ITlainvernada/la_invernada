@@ -40,7 +40,7 @@ odoo.define('web_one2many_selectable_10.form_widgets', function (require) {
 	var One2ManySelectable = FieldOne2Many.extend({
 		template: 'One2ManySelectable',
 		events: {
-			"click .button_delete_sale_order_lines": "action_selected_lines",
+			"click .button_selected_serial": "action_selected_lines",
 		},
 		start: function()
 	    {
