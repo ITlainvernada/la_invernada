@@ -480,8 +480,7 @@
             <div class="page">
                 <t t-set="counter" t-value="1"/>
                 <t t-foreach="docs" t-as="serial">
-                    <t t-if="counter <= 400">
-                        <div style="text-align:right;font-size:8px;">
+                    <div style="text-align:right;font-size:8px;">
                             <t t-if="'Con' in serial.product_id.get_species()">
                                 <strong>CONTAINS INSHELL WALNUT - CONTIENE NUEZ CON CÁSCARA</strong>
                             </t>
@@ -492,7 +491,7 @@
                                 <strong>CONTAINS WALNUT - CONTIENE NUEZ</strong>
                             </t>
                         </div>
-                        <table style="font-size:14px;">
+                    <table style="font-size:14px;">
                             <tr>
                                 <th style="border-top:1px solid;border-bottom:1px solid" colspan="2">
                                     <t t-if="serial.product_id.label_name">
@@ -593,9 +592,8 @@
                                 </td>
                             </tr>
                         </table>
-                        <p style="page-break-after:avoid;"/>
-                        <t t-set="counter" t-value="counter+1"/>
-                    </t>
+                    <p style="page-break-after:avoid;"/>
+                    <t t-set="counter" t-value="counter+1"/>
                 </t>
             </div>
         </t>
