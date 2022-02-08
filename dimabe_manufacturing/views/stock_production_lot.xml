@@ -44,7 +44,7 @@
                     <field name="temporary_serial_ids" widget="one2many_selectable"
                            attrs="{'invisible': [('is_standard_weight','=',False)]}"
                            readonly="1">
-                        <tree limit="10" decoration-danger="printed == True" editable="bottom">
+                        <tree limit="100" decoration-danger="printed == True" editable="bottom">
                             <field name="product_id"/>
                             <field name="producer_id"/>
                             <field name="name"/>
