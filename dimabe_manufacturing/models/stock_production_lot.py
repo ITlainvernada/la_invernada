@@ -272,6 +272,27 @@ class StockProductionLot(models.Model):
 
     last_serial_number = fields.Char('Ultima serie temporal creado')
 
+    is_finished = fields.Boolean('Finalizado')
+
+    @api.multi
+    def compute_production(self):
+        for item in self:
+            if item.is_prd_lot:
+                final_lot_id = self.env['mrp.workorder'].search([('final_lot_id.id', '=', item.id)])
+                if final_lot_id:
+                    item.production_id = final_lot_id.production_id
+                    item.production_state = final_lot_id.production_id.state
+                else:
+                    if len('temporary_serial_ids') > 0:
+                        item.production_id = item.temporary_serial_ids.mapped('production_id')
+                        item.production_state = item.temporary_serial_ids.mapped('production_id').state
+                    elif len('stock_production_lot_serial_ids') > 0:
+                        item.production_id = item.stock_production_lot_serial_ids.mapped('production_id')
+                        item.production_id = item.stock_production_lot_serial_ids.mapped('production_id').state
+            else:
+                item.production_id = None
+                item.production_state = ''
+
     @api.multi
     def print_all_temporary_serial(self):
         for item in self:
@@ -281,6 +302,9 @@ class StockProductionLot(models.Model):
             })
             if not serials:
                 raise models.ValidationError('Ya se imprimieron todas las series')
+            if len(serials) > 400:
+                raise models.UserError(
+                    'La cantidad de series que esta intentado imprimir superando el maximo permitido \n Maximo Permitido : 400')
             return self.env.ref(
                 'dimabe_manufacturing.action_print_temporary_serial'
             ).report_action(serials)

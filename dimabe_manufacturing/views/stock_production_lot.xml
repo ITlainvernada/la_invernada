@@ -9,6 +9,7 @@
                     <button type="object" string="Cambiar Fecha de Envasado" name="change_date_packing"/>
                     <button type="object" string="Cambiar Fecha de Consumir Preferentemente antes de"
                             name="change_date_best"/>
+                    <field name="is_finished" invisible="1"/>
                 </header>
             </xpath>
             <xpath expr="//field[@name='name']" position="attributes">
@@ -28,7 +29,7 @@
                     <field name="qty_serial_without_lot" attrs="{'invisible': [('is_standard_weight', '=',False)]}"/>
                 </group>
                 <br/>
-                <group>
+                <group attrs="{'invisible': [('is_finished','=',True)]}">
                     <div style="width:50% !important;">
                         <button type="object" string="Generar Series" name="generate_temporary_serial"
                                 attrs="{'invisible': [('is_standard_weight','=',False)]}"/>
@@ -57,7 +58,7 @@
                     </field>
 
                 </group>
-                <group>
+                <group attrs="{'invisible': [('is_finished','=',True)]}">
                     <field name="qty_standard_serial" attrs="{'invisible': [('is_standard_weight','=',False)]}"/>
                     <button type="object" name="generate_new_pallet" context="{'is_pallet': True}"
                             string="Generar Pallet" class="oe_highlight"

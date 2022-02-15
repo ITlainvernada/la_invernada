@@ -255,6 +255,9 @@ class MrpProduction(models.Model):
                     'state': 'draft',
                     'qty_done': sum(fin.lot_id.stock_production_lot_serial_ids.mapped('display_weight'))
                 })
+                fin.lot_id.write({
+                    'is_finished': True
+                })
                 fin.write({
                     'state': 'done'
                 })
