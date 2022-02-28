@@ -20,7 +20,7 @@ class StockProductionLot(models.Model):
             quant = self.env['stock.quant'].sudo().search([('lot_id.id','=',item.id),('location_id.usage','=','internal')],limit=1)
             if quant:
                 item.balance = quant.quantity
-            if item.get_stock_quant():
+            elif item.get_stock_quant():
                 item.balance = item.get_stock_quant()[0].balance
             else:
                 item.balance = 0
