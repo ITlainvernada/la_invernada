@@ -17,7 +17,7 @@
             </xpath>
             <group name="main_group" position="replace">
                 <group style="width:100% !important;">
-                    <field name="product_id"/>
+                    <field name="product_id" readonly="1"/>
                     <field name="producer_ids" invisible="1"/>
                     <field name="producer_id" required="1"
                            options="{'no_create': True, 'no_create_edit': True, 'no_quick_create': True}"
@@ -53,7 +53,7 @@
                             <field name="gross_weight"/>
                             <field name="net_weight"/>
                             <button type="object" name="do_print" string="Imprimir"/>
-                            <button type="object" name="unlink" string="Eliminar"/>
+                            <button type="object" name="unlink" string="Eliminar" groups="dimabe_manufacturing.oven_manager"/>
                         </tree>
                     </field>
 
@@ -64,6 +64,7 @@
                             string="Generar Pallet" class="oe_highlight"
                             attrs="{'invisible': [('is_standard_weight','=',False)]}"/>
                 </group>
+                <separator string="Session" colspan="4"/>
                 <group>
                     <field name="can_add_serial"/>
                     <field name="is_prd_lot" readonly="1"/>
@@ -113,10 +114,11 @@
                             <field name="total_content_weight" readonly="1"/>
                             <field name="total_content"/>
                             <field name="state"/>
-                            <button type="object" name="delete_pallet" string="Eliminar"/>
+                            <button type="object" name="delete_pallet" string="Eliminar" groups="dimabe_manufacturing.oven_manager"/>
                         </tree>
                     </field>
                 </group>
+                <separator string="Session" colspan="4"/>
                 <group>
                     <field name="serial_without_pallet_ids" attrs="{'invisible': [('is_standard_weight','=',False)]}"
                     >
@@ -137,7 +139,7 @@
                                     type="object" string="Imprimir"
                                     attrs="{'invisible':['|',('serial_number', '=', False), ('belongs_to_prd_lot', '=', False)]}"
                             />
-                            <button type="object" name="delete" string="Eliminar"/>
+                            <button type="object" name="delete" string="Eliminar" groups="dimabe_manufacturing.oven_manager"/>
                         </tree>
                     </field>
                 </group>

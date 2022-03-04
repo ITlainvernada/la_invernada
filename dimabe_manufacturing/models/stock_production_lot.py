@@ -71,7 +71,7 @@ class StockProductionLot(models.Model):
         digits=dp.get_precision('Product Unit of Measure')
     )
 
-    qty_standard_serial = fields.Integer('Cantidad de Series')
+    qty_standard_serial = fields.Integer('Cantidad de Series por Pallet')
 
     stock_production_lot_serial_ids = fields.One2many(
         'stock.production.lot.serial',
@@ -264,9 +264,9 @@ class StockProductionLot(models.Model):
 
     unpelled_dried_id = fields.Many2one('unpelled.dried', 'Proceso de Secado')
 
-    qty_serial_without_lot = fields.Integer(string='Cantidad de Series sin Pallet')
+    qty_serial_without_lot = fields.Integer(string='Cantidad de Series Temporales')
 
-    temporary_serial_ids = fields.One2many('custom.temporary.serial', 'lot_id', string='Series sin palletizar')
+    temporary_serial_ids = fields.One2many('custom.temporary.serial', 'lot_id', string='Series temporales sin Paletizar')
 
     do_print_selection_serial = fields.Boolean('Imprimir Series Seleccionadas')
 
@@ -338,8 +338,17 @@ class StockProductionLot(models.Model):
             'tag': 'reload',
         }
 
+    @api.onchange('qty_serial_without_lot')
+    def onchange_qty_serial_without_lot(self):
+        for item in self:
+            if item.qty_serial_without_lot > 400:
+                raise models.UserError('No se pueden generar mas de 400 series al vez')
+
+
     @api.multi
     def generate_temporary_serial(self):
+        if self.qty_serial_without_lot > 400:
+            raise models.UserError('No se pueden generar mas de 400 series al vez')
         counter = self.get_last_serial() if len(self.temporary_serial_ids) > 0 and self.last_serial_number != '' else 1
         for serial in range(self.qty_serial_without_lot):
             zeros = serial_utils.get_zeros(counter)
