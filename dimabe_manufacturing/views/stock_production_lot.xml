@@ -64,7 +64,7 @@
                             string="Generar Pallet" class="oe_highlight"
                             attrs="{'invisible': [('is_standard_weight','=',False)]}"/>
                 </group>
-                <separator style="border-bottom: 1px solid;width:100%%;"/>
+                <separator style="border-bottom: 1px solid;width:100%%;" attrs="{'invisible': [('is_standard_weight','=',False)]}"/>
                 <group>
                     <field name="can_add_serial"/>
                     <field name="is_prd_lot" readonly="1"/>
@@ -118,7 +118,7 @@
                         </tree>
                     </field>
                 </group>
-                <separator style="border-bottom: 1px solid;width:100%%;"/>
+                <separator style="border-bottom: 1px solid;width:100%%;" attrs="{'invisible': [('is_standard_weight','=',False)]}"/>
                 <group>
                     <field name="serial_without_pallet_ids" attrs="{'invisible': [('is_standard_weight','=',False)]}"
                     >
