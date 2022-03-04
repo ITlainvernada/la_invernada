@@ -58,13 +58,13 @@
                     </field>
 
                 </group>
+                <separator style="border-bottom: 1px solid;width:100%%;" attrs="{'invisible': [('is_standard_weight','=',False)]}"/>
                 <group attrs="{'invisible': [('is_finished','=',True)]}">
                     <field name="qty_standard_serial" attrs="{'invisible': [('is_standard_weight','=',False)]}"/>
                     <button type="object" name="generate_new_pallet" context="{'is_pallet': True}"
                             string="Generar Pallet" class="oe_highlight"
                             attrs="{'invisible': [('is_standard_weight','=',False)]}"/>
                 </group>
-                <separator style="border-bottom: 1px solid;width:100%%;" attrs="{'invisible': [('is_standard_weight','=',False)]}"/>
                 <group>
                     <field name="can_add_serial"/>
                     <field name="is_prd_lot" readonly="1"/>
