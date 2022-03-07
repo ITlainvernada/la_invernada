@@ -44,14 +44,6 @@ class CustomTemporarySerial(models.Model):
         for item in self:
             return self.env["ir.config_parameter"].sudo().get_param("web.base.url")
 
-    @api.model
-    def create(self, values):
-        res = super(CustomTemporarySerial, self).create(values)
-        production_id = self.env['mrp.workorder'].search([('final_lot_id.id', '=', res.lot_id.id)]).production_id
-        canning_id = self.get_possible_canning_id(production_id.id)[0]
-        res['gross_weight'] = res.net_weight + canning_id.weight
-        return res
-
     def get_possible_canning_id(self, production_id):
         production_id = self.env['mrp.production'].search([('id', '=', production_id)])
         return production_id.bom_id.bom_line_ids.filtered(
@@ -77,6 +69,9 @@ class CustomTemporarySerial(models.Model):
                 'best_before_date_new': item.best_before_date,
                 'packaging_date': item.packaging_date,
                 'stock_production_lot_id': item.lot_id.id,
+                'label_durability_id': item.label_durability_id.id,
+                'production_id': item.production_id.id,
+                'bom_id': item.production_id.bom_id.id,
             })
             item.unlink()
         self.env['stock.production.lot.serial'].create(serials)
