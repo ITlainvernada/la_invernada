@@ -118,6 +118,8 @@ class Exportacion(models.Model):
         string="Movimiento Relacionado",
         readonly=False,
     )
+    
+    currency_rate_recitfied = fields.Float('Tasa de Cambio (Rectificativas)')
 
     @api.one
     @api.returns('self', lambda value: value.id)
@@ -205,14 +207,21 @@ class Exportacion(models.Model):
         currency_target = self.currency_target()
         Totales['TpoMoneda'] = self._acortar_str(currency_target.abreviatura, 15)
         base = self.currency_base()
-        Totales['TpoCambio'] = base.rate
+        if self.currency_rate_recitfied:
+            base_rate = self.currency_rate_recitfied
+        else:
+            base_rate = round(1 / base.rate, 2)
+            
+        Totales['TpoCambio'] = base_rate
+        _logger.info(f'LOGGG:.. base_rate {base_rate}')
         if MntExe:
-            if currency_id:
-                MntExe = base._convert(MntExe, self.company_id.currency_id, self.company_id, self.date_invoice)
-            Totales['MntExeOtrMnda'] = MntExe
-        if currency_target:
-            MntTotal = base._convert(MntTotal, self.company_id.currency_id, self.company_id, self.date_invoice)
-        Totales['MntTotOtrMnda'] = MntTotal
+            # if currency_id:
+            #     MntExe = base._convert(MntExe, self.company_id.currency_id, self.company_id, self.date_invoice)
+            Totales['MntExeOtrMnda'] = round(MntExe * base_rate, 0)
+        # if currency_target:
+        #     MntTotal = base._convert(MntTotal, self.company_id.currency_id, self.company_id, self.date_invoice)
+        Totales['MntTotOtrMnda'] = round(MntTotal * base_rate, 0)
+        _logger.info(f'LOGG ::>>__ totales {Totales}')
         return Totales
 
     def _id_doc(self, taxInclude=False, MntExe=0):
@@ -224,7 +233,8 @@ class Exportacion(models.Model):
     def _receptor(self):
         Receptor = {}
         commercial_partner_id = self.commercial_partner_id or self.partner_id.commercial_partner_id
-        if not commercial_partner_id.vat and not self._es_boleta() and not self._nc_boleta() and not self._es_exportacion():
+        # if not commercial_partner_id.vat and not self._es_boleta() and not self._nc_boleta() and not self._es_exportacion():
+        if not commercial_partner_id.vat and not self._es_boleta() and not self._es_exportacion():
             raise UserError("Debe Ingresar RUT Receptor")
         #if self._es_boleta():
         #    Receptor['CdgIntRecep']
@@ -234,7 +244,8 @@ class Exportacion(models.Model):
             return Receptor
         elif self._es_exportacion():
             Receptor['RUTRecep'] = '55.555.555-5'
-        if not self._es_boleta() and not self._nc_boleta():
+        # if not self._es_boleta() and not self._nc_boleta():
+        if not self._es_boleta():
             GiroRecep = self.acteco_id.name or commercial_partner_id.activity_description.name
             if not GiroRecep and not self._es_exportacion():
                 raise UserError(_('Seleccione giro del partner'))
@@ -245,14 +256,16 @@ class Exportacion(models.Model):
         if (commercial_partner_id.email or commercial_partner_id.dte_email or self.partner_id.email or self.partner_id.dte_email) and not self._es_boleta():
             Receptor['CorreoRecep'] = commercial_partner_id.dte_email or self.partner_id.dte_email or commercial_partner_id.email or self.partner_id.email
         street_recep = (self.partner_id.street or commercial_partner_id.street or False)
-        if not street_recep and not self._es_boleta() and not self._nc_boleta():
+        # if not street_recep and not self._es_boleta() and not self._nc_boleta():
+        if not street_recep and not self._es_boleta():
         # or self.indicador_servicio in [1, 2]:
             raise UserError('Debe Ingresar dirección del cliente')
         street2_recep = (self.partner_id.street2 or commercial_partner_id.street2 or False)
         if street_recep or street2_recep:
             Receptor['DirRecep'] = self._acortar_str(street_recep + (' ' + street2_recep if street2_recep else ''), 70)
         cmna_recep = self.partner_id.city_id.name or commercial_partner_id.city_id.name
-        if not cmna_recep and not self._es_boleta() and not self._nc_boleta() and not self._es_exportacion():
+        # if not cmna_recep and not self._es_boleta() and not self._nc_boleta() and not self._es_exportacion():
+        if not cmna_recep and not self._es_boleta() and not self._es_exportacion():
             raise UserError('Debe Ingresar Comuna del cliente')
         else:
             Receptor['CmnaRecep'] = cmna_recep
@@ -282,6 +295,9 @@ class Exportacion(models.Model):
         Bultos = []
         for b in bultos:
             Bulto = dict()
+            # if b.tipo_bulto.code and b.tipo_bulto.code not in ['22']:
+            #     _logger.info('LOG: -->> es del tipo 22')
+            #     Bulto['CodTpoBultos'] = b.tipo_bulto.code
             Bulto['CodTpoBultos'] = b.tipo_bulto.code
             Bulto['CantBultos'] = b.cantidad_bultos
             if b.marcas:
@@ -291,6 +307,7 @@ class Exportacion(models.Model):
                 Bulto['Sello'] = b.sello
                 Bulto['EmisorSello'] = b.emisor_sello
             Bultos.append(Bulto)
+        _logger.info('LOG: -->>> bultos {}'.format(Bultos))
         return Bultos
 
     def _aduana(self):

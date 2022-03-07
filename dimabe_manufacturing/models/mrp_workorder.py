@@ -154,6 +154,22 @@ class MrpWorkorder(models.Model):
 
     turn_name = fields.Char('Turno')
 
+    start_date = fields.Datetime(
+        required=False)
+
+    start_date_show = fields.Datetime(
+        string='Fecha de Inicio',
+        compute='compute_start_date_show',
+        required=False)
+
+    @api.multi
+    def compute_start_date_show(self):
+        for item in self:
+            if item.start_date:
+                item.start_date_show = item.start_date
+            else:
+                item.start_date_show = item.create_date
+
     @api.multi
     def _compute_producers_id(self):
         for item in self:
@@ -626,6 +642,10 @@ class MrpWorkorder(models.Model):
             'current_quality_check_id': check.id,
             'in_weight': sum(self.potential_serial_planned_ids.mapped('display_weight'))
         })
+        if not self.start_date:
+            self.write({
+                'start_date': fields.Datetime.now()
+            })
 
     @api.multi
     def validate_to_done(self):

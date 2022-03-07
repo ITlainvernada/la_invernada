@@ -76,7 +76,7 @@ class StockPicking(models.Model):
         store=True
     )
 
-    carrier_id = fields.Many2one('custom.carrier', 'Conductor')
+    # carrier_id = fields.Many2one('custom.carrier', 'Conductor')
 
     truck_in_date = fields.Datetime(
         'Entrada de Camión',
@@ -101,22 +101,22 @@ class StockPicking(models.Model):
 
     carrier_rut = fields.Char(
         'Rut',
-        related='carrier_id.rut'
+        # related='carrier_id.rut'
     )
 
     carrier_cell_phone = fields.Char(
         'Celular',
-        related='carrier_id.cell_number'
+        # related='carrier_id.cell_number'
     )
 
     carrier_truck_patent = fields.Char(
         'Patente Camión',
-        related='truck_id.name'
+        # related='truck_id.name'
     )
 
     carrier_cart_patent = fields.Char(
         'Patente Carro',
-        related='cart_id.name'
+        # related='cart_id.name'
     )
 
     truck_id = fields.Many2one(
@@ -140,7 +140,7 @@ class StockPicking(models.Model):
 
     sag_code = fields.Char(
         'CSG',
-        related='partner_id.sag_code'
+        # related='partner_id.sag_code'
     )
 
     is_pt_dispatch = fields.Boolean('Es PT Despacho', compute='_compute_is_pt_dispatch')
@@ -398,7 +398,10 @@ class StockPicking(models.Model):
                         message += 'Los kilos de la Guía no pueden ser mayores a los Kilos brutos ingresados \n'
                     if not stock_picking.tare_weight:
                         message += 'Debe agregar kg tara \n'
-
+                    if not stock_picking.quality_weight and \
+                            'verde' not in str.lower(stock_picking.picking_type_id.warehouse_id.name):
+                        message += 'Los kilos de calidad aún no han sido registrados en el sistema,' \
+                                   ' no es posible cerrar el ciclo de recepción'
                     if message:
                         raise models.ValidationError(message)
             res = super(StockPicking, self).button_validate()
@@ -495,18 +498,19 @@ class StockPicking(models.Model):
 
     @api.model
     def validate_mp_reception(self):
-        message = ''
-        if not self.guide_number or not self.guide_number > 0:
-            message = 'debe agregar número de guía \n'
-        if not self.weight_guide or not self.get_product_move():
-            message += 'debe agregar kilos guía \n'
+        return True
+        # message = ''
+        # if not self.guide_number or not self.guide_number > 0:
+        #     message = 'debe agregar número de guía \n'
+        # if not self.weight_guide or not self.get_product_move():
+        #     message += 'debe agregar kilos guía \n'
 
-        if not self.get_canning_move():
-            message += 'debe agregar envases'
-        if not self.get_mp_move() and not self.get_pt_move() and not self.get_product_move():
-            message += 'debe agregar Materia a recepcionar'
-        if message:
-            raise models.ValidationError(message)
+        # if not self.get_canning_move():
+        #     message += 'debe agregar envases'
+        # if not self.get_mp_move() and not self.get_pt_move() and not self.get_product_move():
+        #     message += 'debe agregar Materia a recepcionar'
+        # if message:
+        #     raise models.ValidationError(message)
 
     @api.multi
     def get_full_url(self):
