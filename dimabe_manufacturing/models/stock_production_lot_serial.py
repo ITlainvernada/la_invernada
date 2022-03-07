@@ -327,6 +327,7 @@ class StockProductionLotSerial(models.Model):
             months = item.label_durability_id.month_qty
             item.best_before_date = item.packaging_date + relativedelta(months=months)
 
+
     @api.model
     def create(self, values_list):
         if 'stock_production_lot_id' in values_list.keys():
