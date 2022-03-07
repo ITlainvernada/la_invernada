@@ -591,7 +591,12 @@
                             </td>
                         </tr>
                     </table>
-                    <p style="page-break-after:avoid;"/>
+                    <t t-if="serial.id != docs[-1].id">
+                        <div style="page-break-after: always;"/>
+                    </t>
+                    <t t-else="">
+                        <div style="page-break-after:avoid;"/>
+                    </t>
                 </t>
             </div>
         </t>
