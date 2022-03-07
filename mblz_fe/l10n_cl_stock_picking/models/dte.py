@@ -236,7 +236,7 @@ class stock_picking(models.Model):
         Emisor["Modo"] = "produccion" if self.company_id.dte_service_provider == 'SII'\
                   else 'certificacion'
         Emisor["NroResol"] = self.company_id.dte_resolution_number
-        Emisor["FchResol"] = self.company_id.dte_resolution_date
+        Emisor["FchResol"] = self.company_id.dte_resolution_date.strftime("%Y-%m-%d")
         Emisor["ValorIva"] = 19
         return Emisor
 
@@ -269,8 +269,8 @@ class stock_picking(models.Model):
         Transporte = {}
         if self.patente:
             Transporte['Patente'] = self.patente[:8]
-        elif self.vehicle:
-            Transporte['Patente'] = self.vehicle.license_plate or ''
+        # elif self.vehicle:
+        #     Transporte['Patente'] = self.vehicle.license_plate or ''
         if self.transport_type in ['2', '3'] and self.chofer:
             if not self.chofer.vat:
                 raise UserError("Debe llenar los datos del chofer")
@@ -442,6 +442,8 @@ class stock_picking(models.Model):
     def _timbrar(self, n_atencion=None):
         folio = self.get_folio()
         datos = self._get_datos_empresa(self.company_id)
+        caf_file = [self.location_id.sequence_id.get_caf_file(folio, decoded=False).decode()]
+        _logger.info('LOG -->>>< caf file {}'.format(caf_file))
         datos['Documento'] = [{
             'TipoDTE': self.document_class_id.sii_code,
             'caf_file': [self.location_id.sequence_id.get_caf_file(folio, decoded=False).decode()],
@@ -450,8 +452,8 @@ class stock_picking(models.Model):
         ]
         _logger.info('LOG: -->>> datos {}'.format(datos))
         date_obj = datos['Emisor']['FchResol']
-        date_str = date_obj.strftime("%Y-%m-%d")
-        datos['Emisor']['FchResol'] = date_str
+        # date_str = date_obj.strftime("%Y-%m-%d")
+        datos['Emisor']['FchResol'] = date_obj
 
         result = fe.timbrar(datos)
         if result[0].get('error'):
@@ -515,6 +517,7 @@ class stock_picking(models.Model):
                 'picking_ids': [[6,0, self.ids]],
                 })
         datos["ID"] = "Env%s" %envio_id.id
+        _logger.info('LOG::::: antes de timbrar y enviar {}'.format(datos))
         result = fe.timbrar_y_enviar(datos)
         envio = {
                 'xml_envio': result.get('sii_xml_request', "temporal"),

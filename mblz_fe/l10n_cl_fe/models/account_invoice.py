@@ -763,11 +763,11 @@ class AccountInvoice(models.Model):
             recs = self.search([("name", operator, name)] + args, limit=limit)
         return recs.name_get()
 
-    def action_invoice_cancel(self):
-        for r in self:
-            if r.sii_xml_request and r.sii_result not in [False, "draft", "NoEnviado", "Anulado"]:
-                raise UserError(_("You can not cancel a valid document on SII"))
-        return super(AccountInvoice, self).action_invoice_cancel()
+    # def action_invoice_cancel(self):
+    #     for r in self:
+    #         if r.sii_xml_request and r.sii_result not in [False, "draft", "NoEnviado", "Anulado"]:
+    #             raise UserError(_("You can not cancel a valid document on SII"))
+    #     return super(AccountInvoice, self).action_invoice_cancel()
 
     @api.multi
     def unlink(self):
@@ -966,7 +966,7 @@ a VAT."""))
     def _validaciones_uso_dte(self):
         if not self.document_class_id:
             raise UserError("No tiene seleccionado tipo de documento")
-        ncs = [60, 61, 112, 802]
+        ncs = [60, 61, 112, 802, 111]
         nds = [55, 56, 111]
         if self.document_class_id.sii_code in ncs + nds and not self.referencias:
             raise UserError("Las Notas deben llevar por obligación una referencia al documento que están afectando")
@@ -1522,7 +1522,7 @@ a VAT."""))
                         currency_base._convert(
                             line.price_unit, currency_id, self.company_id, self.date_invoice, round=False
                         ),
-                        6,
+                        3,
                     )
                     lines["OtrMnda"]["Moneda"] = self._acortar_str(currency_id.name, 3)
                     lines["OtrMnda"]["FctConv"] = round(currency_id.rate, 4)

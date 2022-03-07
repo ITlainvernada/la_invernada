@@ -200,12 +200,12 @@ class StockPicking(models.Model):
             default="1",
             readonly=False, states={'done':[('readonly',True)]},
         )
-    vehicle = fields.Many2one(
-            'fleet.vehicle',
-            string="Vehículo",
-            readonly=False,
-            states={'done': [('readonly', True)]},
-        )
+    # vehicle = fields.Many2one(
+    #         'fleet.vehicle',
+    #         string="Vehículo",
+    #         readonly=False,
+    #         states={'done': [('readonly', True)]},
+    #     )
     chofer = fields.Many2one(
             'res.partner',
             string="Chofer",
@@ -214,6 +214,11 @@ class StockPicking(models.Model):
         )
     patente = fields.Char(
             string="Patente",
+            readonly=False,
+            states={'done': [('readonly', True)]},
+        )
+    patente_carro = fields.Char(
+            string="Patente Carro",
             readonly=False,
             states={'done': [('readonly', True)]},
         )
@@ -244,10 +249,10 @@ class StockPicking(models.Model):
             for m in self.move_lines:
                 m.company_id = self.company_id.id
 
-    @api.onchange('vehicle')
-    def _setChofer(self):
-        self.chofer = self.vehicle.driver_id
-        self.patente = self.vehicle.license_plate
+    # @api.onchange('vehicle')
+    # def _setChofer(self):
+    #     self.chofer = self.vehicle.driver_id
+    #     self.patente = self.vehicle.license_plate
 
 
 class Referencias(models.Model):
@@ -328,7 +333,7 @@ class StockMove(models.Model):
     subtotal = fields.Monetary(
             compute='_compute_amount',
             string='Subtotal',
-            store=True,
+            # store=True,
         )
     precio_unitario = fields.Float(
             string='Precio Unitario',
