@@ -65,8 +65,9 @@ class CustomTemporarySerial(models.Model):
         ).mapped('product_id')
 
     def create_serial(self, pallet_id):
+        serials = []
         for item in self:
-            self.env['stock.production.lot.serial'].create({
+            serials.append({
                 'serial_number': item.name,
                 'product_id': item.product_id.id,
                 'display_weight': item.net_weight,
@@ -78,3 +79,5 @@ class CustomTemporarySerial(models.Model):
                 'stock_production_lot_id': item.lot_id.id,
             })
             item.unlink()
+        self.env['stock.production.lot.serial'].create(serials)
+

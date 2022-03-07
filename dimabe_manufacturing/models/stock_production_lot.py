@@ -401,8 +401,7 @@ class StockProductionLot(models.Model):
             })
             temporary_ids = self.env['custom.temporary.serial'].search([('lot_id', '=', item.id)],
                                                                        limit=item.qty_standard_serial)
-            for temp in temporary_ids:
-                temp.create_serial(pallet_id.id)
+            temporary_ids.create_serial(pallet_id.id)
             pallet_id.write({
                 'state': 'close'
             })

@@ -385,7 +385,7 @@ class StockProductionLotSerial(models.Model):
             res.reserve_to_stock_picking_id = production.stock_picking_id.id
             res.stock_production_lot_id.update_kg(res.stock_production_lot_id.id)
             res.stock_production_lot_id.write({
-                'label_durability_id':production.label_durability_id.id
+                'label_durability_id': production.label_durability_id.id
             })
             res.stock_production_lot_id.get_and_update(res.product_id.id)
             res.stock_production_lot_id.update_kg(res.stock_production_lot_id.product_id.id)
