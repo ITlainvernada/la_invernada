@@ -3,6 +3,7 @@ from odoo import models, fields, api
 
 class CustomNote(models.Model):
     _name = "custom.note"
+    _description = "Nota (Custom)"
 
     name = fields.Char(string="Nombre")
 

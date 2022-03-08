@@ -2,6 +2,7 @@ from odoo import models, fields, api
 
 class CustomOrdersToInvoice(models.Model):
     _name = 'custom.orders.to.invoice'
+    _description = "Pedidos a Facturas"
 
     stock_picking_id = fields.Integer(string="Despacho Id", required=True)
     #stock_picking_id = fields.Many2one('stock.picking', string="Despacho Id", required=True)

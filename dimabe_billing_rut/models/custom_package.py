@@ -2,6 +2,7 @@ from odoo import models, fields
 
 class CustomPackage(models.Model):
     _name = 'custom.package'
+    _description = "Paquetes (Custom)"
     
     package_type = fields.Many2one('custom.package.type', string="Tipo de Bulto")
     

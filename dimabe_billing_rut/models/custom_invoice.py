@@ -5,6 +5,7 @@ from odoo import models, fields, api
 
 class CustomInvoice(models.Model):
     _name = 'custom.invoice'
+    _description = "Facturas (Custom)"
 
     date = fields.Date('Fecha de Emision')
 

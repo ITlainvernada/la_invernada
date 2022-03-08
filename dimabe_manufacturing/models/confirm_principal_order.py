@@ -9,6 +9,7 @@ from odoo.tools import date_utils
 
 class ConfirmPrincipalOrder(models.TransientModel):
     _name = 'confirm.principal.order'
+    _description = "Seleccionar Pedido Principal"
 
     sale_ids = fields.Many2many('sale.order',string="Pedidos")
 

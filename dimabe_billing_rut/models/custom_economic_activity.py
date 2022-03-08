@@ -2,6 +2,7 @@ from odoo import models, fields
 
 class CustomEconomicActivity(models.Model):
     _name = 'custom.economic.activity'
+    _description = "Acteco"
 
     code = fields.Char(string='Código Actividad')
     name = fields.Char(string='Nombre Actividad')

@@ -3,6 +3,7 @@ from odoo import models, fields
 
 class CustomNotify(models.Model):
     _name = 'custom.notify'
+    _description = "Notificacion (Custom)"
 
     partner_id = fields.Many2one('res.partner', domain=[('customer', '=', True)], string='Cliente', required=True)
 

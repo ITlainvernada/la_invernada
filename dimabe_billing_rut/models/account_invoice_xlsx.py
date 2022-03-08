@@ -10,6 +10,7 @@ _logger = logging.getLogger('TEST report =======')
 
 class AccountInvoiceXlsx(models.Model):
     _name = 'account.invoice.xlsx'
+    _description = 'Libros Legales'
 
     purchase_file = fields.Binary(
         "Libro de Compra")

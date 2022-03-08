@@ -5,6 +5,7 @@ from odoo import fields, models, api
 
 class ChangeDateLot(models.TransientModel):
     _name = 'change.date.lot'
+    _description = "Cambiar Fecha de los Lotes"
 
     lot_id = fields.Many2one('stock.production.lot', string='Lote')
 

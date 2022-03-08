@@ -4,6 +4,7 @@ class CustomCities(models.Model):
     _name = ('custom.cities')
 
     _rec_name = 'city_country'
+    _description = "Cuidades"
 
     name = fields.Char(string="Ciudad")
 

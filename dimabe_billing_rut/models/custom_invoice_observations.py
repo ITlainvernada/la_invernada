@@ -2,6 +2,7 @@ from odoo import models, fields, api
 
 class CustomInvoiceObservations(models.Model):
     _name = 'custom.invoice.observations'
+    _description = "Observacion de Facturas"
 
     observations = fields.Char(
         string='Observación',

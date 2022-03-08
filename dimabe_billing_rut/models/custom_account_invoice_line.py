@@ -3,6 +3,7 @@ import re
 
 class CustomAccountInvoiceLine(models.Model):
     _name = "custom.account.invoice.line"
+    _description = "Lineas de Factura (Custom)"
 
     invoice_id = fields.Many2one('account.invoice',string="Factura")
 

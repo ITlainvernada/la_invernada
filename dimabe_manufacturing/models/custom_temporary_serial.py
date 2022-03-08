@@ -4,6 +4,7 @@ from odoo.addons import decimal_precision as dp
 
 class CustomTemporarySerial(models.Model):
     _name = 'custom.temporary.serial'
+    _description = "Series Temporales"
 
     name = fields.Char('N° Serie')
 

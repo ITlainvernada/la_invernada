@@ -4,6 +4,7 @@ import base64
 
 class GenerateLabelWizard(models.TransientModel):
     _name = 'generate.label.wizard'
+    _description = "Generar Plantilla de Etiqueta"
 
     eco_id = fields.Many2one('mrp.eco')
 

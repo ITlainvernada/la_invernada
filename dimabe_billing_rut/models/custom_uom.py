@@ -4,6 +4,7 @@ class CustomUom(models.Model):
 
     _name = 'custom.uom'
     _rec_name = 'initials'
+    _description = "Unidad de Medida (Custom)"
 
     name = fields.Char(string= 'Nombre', required=True)
 

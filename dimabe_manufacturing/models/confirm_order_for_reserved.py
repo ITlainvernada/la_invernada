@@ -4,6 +4,7 @@ from datetime import date
 
 class ConfirmOrderForReserved(models.TransientModel):
     _name = 'confirm.order.reserved'
+    _description = "Seleccionar Orden a reservar"
 
     sale_ids = fields.Many2many('sale.order')
 
