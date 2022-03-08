@@ -52,7 +52,7 @@ class StockPicking(models.Model):
 
     notify_ids = fields.Many2many(
         'res.partner',
-        string="Notificados"
+        string="Notificados",
         domain=[('customer', '=', True)]
     )
 

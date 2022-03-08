@@ -3,6 +3,7 @@ from odoo import fields, models, api
 
 class ConfirmRePrintSerial(models.TransientModel):
     _name = 'confirm.re_print.serial'
+    _description = "Re-Imprimir Series"
 
     serial_id = fields.Many2one('stock.production.lot.serial','Serie')
 

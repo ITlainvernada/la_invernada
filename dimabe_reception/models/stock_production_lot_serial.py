@@ -35,7 +35,7 @@ class StockProductionLotSerial(models.Model):
     )
 
     serial_number = fields.Char(
-        'Serie'
+        'Numero Serie'
     )
 
 

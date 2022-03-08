@@ -4,6 +4,7 @@ from dateutil.relativedelta import relativedelta
 
 class WizardGenerateTemporarySerial(models.TransientModel):
     _name = 'wizard.generate.temporary.serial'
+    _description = "Generador de Series Temporales"
 
     lot_id = fields.Many2one('stock.production.lot', 'Lote')
 
