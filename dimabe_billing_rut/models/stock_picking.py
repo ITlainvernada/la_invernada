@@ -20,8 +20,8 @@ class StockPicking(models.Model):
     ted = fields.Text("TED")
     pdf_url = fields.Text("URL PDF")
 
-    partner_economic_activities = fields.Many2many('custom.economic.activity',related='partner_id.economic_activities')
-    company_economic_activities = fields.Many2many('custom.economic.activity', related='company_id.economic_activities')
+    partner_economic_activities = fields.Many2many('custom.economic.activity',related='partner_id.economic_activities',string="Acteco Contacto")
+    company_economic_activities = fields.Many2many('custom.economic.activity', related='company_id.economic_activities',string="Acteco Compañia")
     partner_activity_id = fields.Many2one('custom.economic.activity', string='Actividad del Cliente/Proveedor')
     company_activity_id = fields.Many2one('custom.economic.activity', string='Actividad de la Compañía')
     references = fields.One2many(

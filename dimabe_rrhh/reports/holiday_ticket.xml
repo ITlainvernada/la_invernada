@@ -44,7 +44,6 @@
         <field name="margin_right">15</field>
         <field name="header_line" eval="False"/>
         <field name="header_spacing">0</field>
-        <field name="footer_line" eval="False"/>
         <field name="dpi">90</field>
     </record>
     <report id="action_holiday_ticket" string="Vale de vacaciones" model="hr.leave" report_type="qweb-pdf"

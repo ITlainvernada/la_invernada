@@ -4,6 +4,7 @@ from odoo.addons import decimal_precision as dp
 
 class StockProductionLotSerial(models.Model):
     _name = 'stock.production.lot.serial'
+    _description = "Numero de Serie"
 
     name = fields.Char(
         'Serie',

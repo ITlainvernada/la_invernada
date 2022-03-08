@@ -11,7 +11,7 @@ class CustomOrdersToInvoice(models.Model):
 
     order_id = fields.Integer(string="Pedido Id", required=True)
 
-    order_name = fields.Char(string="Pedido", required=True)
+    order_name = fields.Char(string="Nombre del Pedido", required=True)
 
     product_id = fields.Integer(string="Producto Id", required=True)
 
