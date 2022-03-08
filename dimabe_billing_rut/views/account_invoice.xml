@@ -103,21 +103,21 @@
                                     <field name="charging_mode" attrs="{'invisible': [('dte_code', '!=', '110')]}"/>
                                     <field name="booking_number" attrs="{'invisible': [('dte_code', '!=', '110')]}"/>
                                     <field name="bl_number" attrs="{'invisible': [('dte_code', '!=', '110')]}"/>
-<!--                                    <field name="container_type"-->
-<!--                                           placeholder="Seleccione el tipo de contenedor" attrs="{'invisible': [('dte_code', '!=', '110')]}"/>-->
+                                    <field name="container_type"
+                                           placeholder="Seleccione el tipo de contenedor" attrs="{'invisible': [('dte_code', '!=', '110')]}"/>
                                 </group>
                                 <group><field name="remarks_comex" attrs="{'invisible': [('dte_code', '!=', '110')]}"/></group>
                                 <group>
                                     <field name="client_label" attrs="{'invisible': [('dte_code', '!=', '110')]}"/>
-<!--                                    <field name="shipping_company" attrs="{'invisible': [('dte_code', '!=', '110')]}"/>-->
-<!--                                    <field name="ship" attrs="{'invisible': [('dte_code', '!=', '110')]}"/>-->
-<!--                                    <field name="ship_number" attrs="{'invisible': [('dte_code', '!=', '110')]}"/>-->
+                                    <field name="shipping_company" attrs="{'invisible': [('dte_code', '!=', '110')]}"/>
+                                    <field name="ship" attrs="{'invisible': [('dte_code', '!=', '110')]}"/>
+                                    <field name="ship_number" attrs="{'invisible': [('dte_code', '!=', '110')]}"/>
                                     <field name="type_transport" attrs="{'invisible': [('dte_code', '!=', '110')]}"/>
                                     <field name="custom_department" domain="[('category_id.name', '=', 'Aduana')]" attrs="{'invisible': [('dte_code', '!=', '110')]}"/>
                                 </group>
                                 <group>
-<!--                                    <field name="departure_port" attrs="{'invisible': [('dte_code', '!=', '110')]}"/>-->
-<!--                                    <field name="arrival_port" attrs="{'invisible': [('dte_code', '!=', '110')]}"/>-->
+                                    <field name="departure_port" attrs="{'invisible': [('dte_code', '!=', '110')]}"/>
+                                    <field name="arrival_port" attrs="{'invisible': [('dte_code', '!=', '110')]}"/>
                                     <!--<field name="required_loading_date" autocomplete="off" attrs="{'invisible': [('dte_code', '!=', '110')]}"/>-->
                                     <field name="required_loading_week" attrs="{'invisible': [('dte_code', '!=', '110')]}"/>
                                 </group>

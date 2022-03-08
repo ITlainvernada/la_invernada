@@ -29,8 +29,8 @@ class AccountInvoice(models.Model):
     ted = fields.Text("TED")
     pdf_url = fields.Text("URL PDF")
 
-    partner_economic_activities = fields.Many2many('custom.economic.activity', related='partner_id.economic_activities',string="Acteco Cliente")
-    company_economic_activities = fields.Many2many('custom.economic.activity', related='company_id.economic_activities',string="Acteco Compañia")
+    partner_economic_activities = fields.Many2many('custom.economic.activity', related='partner_id.economic_activities')
+    company_economic_activities = fields.Many2many('custom.economic.activity', related='company_id.economic_activities')
     partner_activity_id = fields.Many2one('custom.economic.activity', string='Actividad del Cliente/Proveedor')
     company_activity_id = fields.Many2one('custom.economic.activity', string='Actividad de la Compañía')
     references = fields.One2many(
@@ -87,7 +87,7 @@ class AccountInvoice(models.Model):
 
     order_to_add_ids = fields.Many2one('sale.order',
                                        domain=[('invoice_status', '!=', 'invoiced')],
-                                       string="Pedidos a Agregar"
+                                       string="Pedidos"
                                        )
 
     stock_picking_ids = fields.Many2one('stock.picking',
@@ -186,7 +186,10 @@ class AccountInvoice(models.Model):
 
     container_number = fields.Char('N° Contenedor')
 
-
+    container_type = fields.Many2one(
+        'custom.container.type',
+        'Tipo de contenedor'
+    )
 
     client_label = fields.Boolean('Etiqueta Cliente', default=False)
 
@@ -199,6 +202,29 @@ class AccountInvoice(models.Model):
     remarks_comex = fields.Text('Comentarios Comex')
 
     # EMBARQUE
+    shipping_company = fields.Many2one(
+        comodel_name='custom.shipping.company',
+        string='Naviera'
+    )
+
+    ship = fields.Many2one(
+        comodel_name='custom.ship',
+        string='Nave'
+    )
+
+    ship_number = fields.Char(
+        string='Viaje'
+    )
+
+    departure_port = fields.Many2one(
+        comodel_name='custom.port',
+        string='Puerto de Embarque'
+    )
+
+    arrival_port = fields.Many2one(
+        comodel_name='custom.port',
+        string='Puerto de Desembarque'
+    )
 
     required_loading_date = fields.Datetime(
         'Fecha requerida de carga'

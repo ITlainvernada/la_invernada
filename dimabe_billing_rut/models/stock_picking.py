@@ -51,7 +51,7 @@ class StockPicking(models.Model):
             ('1', 'Despacho por cuenta del receptor del documento'),
             ('2', 'Despacho por cuenta del emisor a instalaciones del cliente'),
             ('3', 'Despacho por cuenta del emisor a otras instalaciones')
-            ], 'Tipo Despacho', default='0')
+            ], 'Tipo de Despacho', default='0')
 
     transfer_indication  = fields.Selection([
             ('0', 'Sin Translado'),
@@ -81,6 +81,18 @@ class StockPicking(models.Model):
 
     #Comex Embarque
 
+    shipping_company = fields.Many2one(
+        comodel_name='custom.shipping.company',
+        string='Naviera',
+        copy=False
+    )
+
+    ship = fields.Many2one(
+        comodel_name='custom.ship',
+        string='Nave',
+        copy=False
+    )
+
     ship_number = fields.Char(
         string='Viaje',
         copy=False
@@ -88,7 +100,17 @@ class StockPicking(models.Model):
 
     type_transport = fields.Many2one('custom.type.transport','Vía de Transporte',copy=False)
 
+    departure_port = fields.Many2one(
+        comodel_name='custom.port',
+        string='Puerto de Embarque',
+        copy=False
+    )
 
+    arrival_port = fields.Many2one(
+        comodel_name='custom.port',
+        string='Puerto de Desembarque',
+        copy=False
+    )
 
     required_loading_date = fields.Datetime(
         'Fecha requerida de carga'
