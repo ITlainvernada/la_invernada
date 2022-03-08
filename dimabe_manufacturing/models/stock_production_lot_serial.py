@@ -48,7 +48,7 @@ class StockProductionLotSerial(models.Model):
     stock_product_id = fields.Many2one(
         'product.product',
         related='stock_production_lot_id.product_id',
-        string='Producto'
+        string='Producto del Lote'
     )
 
     reserved_to_stock_picking_id = fields.Many2one(

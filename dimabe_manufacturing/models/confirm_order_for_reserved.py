@@ -10,9 +10,9 @@ class ConfirmOrderForReserved(models.TransientModel):
 
     sale_id = fields.Many2one('sale.order', 'Order')
 
-    picking_id = fields.Many2one('stock.picking', 'Picking')
+    picking_id = fields.Many2one('stock.picking', 'Despacho')
 
-    picking_principal_id = fields.Many2one('stock.picking')
+    picking_principal_id = fields.Many2one('stock.picking',string="Despachos")
 
     lot_id = fields.Many2one('stock.production.lot', 'Lote')
 

@@ -101,7 +101,8 @@ class MrpProduction(models.Model):
 
     product_lot = fields.Many2one(
         'product.product',
-        related="stock_lots.product_id"
+        related="stock_lots.product_id",
+        string="Producto del Lote"
     )
 
     requested_qty = fields.Float(
