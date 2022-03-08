@@ -36,7 +36,7 @@
                     <field name="weight_guide"
                            attrs="{'invisible':['&amp;','&amp;',('is_mp_reception', '=', False),('is_pt_reception','=',False),('is_satelite_reception','=',False)], 'readonly': 1}"
                     />
-                    <field name="gross_weight"
+                    <field name="gross_weight" string="Kilos Brutos"
                            attrs="{'invisible':['&amp;','&amp;',('is_mp_reception', '=', False),('is_pt_reception','=',False),('is_satelite_reception','=',False)], 'readonly': [('state', '=', 'done')]}"
                     />
 
