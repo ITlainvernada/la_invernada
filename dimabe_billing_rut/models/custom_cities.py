@@ -17,3 +17,4 @@ class CustomCities(models.Model):
         for item in self:
             if item.name and item.country:
                 item.city_country = item.name + ', ' +  item.country.name
+
