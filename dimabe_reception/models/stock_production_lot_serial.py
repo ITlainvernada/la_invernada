@@ -38,6 +38,7 @@ class StockProductionLotSerial(models.Model):
         'Serie'
     )
 
+
     @api.multi
     def _compute_display_weight(self):
         for item in self:
