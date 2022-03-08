@@ -82,13 +82,13 @@ class StockPicking(models.Model):
     #Comex Embarque
 
     shipping_company = fields.Many2one(
-        comodel_name='custom.shipping.company',
+        'custom.shipping.company',
         string='Naviera',
         copy=False
     )
 
     ship = fields.Many2one(
-        comodel_name='custom.ship',
+        'custom.ship',
         string='Nave',
         copy=False
     )
@@ -101,13 +101,13 @@ class StockPicking(models.Model):
     type_transport = fields.Many2one('custom.type.transport','Vía de Transporte',copy=False)
 
     departure_port = fields.Many2one(
-        comodel_name='custom.port',
+        'custom.port',
         string='Puerto de Embarque',
         copy=False
     )
 
     arrival_port = fields.Many2one(
-        comodel_name='custom.port',
+        'custom.port',
         string='Puerto de Desembarque',
         copy=False
     )
