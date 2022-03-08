@@ -51,7 +51,7 @@ class StockPicking(models.Model):
             ('1', 'Despacho por cuenta del receptor del documento'),
             ('2', 'Despacho por cuenta del emisor a instalaciones del cliente'),
             ('3', 'Despacho por cuenta del emisor a otras instalaciones')
-            ], 'Tipo de Despacho', default='0',string="Tipo Despacho")
+            ], 'Tipo Despacho', default='0')
 
     transfer_indication  = fields.Selection([
             ('0', 'Sin Translado'),
