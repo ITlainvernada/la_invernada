@@ -64,7 +64,6 @@ class OvenUse(models.Model):
         string='Horno',
         domain=[('state', '=', 'free')],
         required=True,
-        default=lambda x: x.dried_oven_ids[0] if len(x.dried_oven_ids) > 0 else None,
         nullable=True
     )
 
