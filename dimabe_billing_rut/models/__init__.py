@@ -34,4 +34,3 @@ from . import custom_quality_type
 from . import account_move
 from . import account_journal
 from . import account_invoice_mblz
-from . import custom_port

@@ -186,10 +186,7 @@ class AccountInvoice(models.Model):
 
     container_number = fields.Char('N° Contenedor')
 
-    container_type = fields.Many2one(
-        'custom.container.type',
-        'Tipo de contenedor'
-    )
+
 
     client_label = fields.Boolean('Etiqueta Cliente', default=False)
 
@@ -202,29 +199,6 @@ class AccountInvoice(models.Model):
     remarks_comex = fields.Text('Comentarios Comex')
 
     # EMBARQUE
-    shipping_company = fields.Many2one(
-        comodel_name='custom.shipping.company',
-        string='Naviera'
-    )
-
-    ship = fields.Many2one(
-        comodel_name='custom.ship',
-        string='Nave'
-    )
-
-    ship_number = fields.Char(
-        string='Viaje'
-    )
-
-    departure_port = fields.Many2one(
-        comodel_name='custom.port',
-        string='Puerto de Embarque'
-    )
-
-    arrival_port = fields.Many2one(
-        comodel_name='custom.port',
-        string='Puerto de Desembarque'
-    )
 
     required_loading_date = fields.Datetime(
         'Fecha requerida de carga'

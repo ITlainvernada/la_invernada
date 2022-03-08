@@ -72,6 +72,35 @@ class AccountInvoice(models.Model):
 
     port_terminal_origin = fields.Char(string="Terminal Portuario Origen")
 
+    container_type = fields.Many2one(
+        'custom.container.type',
+        'Tipo de contenedor'
+    )
+
+    shipping_company = fields.Many2one(
+        comodel_name='custom.shipping.company',
+        string='Naviera'
+    )
+
+    ship = fields.Many2one(
+        comodel_name='custom.ship',
+        string='Nave'
+    )
+
+    ship_number = fields.Char(
+        string='Viaje'
+    )
+
+    departure_port = fields.Many2one(
+        comodel_name='custom.port',
+        string='Puerto de Embarque'
+    )
+
+    arrival_port = fields.Many2one(
+        comodel_name='custom.port',
+        string='Puerto de Desembarque'
+    )
+
     def _compute_order_ids(self):
         for item in self:
             orders = []

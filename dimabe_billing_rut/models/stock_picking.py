@@ -81,18 +81,6 @@ class StockPicking(models.Model):
 
     #Comex Embarque
 
-    shipping_company = fields.Many2one(
-        'custom.shipping.company',
-        string='Naviera',
-        copy=False
-    )
-
-    ship = fields.Many2one(
-        'custom.ship',
-        string='Nave',
-        copy=False
-    )
-
     ship_number = fields.Char(
         string='Viaje',
         copy=False
@@ -100,17 +88,7 @@ class StockPicking(models.Model):
 
     type_transport = fields.Many2one('custom.type.transport','Vía de Transporte',copy=False)
 
-    departure_port = fields.Many2one(
-        'custom.port',
-        string='Puerto de Embarque',
-        copy=False
-    )
 
-    arrival_port = fields.Many2one(
-        'custom.port',
-        string='Puerto de Desembarque',
-        copy=False
-    )
 
     required_loading_date = fields.Datetime(
         'Fecha requerida de carga'
