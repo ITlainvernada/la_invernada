@@ -265,30 +265,6 @@ class StockPicking(models.Model):
     canning_data = fields.Char('Agregar Envases',
                                copy=False)
 
-    shipping_company = fields.Many2one(
-        'custom.shipping.company',
-        string='Naviera',
-        copy=False
-    )
-
-    ship = fields.Many2one(
-        'custom.ship',
-        string='Nave',
-        copy=False
-    )
-
-    departure_port = fields.Many2one(
-        'custom.port',
-        string='Puerto de Embarque',
-        copy=False
-    )
-
-    arrival_port = fields.Many2one(
-        'custom.port',
-        string='Puerto de Desembarque',
-        copy=False
-    )
-
     @api.onchange('picture')
     def get_pictures(self):
         self.pictures = self.picture

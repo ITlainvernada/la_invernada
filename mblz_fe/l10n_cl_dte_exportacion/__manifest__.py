@@ -44,7 +44,7 @@ Chile: Factura de Exportación Electrónica.
             # 'data/aduanas.tipos_carga.csv',
             # 'data/aduanas.tipos_transporte.csv',
             'data/uom_uom.xml',
-            # 'data/account.incoterms.csv',
+            'data/account.incoterms.csv',
     ],
     'installable': True,
     'application': True,
