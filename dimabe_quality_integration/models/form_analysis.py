@@ -3,6 +3,7 @@ from odoo import fields, models, api
 
 class FormAnalysis(models.Model):
     _name = 'form.analysis'
+    _description  = "Analisis de Forma"
 
     ref = fields.Integer('Referencia')
 

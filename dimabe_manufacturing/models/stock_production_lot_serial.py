@@ -167,7 +167,7 @@ class StockProductionLotSerial(models.Model):
 
     to_unlink = fields.Boolean('Para Eliminar')
 
-    best_before_date_new = fields.Date(string='Consumir antes de')
+    best_before_date_new = fields.Date(string='Consumir antes de (Nueva)')
 
     to_print = fields.Boolean(string='Imprimir')
 

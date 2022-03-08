@@ -20,7 +20,7 @@ class StockPicking(models.Model):
     )
 
     gross_weight = fields.Float(
-        'Kilos Brutos',
+        'Kilos Brutos (Recepcion)',
         digits=dp.get_precision('Product Unit of Measure')
     )
 

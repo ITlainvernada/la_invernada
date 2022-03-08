@@ -8,6 +8,7 @@ from odoo.addons import decimal_precision as dp
 class CustomSettlement(models.Model):
     _name = 'custom.settlement'
     _rec_name = 'employee_id'
+    _description = "Finiquito"
 
     employee_id = fields.Many2one('hr.employee', 'Empleado', required=True)
 

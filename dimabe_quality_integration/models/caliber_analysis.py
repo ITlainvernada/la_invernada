@@ -3,6 +3,7 @@ from odoo import fields, models, api
 
 class CaliberAnalysis(models.Model):
     _name = 'caliber.analysis'
+    _description = "Analisis de Calibre"
 
     ref = fields.Integer('Referencia')
 

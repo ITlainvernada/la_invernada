@@ -4,6 +4,7 @@ from odoo.models import UserError
 
 class CustomHolidays(models.Model):
     _name = 'custom.holidays'
+    _description = "Ausencia Legal"
 
     name = fields.Char('Nombre')
 

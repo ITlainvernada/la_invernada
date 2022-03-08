@@ -13,7 +13,7 @@ from collections import Counter
 
 class WizardHrPaySlip(models.TransientModel):
     _name = "wizard.hr.payslip"
-    _description = 'XLSX Report'
+    _description = 'Generacion de Libro de Remuneraciones'
 
     delimiter = {
         'comma': ',',

@@ -4,6 +4,7 @@ from odoo import models, fields
 class CheckListResponse(models.Model):
 
     _name = 'check.list.response'
+    _description = "Respuesta de Check List"
 
     item = fields.Many2one(
         'check.list.item',

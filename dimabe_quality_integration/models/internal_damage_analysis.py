@@ -3,6 +3,7 @@ from odoo import models, fields, api
 
 class InternalDamageAnalysis(models.Model):
     _name = 'internal.damage.analysis'
+    _description = "Analisis de Daño Interno"
 
     ref = fields.Integer('Referencia')
 

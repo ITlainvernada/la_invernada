@@ -3,6 +3,7 @@ from odoo import fields, models, api
 
 class HumidityAnalysis(models.Model):
     _name = 'humidity.analysis'
+    _description = "Analisis de Humedad"
 
     ref = fields.Integer('Referencia')
 

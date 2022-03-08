@@ -3,6 +3,7 @@ from odoo import fields, models, api
 
 class ColorAnalysis(models.Model):
     _name = 'color.analysis'
+    _description = "Analisis de Color"
 
     ref = fields.Integer('Referencia')
 

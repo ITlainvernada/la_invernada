@@ -3,6 +3,7 @@ from odoo import fields, models, api
 
 class ImpurityAnalysis(models.Model):
     _name = 'impurity.analysis'
+    _description = "Analisis de Impureza"
 
     ref = fields.Integer('Referencia')
 

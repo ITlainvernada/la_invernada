@@ -11,16 +11,16 @@ class StockPicking(models.Model):
 
     delivery_date = fields.Datetime('Fecha de entrega')
 
-    #shipping_number = fields.Integer('Número Embarque')
+    # shipping_number = fields.Integer('Número Embarque')
     shipping_number = fields.Char('Número Embarque')
 
-    #Ya no se ocupa
-    #shipping_id = fields.Many2one(
+    # Ya no se ocupa
+    # shipping_id = fields.Many2one(
     #    'custom.shipment',
     #    'Embarque'
-    #)
+    # )
 
-    #required_loading_date = fields.Datetime(
+    # required_loading_date = fields.Datetime(
     #    related='shipping_id.required_loading_date')
 
     variety = fields.Many2many(related="product_id.attribute_value_ids")
@@ -28,9 +28,10 @@ class StockPicking(models.Model):
     country = fields.Char(related='partner_id.country_id.name')
 
     quantity_done = fields.Float(
+        string="Cantidad Hecha",
         related='move_ids_without_package.product_uom_qty')
 
-    product = fields.Many2one(related="move_ids_without_package.product_id")
+    product = fields.Many2one('product.product', string="Producto ('Pedido')", related="move_ids_without_package.product_id")
 
     contract_correlative = fields.Integer('corr')
 
@@ -51,11 +52,12 @@ class StockPicking(models.Model):
 
     notify_ids = fields.Many2many(
         'res.partner',
+        string="Notificados"
         domain=[('customer', '=', True)]
     )
 
-    custom_notify_ids = fields.Many2many('custom.notify', string="Notify")
- 
+    custom_notify_ids = fields.Many2many('custom.notify', string="Notify (Custom)")
+
     agent_id = fields.Many2one(
         'res.partner',
         'Agente',
@@ -115,7 +117,7 @@ class StockPicking(models.Model):
     )
 
     gross_weight_dispatch = fields.Float(
-        string="Kilos Brutos",
+        string="Kilos Brutos (Despacho)",
         copy=False
     )
 
@@ -215,7 +217,7 @@ class StockPicking(models.Model):
     type_of_dispatch = fields.Selection(
         [('exp', 'Exportación'),
          ('nac', 'Nacional')],
-        string="Tipo de Despacho",
+        string="Tipo de Despacho (Custom)",
         copy=False)
 
     sell_shipping = fields.Char(
@@ -252,16 +254,16 @@ class StockPicking(models.Model):
     have_picture_report = fields.Boolean('Tiene reporte de fotos', default=True)
 
     arrival_weight = fields.Float('Peso de Entrada',
-        copy=False)
+                                  copy=False)
 
     departure_weight = fields.Float('Peso de Salida',
-        copy=False)
+                                    copy=False)
 
     customs_department = fields.Many2one('res.partner', 'Oficina Aduanera',
-        copy=False)
+                                         copy=False)
 
     canning_data = fields.Char('Agregar Envases',
-        copy=False)
+                               copy=False)
 
     @api.onchange('picture')
     def get_pictures(self):
@@ -322,7 +324,6 @@ class StockPicking(models.Model):
         return self.env.ref('dimabe_export_order.action_dispatch_label_report') \
             .report_action(self.pictures)
 
-
     @api.multi
     def get_permision(self):
         for i in self.env.user.groups_id:
@@ -357,7 +358,7 @@ class StockPicking(models.Model):
 
     @api.multi
     @api.depends('freight_value', 'safe_value')
-    def _compute_total_value(self):   
+    def _compute_total_value(self):
         for item in self:
             list_price = []
             list_qty = []
@@ -367,22 +368,22 @@ class StockPicking(models.Model):
                 if len(item.sale_id.order_line) != 0:
                     list_price.append(i.price_unit)
 
-            #move_line = []
-            #if item.is_multiple_dispatch:
+            # move_line = []
+            # if item.is_multiple_dispatch:
             #    for line in item.dispatch_line_ids:
             #        if line.sale_id.id == item.sale_id.id:
             #            
             #            move_line.append(line)
             #    if len(move_line) != 0:
             #        for m in move_line:
-             #           list_qty.append(m.real_dispatch_qty)
+            #           list_qty.append(m.real_dispatch_qty)
             #            prices = sum(list_price)
             #            qantas = sum(list_qty)
-            #else:
-                #move_line = item.move_ids_without_package
+            # else:
+            # move_line = item.move_ids_without_package
 
             if len(item.move_ids_without_package) != 0:
-                for a in item.move_ids_without_package:    
+                for a in item.move_ids_without_package:
                     list_qty.append(a.quantity_done)
                     prices = sum(list_price)
                     qantas = sum(list_qty)
@@ -394,8 +395,8 @@ class StockPicking(models.Model):
     def _compute_value_per_kilogram(self):
         for item in self:
             qty_total = 0
-            #move_line = []
-            #if item.is_multiple_dispatch:
+            # move_line = []
+            # if item.is_multiple_dispatch:
             #    for line in item.dispatch_line_ids:
             #        if line.sale_id == item.sale_id:
             #            move_line.append(line)
@@ -403,7 +404,7 @@ class StockPicking(models.Model):
             #        qty_total = qty_total + line.real_dispatch_qty
             #    if qty_total > 0:
             #        item.value_per_kilogram = item.total_value / qty_total
-            #else:
+            # else:
             for line in item.move_ids_without_package:
                 qty_total = qty_total + line.quantity_done
             if qty_total > 0:
@@ -417,14 +418,14 @@ class StockPicking(models.Model):
                 raise models.ValidationError('la comisión debe ser mayor que 0 y menor o igual que 3')
             else:
                 sum_required_qty = 0
-                #if item.is_multiple_dispatch:
+                # if item.is_multiple_dispatch:
                 #    for line in item.dispatch_line_ids:
                 #        if line.sale_id == item.sale_id:
                 #            sum_required_qty += line.required_sale_qty
                 #    item.total_commission = (item.commission / 100) \
                 #                        * (sum(item.sale_id.order_line.mapped('price_unit'))
                 #                           * sum_required_qty)
-                #else:
+                # else:
                 item.total_commission = (item.commission / 100) \
                                         * (sum(item.sale_id.order_line.mapped('price_unit'))
                                            * sum(item.move_ids_without_package.mapped('product_uom_qty')))
@@ -456,6 +457,3 @@ class StockPicking(models.Model):
         for item in self:
             if item.agent_id and item.commission > 3:
                 raise models.ValidationError('la comisión debe ser mayor que 0 y menor o igual que 3')
-
- 
-        

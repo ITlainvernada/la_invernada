@@ -3,6 +3,7 @@ from odoo import fields, models, api
 
 class PerformanceAnalysis(models.Model):
     _name = 'performance.analysis'
+    _description = "Analisis de Rendimiento"
 
     ref = fields.Integer('Referencia')
 

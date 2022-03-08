@@ -3,6 +3,7 @@ from odoo import models, fields, api
 
 class CustomFired(models.Model):
     _name = 'custom.fired'
+    _description = "Causal de Despido"
 
     name = fields.Char('Nombre', required=True)
 
