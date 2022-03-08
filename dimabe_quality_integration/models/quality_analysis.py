@@ -10,7 +10,7 @@ class QualityAnalysis(models.Model):
     stock_production_lot_ids = fields.One2many(
         'stock.production.lot',
         'quality_analysis_id',
-        string='Lote'
+        string='Lotes'
     )
 
     lot_balance = fields.Float(

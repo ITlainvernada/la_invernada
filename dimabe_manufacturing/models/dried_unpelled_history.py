@@ -17,7 +17,7 @@ class DriedUnpelledHistory(models.Model):
     oven_use_ids = fields.One2many(
         'oven.use',
         'history_id',
-        'Hornos',
+        'Hornos Usados',
         readonly=True
     )
 

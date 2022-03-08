@@ -12,9 +12,9 @@ class ChangeDateLot(models.TransientModel):
 
     packaging_date_old = fields.Date(string='Fecha Actual')
 
-    best_before_date_old = fields.Date(string='Fecha de Consumir Preferentemente antes de')
+    best_before_date_old = fields.Date(string='Fecha de Consumir Preferentemente antes de (Antigua)')
 
-    best_before_date_new = fields.Date(string='Fecha de Consumir Preferentemente antes de')
+    best_before_date_new = fields.Date(string='Fecha de Consumir Preferentemente antes de (Nueva)')
 
     def change_pack(self):
         for item in self:
