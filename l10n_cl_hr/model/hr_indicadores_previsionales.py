@@ -89,47 +89,47 @@ class hr_indicadores_previsionales(models.Model):
         readonly=True, states=STATES,
         help="Sueldo Mínimo para Menores de 18 y Mayores a 65")
     tasa_afp_cuprum = fields.Float(
-        'Tasa AFP Cuprum', readonly=True, states=STATES, help="Tasa AFP Cuprum")
+        'Cuprum', readonly=True, states=STATES, help="Tasa AFP Cuprum")
     tasa_afp_capital = fields.Float(
-        'Tasa AFP Capital', readonly=True, states=STATES, help="Tasa AFP Capital")
+        'Capital', readonly=True, states=STATES, help="Tasa AFP Capital")
     tasa_afp_provida = fields.Float(
-        'Tasa AFP Provida', readonly=True, states=STATES, help="Tasa AFP Provida")
+        'ProVida', readonly=True, states=STATES, help="Tasa AFP Provida")
     tasa_afp_modelo = fields.Float(
-        'Tasa AFP Modelo', readonly=True, states=STATES, help="Tasa AFP Modelo")
+        'Modelo', readonly=True, states=STATES, help="Tasa AFP Modelo")
     tasa_afp_planvital = fields.Float(
-        'Tasa AFP PlanVital', readonly=True, states=STATES, help="Tasa AFP PlanVital")
+        'PlanVital', readonly=True, states=STATES, help="Tasa AFP PlanVital")
     tasa_afp_habitat = fields.Float(
-        'Tasa AFP Habitat', readonly=True, states=STATES, help="Tasa AFP Habitat")
+        'Habitat', readonly=True, states=STATES, help="Tasa AFP Habitat")
     tasa_afp_uno = fields.Float(
-        'Tasa AFP UNO', readonly=True, states=STATES, help="Tasa AFP UNO")
+        'Afp UNO', readonly=True, states=STATES, help="Tasa AFP UNO")
     tasa_sis_cuprum = fields.Float(
-        'Tasa SIS Cuprum', readonly=True, states=STATES, help="Tasa SIS Cuprum")
+        'SIS', readonly=True, states=STATES, help="Tasa SIS Cuprum")
     tasa_sis_capital = fields.Float(
-        'Tasa SIS Capital', readonly=True, states=STATES, help="Tasa SIS Capital")
+        'SIS', readonly=True, states=STATES, help="Tasa SIS Capital")
     tasa_sis_provida = fields.Float(
-        'Tasa SIS Provida', readonly=True, states=STATES, help="Tasa SIS Provida")
+        'SIS', readonly=True, states=STATES, help="Tasa SIS Provida")
     tasa_sis_planvital = fields.Float(
-        'Tasa SIS PlanVital', readonly=True, states=STATES, help="Tasa SIS PlanVital")
+        'SIS', readonly=True, states=STATES, help="Tasa SIS PlanVital")
     tasa_sis_habitat = fields.Float(
-        'Tasa SIS Habitat', readonly=True, states=STATES, help="Tasa SIS Habitat")
+        'SIS', readonly=True, states=STATES, help="Tasa SIS Habitat")
     tasa_sis_modelo = fields.Float(
-        'Tasa SIS Modelo', readonly=True, states=STATES, help="Tasa SIS Modelo")
+        'SIS', readonly=True, states=STATES, help="Tasa SIS Modelo")
     tasa_sis_uno = fields.Float(
-        'Tasa SIS Uno', readonly=True, states=STATES, help="Tasa SIS Uno")
+        'SIS', readonly=True, states=STATES, help="Tasa SIS Uno")
     tasa_independiente_cuprum = fields.Float(
-        'Tasa Independientes Cuprum', readonly=True, states=STATES, help="Tasa Independientes Cuprum")
+        'SIS', readonly=True, states=STATES, help="Tasa Independientes Cuprum")
     tasa_independiente_capital = fields.Float(
-        'Tasa Independientes Capital', readonly=True, states=STATES, help="Tasa Independientes Capital")
+        'SIS', readonly=True, states=STATES, help="Tasa Independientes Capital")
     tasa_independiente_provida = fields.Float(
-        'Tasa Independientes Provida', readonly=True, states=STATES, help="Tasa Independientes Provida")
+        'SIS', readonly=True, states=STATES, help="Tasa Independientes Provida")
     tasa_independiente_planvital = fields.Float(
-        'Tasa Independientes PlanVital', readonly=True, states=STATES, help="Tasa Independientes PlanVital")
+        'SIS', readonly=True, states=STATES, help="Tasa Independientes PlanVital")
     tasa_independiente_habitat = fields.Float(
-        'Tasa Independientes Habitat', readonly=True, states=STATES, help="Tasa Independientes Habitat")
+        'SIS', readonly=True, states=STATES, help="Tasa Independientes Habitat")
     tasa_independiente_modelo = fields.Float(
-        'Tasa Independientes Modelo', readonly=True, states=STATES, help="Tasa Independientes Modelo")
+        'SIS', readonly=True, states=STATES, help="Tasa Independientes Modelo")
     tasa_independiente_uno = fields.Float(
-        'Tasa Independientes UNO', readonly=True, states=STATES, help="Tasa Independientes UNO")
+        'SIS', readonly=True, states=STATES, help="Tasa Independientes UNO")
     tope_anual_apv = fields.Float(
         'Tope Anual APV', readonly=True, states=STATES, help="Tope Anual APV")
     tope_mensual_apv = fields.Float(
