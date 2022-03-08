@@ -64,7 +64,6 @@ class OvenUse(models.Model):
         string='Horno',
         domain=[('state', '=', 'free')],
         required=True,
-        nullable=True
     )
 
     dried_oven_ids = fields.Many2many(
