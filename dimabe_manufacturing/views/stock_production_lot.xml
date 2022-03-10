@@ -114,7 +114,7 @@
                             <field name="total_content_weight" readonly="1"/>
                             <field name="total_content"/>
                             <field name="state"/>
-                            <button type="object" name="delete_pallet" string="Eliminar"/>
+                            <button type="object" name="delete_pallet" string="Eliminar" groups="dimabe_manufacturing.oven_manager"/>
                         </tree>
                     </field>
                 </group>
