@@ -36,9 +36,9 @@ class DryProcessController(http.Controller):
             processResult.append({
                 'name': res.name,
                 'inLotIds': [lot.name for lot in res.in_lot_ids],
-                'initDate': res.init_date or res.create_date,
+                'initDate': res.oven_use_ids[0].init_date if len(res.oven_use_ids) > 0 else res.create_date,
                 'guideNumber': res.lot_guide_numbers,
-                'finishDate': res.finish_date or res.write_date,
+                'finishDate': res.oven_use_ids[-1].finish_date if len(res.oven_use_ids) > 0 else res.write_date,
                 'productName': res.in_product_id.name,
                 'productId': res.in_product_id.id,
                 'outLot': res.out_lot_id.name,
