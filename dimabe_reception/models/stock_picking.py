@@ -76,7 +76,7 @@ class StockPicking(models.Model):
         store=True
     )
 
-    #carrier_id = fields.Many2one('custom.carrier', 'Conductor')
+    carrier_id = fields.Many2one('custom.carrier', 'Conductor')
 
     truck_in_date = fields.Datetime(
         'Entrada de Camión',
@@ -432,9 +432,10 @@ class StockPicking(models.Model):
                 if not m_move:
                     m_move = self.get_product_move()
                 if m_move and self.picking_type_id.require_dried:
-                    m_move.product_id.update_kg(product_id=m_move.product_id.id)
-                    m_move.product_id.get_and_update(product_id=m_move.product_id.id)
-
+                    lot = self.env['stock.move.line'].search([('move_id.id','=',m_move.id)],limit=1)
+                    lot.lot_id.write({
+                        'available_kg': lot.qty_done
+                    })
             return res
         # Se usaran datos de modulo de dimabe_manufacturing
         if self.picking_type_code == 'outgoing':
