@@ -36,6 +36,25 @@ class CustomTemporarySerial(models.Model):
 
     @api.multi
     def do_print(self):
+        if self.printed:
+            wiz_id = self.env['confirm.re_print.temporary.serial'].create({
+                'serial_id': self.id,
+            })
+            view_id = self.env.ref('dimabe_manufacturing.confirm_re_print_temporary_serial')
+            return {
+                'name': "Reimpresion de Etiqueta",
+                'type': "ir.actions.act_window",
+                'view_type': 'form',
+                'view_model': 'form',
+                'res_model': 'confirm.re_print.temporary.serial',
+                'views': [(view_id.id, 'form')],
+                'target': 'new',
+                'res_id': wiz_id.id,
+                'context': self.env.context
+            }
+        self.write({
+            'printed': True
+        })
         return self.env.ref(
             'dimabe_manufacturing.action_print_temporary_serial'
         ).report_action(self)

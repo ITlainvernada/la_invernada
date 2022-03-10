@@ -58,7 +58,7 @@
                     </field>
 
                 </group>
-                <separator style="border-bottom: 1px solid;width:100%%;" attrs="{'invisible': [('is_standard_weight','=',False)]}"/>
+                <separator style="border-bottom: 4px solid;width:100%%;" attrs="{'invisible': [('is_standard_weight','=',False)]}"/>
                 <group attrs="{'invisible': [('is_finished','=',True)]}">
                     <field name="qty_standard_serial" attrs="{'invisible': [('is_standard_weight','=',False)]}"/>
                     <button type="object" name="generate_new_pallet" context="{'is_pallet': True}"
@@ -73,7 +73,7 @@
                     <field name="stock_picking_id"/>
                     <field name="packaging_date"/>
                     <field name="change_packaging" invisible="1"/>
-                    <button type="object" name="do_change_date_packaging"
+                    <button type="object" name="do_change_date_packing"
                             string="Cambiar Fecha"
                             attrs="{'invisible':[('change_packaging','=',False)]}"/>
                     <field name="change_best" invisible="1"/>
@@ -118,7 +118,7 @@
                         </tree>
                     </field>
                 </group>
-                <separator style="border-bottom: 1px solid;width:100%%;" attrs="{'invisible': [('is_standard_weight','=',False)]}"/>
+                <separator style="border-bottom: 4px solid;width:100%%;" attrs="{'invisible': [('is_standard_weight','=',False)]}"/>
                 <group>
                     <field name="serial_without_pallet_ids" attrs="{'invisible': [('is_standard_weight','=',False)]}"
                     >
