@@ -37,7 +37,7 @@ class DryProcessController(http.Controller):
                 'name': res.name,
                 'inLotIds': [lot.name for lot in res.in_lot_ids],
                 'initDate': res.oven_use_ids[0].init_date if len(res.oven_use_ids) > 0 else res.create_date,
-                'guideNumber': res.lot_guide_numbers,
+                'guideNumber': ' '.join(res.in_lot_ids.mapped('reception_guide_number')),
                 'finishDate': res.oven_use_ids[-1].finish_date if len(res.oven_use_ids) > 0 else res.write_date,
                 'productName': res.in_product_id.name,
                 'productId': res.in_product_id.id,
