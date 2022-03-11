@@ -40,7 +40,7 @@ class DryProcessController(http.Controller):
                     'name': '{} {}'.format(reception.partner_id.name,product_id.display_name),
                     'inLotIds': reception.name,
                     'initDate': reception.date_done,
-                    'guideNumbers': reception.lot_guide_numbers,
+                    'guideNumbers': reception.guide_number,
                     'finishDate': reception.write_date,
                     'productName': reception.product_id.name,
                     'productId': reception.product_id.id,
