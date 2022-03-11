@@ -53,12 +53,14 @@
                             <field name="gross_weight"/>
                             <field name="net_weight"/>
                             <button type="object" name="do_print" string="Imprimir"/>
-                            <button type="object" name="unlink" string="Eliminar" groups="dimabe_manufacturing.oven_manager"/>
+                            <button type="object" name="unlink" string="Eliminar"
+                                    groups="dimabe_manufacturing.oven_manager"/>
                         </tree>
                     </field>
 
                 </group>
-                <separator style="border-bottom: 4px solid;width:100%%;" attrs="{'invisible': [('is_standard_weight','=',False)]}"/>
+                <separator style="border-bottom: 4px solid;width:100%%;"
+                           attrs="{'invisible': [('is_standard_weight','=',False)]}"/>
                 <group attrs="{'invisible': [('is_finished','=',True)]}">
                     <field name="qty_standard_serial" attrs="{'invisible': [('is_standard_weight','=',False)]}"/>
                     <button type="object" name="generate_new_pallet" context="{'is_pallet': True}"
@@ -83,8 +85,9 @@
                 </group>
                 <group>
                     <div style="width:50% !important;">
-                        <button type="object" name="delete_all_serial" string="Eliminar Todo"/>
-                        <button type="object" name="unlink_selection"/>
+                        <button type="object" name="delete_all_serial" string="Eliminar Todo"
+                                attrs="{'invisible': [('is_standard_weight','=',True)]}"/>
+                        <button type="object" name="unlink_selection" string="Eliminar Seleccion" attrs="{'invisible': [('is_standard_weight','=',True)]}"/>
                     </div>
                 </group>
                 <group>
@@ -101,7 +104,7 @@
                             />
                             <field name="serial_number" readonly="1"/>
                             <field name="production_id" readonly="1" widget="many2onebutton"/>
-                            <button type="object" string="Imprimir"
+                            <button type="object" string="Imprimir" name="print_serial_label"
                                     attrs="{'invisible':[('serial_number','=',False),('belongs_to_prd_lot','=',False)]}"/>
                         </tree>
                     </field>
@@ -114,11 +117,13 @@
                             <field name="total_content_weight" readonly="1"/>
                             <field name="total_content"/>
                             <field name="state"/>
-                            <button type="object" name="delete_pallet" string="Eliminar" groups="dimabe_manufacturing.oven_manager"/>
+                            <button type="object" name="delete_pallet" string="Eliminar"
+                                    groups="dimabe_manufacturing.oven_manager"/>
                         </tree>
                     </field>
                 </group>
-                <separator style="border-bottom: 4px solid;width:100%%;" attrs="{'invisible': [('is_standard_weight','=',False)]}"/>
+                <separator style="border-bottom: 4px solid;width:100%%;"
+                           attrs="{'invisible': [('is_standard_weight','=',False)]}"/>
                 <group>
                     <field name="serial_without_pallet_ids" attrs="{'invisible': [('is_standard_weight','=',False)]}"
                     >
@@ -139,7 +144,8 @@
                                     type="object" string="Imprimir"
                                     attrs="{'invisible':['|',('serial_number', '=', False), ('belongs_to_prd_lot', '=', False)]}"
                             />
-                            <button type="object" name="delete" string="Eliminar" groups="dimabe_manufacturing.oven_manager"/>
+                            <button type="object" name="delete" string="Eliminar"
+                                    groups="dimabe_manufacturing.oven_manager"/>
                         </tree>
                     </field>
                 </group>
