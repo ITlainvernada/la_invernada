@@ -31,39 +31,15 @@ class DryProcessController(http.Controller):
                     'OdooUpdatedAt': res.write_date
                 })
 
-        
-        #result_dried = request.env['unpelled.dried'].sudo().search(
-        #    [('write_date', '>', search_date), ('state', '=', 'progress')])
-        '''
-        for res in result_dried:
-            processResult.append({
-                'name': res.name,
-                'inLotIds': [lot.name for lot in res.in_lot_ids],
-                'initDate': res.oven_use_ids[0].init_date if len(res.oven_use_ids) > 0 else res.create_date,
-                'guideNumber': self.get_guide_number(res),
-                'finishDate': res.write_date,
-                'productName': res.product_in_id.name,
-                'productId': res.product_in_id.id,
-                'outLot': res.out_lot_id.name,
-                'producerName': res.producer_id.name,
-                'productVariety': res.product_in_id.get_variety(),
-                'totalInWeight': res.total_in_weight,
-                'totalOutWeight': res.total_out_weight,
-                'performance': res.performance,
-                'OdooUpdatedAt': res.write_date
-            })
-        '''
 
-        result_receptions = request.env['stock.picking'].search([('state','=','done'), ('picking_type_id.require_dried', '=', True)])
-
-        result_receptions = result_receptions.filtered(lambda x: x.name not in result.mapped('in_lot_ids.name'))
+        result_receptions = request.env['stock.picking'].search([('state','=','done'), ('picking_type_id.require_dried', '=', True)]).filtered(lambda x: x.name not in result.mapped('in_lot_ids.name'))
 
         for reception in result_receptions:
             product_id =  reception.move_line_ids_without_package.filtered(lambda x: x.lot_id)[0]
             processResult.append({
                     'name': '{} {}'.format(reception.partner_id.name,product_id.display_name),
                     'inLotIds': reception.name,
-                    'initDate': reception.create_date,
+                    'initDate': reception.date_done,
                     'guideNumbers': reception.lot_guide_numbers,
                     'finishDate': reception.write_date,
                     'productName': reception.product_id.name,
