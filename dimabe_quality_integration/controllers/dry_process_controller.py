@@ -43,6 +43,7 @@ class DryProcessController(http.Controller):
                 'productId': res.product_in_id.id,
                 'outLot': res.out_lot_id.name,
                 'producerName': res.producer_id.name,
+                'productVariety': res.product_in_id.get_variety(),
                 'totalInWeight': res.total_in_weight,
                 'totalOutWeight': res.total_out_weight,
                 'performance': res.performance,
