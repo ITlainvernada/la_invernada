@@ -86,8 +86,8 @@
                 <group>
                     <div style="width:50% !important;">
                         <button type="object" name="delete_all_serial" string="Eliminar Todo"
-                                attrs="{'invisible': [('is_standard_weight','=',True)]}"/>
-                        <button type="object" name="unlink_selection" string="Eliminar Seleccion" attrs="{'invisible': [('is_standard_weight','=',True)]}"/>
+                                attrs="{'invisible': [('is_standard_weight','!=',True)]}" groups="dimabe_manufacturing.oven_manager"/>
+                        <button type="object" name="unlink_selection" string="Eliminar Seleccion" groups="dimabe_manufacturing.oven_manager" attrs="{'invisible': [('is_standard_weight','!=',True)]}"/>
                     </div>
                 </group>
                 <group>
