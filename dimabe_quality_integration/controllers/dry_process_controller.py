@@ -30,8 +30,11 @@ class DryProcessController(http.Controller):
                     'performance': res.performance,
                     'OdooUpdatedAt': res.write_date
                 })
-        result_dried = request.env['unpelled.dried'].sudo().search(
-            [('write_date', '>', search_date), ('state', '=', 'progress')])
+
+        
+        #result_dried = request.env['unpelled.dried'].sudo().search(
+        #    [('write_date', '>', search_date), ('state', '=', 'progress')])
+        '''
         for res in result_dried:
             processResult.append({
                 'name': res.name,
@@ -49,6 +52,34 @@ class DryProcessController(http.Controller):
                 'performance': res.performance,
                 'OdooUpdatedAt': res.write_date
             })
+        '''
+
+        result_receptions = request.env['stock.picking'].search([('state','=','done'), ('picking_type_id.require_dried', '=', True)])
+
+        result_receptions = result_receptions.filtered(lambda x: x.name not in result.mapped('in_lot_ids.name'))
+
+        for reception in result_receptions:
+            product_id =  reception.move_line_ids_without_package.filtered(lambda x: x.lot_id)[0]
+            processResult.append({
+                    'name': '{} {}'.format(reception.partner_id.name,product_id.display_name),
+                    'inLotIds': reception.name,
+                    'initDate': reception.create_date,
+                    'guideNumbers': reception.lot_guide_numbers,
+                    'finishDate': reception.write_date,
+                    'productName': reception.product_id.name,
+                    'productId': reception.product_id.id,
+                    'productVariety': reception.product_id.get_variety(),
+                    'outLot': '',
+                    'producerName': reception.partner_id.name,
+                    'producerId': reception.partner_id.id,
+                    'totalInWeight': reception.net_weight,
+                    'totalOutWeight': 0,
+                    'performance': 0,
+                    'OdooUpdatedAt': reception.write_date
+                })
+
+
+
         return processResult
 
     def get_guide_number(self,res):
