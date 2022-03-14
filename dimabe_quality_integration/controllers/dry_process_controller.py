@@ -38,7 +38,7 @@ class DryProcessController(http.Controller):
             product_id =  reception.move_line_ids_without_package.filtered(lambda x: x.lot_id)[0]
             processResult.append({
                     'name': '{} {}'.format(reception.partner_id.name,product_id.display_name),
-                    'inLotIds': reception.name,
+                    'inLotIds': [reception.name],
                     'initDate': reception.date_done,
                     'guideNumbers': reception.guide_number,
                     'finishDate': reception.write_date,
