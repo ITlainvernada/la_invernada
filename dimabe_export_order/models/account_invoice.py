@@ -21,7 +21,7 @@ class AccountInvoice(models.Model):
 
     safe_type = fields.Many2one('custom.safe.type',string="Tipo de Seguro")
 
-    stacking = fields.Char(string="Stacking")
+    #stacking = fields.Char(string="Stacking")
 
     cut_off = fields.Char(string="Cut Off")
 

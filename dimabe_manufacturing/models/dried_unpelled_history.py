@@ -3,6 +3,7 @@ from odoo.addons import decimal_precision as dp
 import datetime
 from ..helpers import date_helper
 
+
 class DriedUnpelledHistory(models.Model):
     _name = 'dried.unpelled.history'
     _description = 'Historial de lotes terminados'
@@ -166,7 +167,6 @@ class DriedUnpelledHistory(models.Model):
         compute='compute_can_adjust'
     )
 
-
     @api.multi
     def compute_can_adjust(self):
         for item in self:
@@ -205,8 +205,10 @@ class DriedUnpelledHistory(models.Model):
                 total_active_seconds = round(
                     sum(oven.active_seconds for oven in item.oven_use_ids) / len(item.oven_use_ids))
                 item.active_time = date_helper.int_to_time(total_active_seconds)
-                item.init_date = item.oven_use_ids[0].init_date
-                item.finish_date = item.oven_use_ids[-1].finish_date
+                oven_use_ids_to_finish_date = self.env['oven.use'].sudo().search([('history_id', '=', item.id)], order='finish_date')
+                oven_use_ids_to_init_date = self.env['oven.use'].sudo().search([('history_id','=',item.id)],order='init_date')
+                item.init_date = oven_use_ids_to_init_date[0].init_date
+                item.finish_date = oven_use_ids_to_finish_date[-1].finish_date
 
     @api.multi
     def _compute_dried_oven_ids(self):

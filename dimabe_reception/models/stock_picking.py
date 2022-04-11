@@ -152,6 +152,8 @@ class StockPicking(models.Model):
         default=datetime.now().year
     )
 
+    is_return = fields.Boolean('Fue Devuelvo')
+
     @api.multi
     def gross_weight_button(self):
         data = self._get_data_from_weigh()

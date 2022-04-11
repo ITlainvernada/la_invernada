@@ -23,6 +23,8 @@
                     <field name="delivered_date"/>
                     <field name="physical_location"/>
                     <field name="observations"/>
+                    <field name="ventilation_date"/>
+                    <field name="store_place"/>
                 </tree>
             </field>
         </record>
