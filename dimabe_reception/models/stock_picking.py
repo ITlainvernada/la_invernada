@@ -76,7 +76,7 @@ class StockPicking(models.Model):
         store=True
     )
 
-    #carrier_id = fields.Many2one('custom.carrier', 'Conductor')
+    # carrier_id = fields.Many2one('custom.carrier', 'Conductor')
 
     truck_in_date = fields.Datetime(
         'Entrada de Camión',
@@ -152,7 +152,9 @@ class StockPicking(models.Model):
         default=datetime.now().year
     )
 
-    is_return = fields.Boolean('Fue Devuelvo')
+    is_returned = fields.Boolean('Fue Devuelvo?')
+
+    is_return = fields.Boolean('Es Devolucion?')
 
     @api.multi
     def gross_weight_button(self):
@@ -306,7 +308,6 @@ class StockPicking(models.Model):
             lambda x: x.product_id.categ_id.id in self.picking_type_id.warehouse_id.products_can_be_stored.filtered(
                 lambda y: not y.reserve_ignore).ids) else None
 
-
     @api.multi
     def action_confirm(self):
         if self.picking_type_code == 'incoming':
@@ -434,7 +435,7 @@ class StockPicking(models.Model):
                 if not m_move:
                     m_move = self.get_product_move()
                 if m_move and self.picking_type_id.require_dried:
-                    lot = self.env['stock.move.line'].search([('move_id.id','=',m_move.id)],limit=1)
+                    lot = self.env['stock.move.line'].search([('move_id.id', '=', m_move.id)], limit=1)
                     lot.lot_id.write({
                         'available_kg': lot.qty_done
                     })
@@ -468,7 +469,21 @@ class StockPicking(models.Model):
                 serial.sudo().write({
                     'consumed': True
                 })
-            return super(StockPicking, self).button_validate()
+
+            if self.is_return:
+                line_id = self.move_line_ids_without_package.filtered(lambda x: x.lot_id)
+                if line_id:
+                    lot = line_id.lot_id
+                    if lot.id not in self.packing_list_ids.mapped('stock_production_lot_id').ids:
+                        for serial in lot.stock_production_lot_serial_ids:
+                            serial.sudo().write({
+                                'consumed': True
+                            })
+                    # lot_id.stock_production_lot_serial_ids.unlink()
+                    # quant_id = self.env['stock.quant'].sudo().search([('lot_id.id','=',lot_id.id)])
+                    # quant_id.sudo().unlink()
+                    # lot_id.sudo().unlink()
+
         return super(StockPicking, self).button_validate()
 
     def clean_reserved(self):

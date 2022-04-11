@@ -8,12 +8,13 @@ class StockReturnPicking(models.TransientModel):
         res = super(StockReturnPicking, self)._create_returns()
         if res:
             self.picking_id.write({
-                'is_return': True
+                'is_returned': True
             })
             picking = self.env['stock.picking'].sudo().search([('id', '=', res[0])])
             picking.move_line_ids_without_package.sudo().unlink()
             for line in self.product_return_moves:
-                lot_id = self.picking_id.move_line_ids_without_package.filtered(lambda x: x.product_id.id == line.product_id.id).lot_id
+                lot_id = self.picking_id.move_line_ids_without_package.filtered(
+                    lambda x: x.product_id.id == line.product_id.id).lot_id
                 self.env['stock.move.line'].create({
                     'product_id': line.product_id.id,
                     'picking_id': picking.id,
@@ -25,4 +26,7 @@ class StockReturnPicking(models.TransientModel):
                     'move_id': picking.move_ids_without_package.filtered(
                         lambda x: x.product_id.id == line.product_id.id).id
                 })
+            picking.write({
+                'is_return': True
+            })
         return res

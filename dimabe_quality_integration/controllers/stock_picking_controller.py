@@ -14,48 +14,46 @@ class StockPickingController(http.Controller):
     def get_stock_pickings(self, sinceDate=None):
         date_to_search = sinceDate or (date.today() - timedelta(days=7))
         result = request.env['stock.picking'].sudo().search(
-            [('write_date', '>', date_to_search), ('state', '!=', 'cancel'), ('is_return', '=', False)])
+            [('write_date', '>', date_to_search), ('state', '!=', 'cancel'),
+             ('partner_id', '!=', False), ('picking_type_id', '!=', False), ('tare_weight', '>', 0)])
         # result = request.env['stock.picking'].search([])
         data = []
         if result:
             for res in result:
-                if res.partner_id.id:
-                    if res.picking_type_id:
-                        if res.tare_weight != 0:
-                            if res.gross_weight != 0:
-                                if res.picking_type_id.code == 'incoming':
-                                    if res.move_ids_without_package:
-                                        if res.move_ids_without_package[0].product_id.product_tmpl_id.tracking != 'lot':
-                                            continue
-                                        kgs = 0
-                                        if res.net_weight.is_integer():
-                                            kgs = int(res.net_weight) - res.quality_weight
-                                        data.append({
-                                            'ProducerCode': res.partner_id.id,
-                                            'ProducerName': res.partner_id.name,
-                                            'VarietyName': res.move_ids_without_package[0].product_id.get_variety(),
-                                            'LotNumber': res.name,
-                                            'DispatchGuideNumber': res.guide_number,
-                                            'ReceptionDate': self.time_to_tz_naive(res.scheduled_date, pytz.utc,
-                                                                                   pytz.timezone(
-                                                                                       "America/Santiago")) or self.time_to_tz_naive(
-                                                res.write_date, pytz.utc,
-                                                pytz.timezone(
-                                                    "America/Santiago")),
-                                            'ReceptionKgs': kgs if kgs > 0 else res.net_weight - res.quality_weight,
-                                            'ContainerType': res.get_canning_move().product_id.display_name,
-                                            'ContainerWeightAverage': res.avg_unitary_weight,
-                                            'ContainerWeight': res.get_canning_move().product_id.weight,
-                                            'Season': res.scheduled_date.year,
-                                            'Tare': res.tare_weight,
-                                            'Warehouse': res.location_dest_id.name,
-                                            'QualityWeight': res.quality_weight,
-                                            'ContainerQuantity': res.get_canning_move().quantity_done,
-                                            'ArticleCode': res.move_ids_without_package[0].product_id.default_code,
-                                            'ArticleDescription': res.move_ids_without_package[
-                                                0].product_id.display_name,
-                                            'OdooUpdated': res.write_date
-                                        })
+                if res.picking_type_id.code == 'incoming':
+                    if res.move_ids_without_package:
+                        if res.move_ids_without_package[0].product_id.product_tmpl_id.tracking != 'lot':
+                            continue
+                        kgs = 0
+                        if res.net_weight.is_integer():
+                            kgs = int(res.net_weight) - res.quality_weight
+                        data.append({
+                            'ProducerCode': res.partner_id.id,
+                            'ProducerName': res.partner_id.name,
+                            'VarietyName': res.move_ids_without_package[0].product_id.get_variety(),
+                            'LotNumber': res.name,
+                            'DispatchGuideNumber': res.guide_number,
+                            'ReceptionDate': self.time_to_tz_naive(res.scheduled_date, pytz.utc,
+                                                                   pytz.timezone(
+                                                                       "America/Santiago")) or self.time_to_tz_naive(
+                                res.write_date, pytz.utc,
+                                pytz.timezone(
+                                    "America/Santiago")),
+                            'ReceptionKgs': kgs if kgs > 0 else res.net_weight - res.quality_weight,
+                            'ContainerType': res.get_canning_move().product_id.display_name,
+                            'ContainerWeightAverage': res.avg_unitary_weight,
+                            'ContainerWeight': res.get_canning_move().product_id.weight,
+                            'Season': res.scheduled_date.year,
+                            'Tare': res.tare_weight,
+                            'Warehouse': res.location_dest_id.name,
+                            'QualityWeight': res.quality_weight,
+                            'ContainerQuantity': res.get_canning_move().quantity_done,
+                            'ArticleCode': res.move_ids_without_package[0].product_id.default_code,
+                            'ArticleDescription': res.move_ids_without_package[
+                                0].product_id.display_name,
+                            'OdooUpdated': res.write_date,
+                            "Returned": res.is_returned
+                        })
         return data
 
     @http.route('/api/stock_picking', type='json', methods=['GET'], auth='token', cors='*')
