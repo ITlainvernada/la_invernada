@@ -80,12 +80,19 @@
                     <table style="text-align:left;">
                         <tr>
                             <th style="text-align:center;">
-                                <h2>PALLET</h2>
+                                <h1>
+                                    <span style="font-size:55px;">PALLET</span>
+                                </h1>
                             </th>
                             <td style="text-align: right !important;">
-                                <h2>
-                                    <span t-field="o.name"/>
-                                </h2>
+                                <h1>
+                                    <span style="font-size:55px;" t-field="o.name"/>
+                                </h1>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <![CDATA[&nbsp;]]>
                             </td>
                         </tr>
                         <tr>
