@@ -2,6 +2,7 @@ from odoo import fields, models, api
 import xlsxwriter
 from datetime import date, datetime
 import base64
+from py_linq import Enumerable
 
 
 class StockReportXlsx(models.TransientModel):
@@ -115,7 +116,8 @@ class StockReportXlsx(models.TransientModel):
                   (6, 'Ubicacion Sistema:'), (7, 'Producto:'), (8, 'N° Guia:'), (9, 'Año Cosecha:'),
                   (10, 'Kilos Recepcionados:'), (11, 'Fecha Creacion:'), (12, 'Series Disponible:'),
                   (13, 'Enviado a Proceso de:'), (14, 'Fecha de Envio:'), (15, 'Ubicacion Fisica:'),
-                  (16, 'Observaciones:')]
+                  (16, 'Fecha de Ventilacion:'), (17, 'Observaciones'),
+                  (18, 'Lugar de Almacenamiento:')]
         for title in titles:
             sheet.write(row, col, title[1], text_format)
             col += 1
@@ -163,8 +165,14 @@ class StockReportXlsx(models.TransientModel):
             if lot.physical_location:
                 sheet.write(row, col, lot.physical_location, text_format)
             col += 1
+            if lot.ventilation_date:
+                sheet.write(row, col, lot.ventilation_date.strftime("%d-%m-%Y"))
+            col += 1
             if lot.observations:
                 sheet.write(row, col, lot.observations)
+            col += 1
+            if lot.store_place:
+                sheet.write(row, col, lot.store_place)
             row += 1
             col = 0
         workbook.close()
@@ -250,7 +258,8 @@ class StockReportXlsx(models.TransientModel):
         return {'file_name': report_name, 'base64': file_base64}
 
     def generate_pt_report(self):
-        file_name = 'pt_name.xlsx'
+        # file_name = 'pt_name.xlsx'
+        file_name = "C:\\Users\\fabia\\Documents\\test.xlsx"
         workbook = xlsxwriter.Workbook(file_name)
         sheet = workbook.add_worksheet('Informe PT')
         text_format = workbook.add_format({
@@ -271,8 +280,12 @@ class StockReportXlsx(models.TransientModel):
         col = 0
         row += 1
         lots = self.env['stock.production.lot'].search(
-            [('product_id.default_code', 'like', 'PT'), ('sale_order_id', '!=', None), ('harvest', '=', self.year)])
-        for lot in lots:
+            [("product_id.default_code", "ilike", "PT"), ("sale_order_id", "!=", False),
+             ("harvest", "=", self.year)])
+        lot_pt_balance = self.env['stock.production.lot'].search(
+            [('product_id.name', 'ilike', 'Saldo PT'), ('harvest', '=', self.year)])
+        lots_ids = lots + lot_pt_balance
+        for lot in lots_ids:
             sheet.write(row, col, lot.sale_order_id.name, text_format)
             col += 1
             sheet.write(row, col, lot.name)

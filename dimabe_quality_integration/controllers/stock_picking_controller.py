@@ -52,7 +52,6 @@ class StockPickingController(http.Controller):
                             'ArticleDescription': res.move_ids_without_package[
                                 0].product_id.display_name,
                             'OdooUpdated': res.write_date,
-                            "Returned": res.is_returned
                         })
         return data
 

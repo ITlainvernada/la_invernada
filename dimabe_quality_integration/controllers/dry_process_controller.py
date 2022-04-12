@@ -32,8 +32,7 @@ class DryProcessController(http.Controller):
                 })
 
         result_receptions = request.env['stock.picking'].search(
-            [('state', '=', 'done'), ('picking_type_id.require_dried', '=', True), ('write_date', '>', search_date),
-             ('is_returned', '=', False)]).filtered(lambda x: x.name not in result.mapped('in_lot_ids.name'))
+            [('state', '=', 'done'), ('picking_type_id.require_dried', '=', True), ('write_date', '>', search_date)]).filtered(lambda x: x.name not in result.mapped('in_lot_ids.name'))
 
         for reception in result_receptions:
             if len(reception.move_line_ids_without_package) > 0:
