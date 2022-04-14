@@ -92,9 +92,11 @@ class StockReportXlsx(models.TransientModel):
         elif self.stock_selection == 'pt':
             dict_data = self.generate_pt_report(
                 [("product_id.default_code", "ilike", "PT"), ("sale_order_id", "!=", False),
-                 ("harvest", "=", self.year)])
+                 ("harvest", "=", self.year)], "Producto Terminado")
         elif self.stock_selection == 'pt_balance':
-            dict_data = self.generate_pt_report([('product_id.name', 'ilike', 'Saldo PT'), ('harvest', '=', self.year)])
+            dict_data = self.generate_pt_report(
+                [('product_id.name', 'ilike', 'Saldo PT'), ("sale_order_id", "!=", False), ('harvest', '=', self.year)],
+                "Saldo PT")
         attachment_id = self.env['ir.attachment'].sudo().create({
             'name': dict_data['file_name'],
             'datas_fname': dict_data['file_name'],
@@ -264,7 +266,7 @@ class StockReportXlsx(models.TransientModel):
         report_name = f'Informe de Existencia {type_product} {date.today().strftime("%d/%m/%Y")}.xlsx'
         return {'file_name': report_name, 'base64': file_base64}
 
-    def generate_pt_report(self, list_condition,type_product):
+    def generate_pt_report(self, list_condition, type_product):
         # file_name = 'pt_name.xlsx'
         file_name = "C:\\Users\\fabia\\Documents\\test.xlsx"
         workbook = xlsxwriter.Workbook(file_name)
@@ -288,7 +290,8 @@ class StockReportXlsx(models.TransientModel):
         row += 1
         lots = self.env['stock.production.lot'].search(list_condition)
         for lot in lots:
-            sheet.write(row, col, lot.sale_order_id.name, text_format)
+            if lot.sale_order_id.name:
+                sheet.write(row, col, lot.sale_order_id.name, text_format)
             col += 1
             sheet.write(row, col, lot.name)
             col += 1
