@@ -52,7 +52,7 @@
             <field name="view_mode">tree,graph,form,pivot</field>
             <field name="view_id" ref="view_stock_report_pt_tree"/>
             <field name="domain">
-                [('product_id.product_tmpl_id.name', 'like', 'Saldo PT'), ('sale_order_id', '!=', None)]
+                [('product_id.name', 'like', 'Saldo PT'), ('sale_order_id', '!=', None)]
             </field>
         </record>
         <menuitem id="stock_report_pt_balance_menu"
