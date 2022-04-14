@@ -33,9 +33,9 @@
             <field name="res_model">stock.production.lot</field>
             <field name="view_mode">tree,graph,form,pivot</field>
             <field name="view_id" ref="view_stock_report_pt_balance_tree"/>
-            <field name="domain">
-                [('product_id.name', 'like', 'Saldo PT'), ('sale_order_id', '!=', None)]
-            </field>
+<!--            <field name="domain">-->
+<!--                [('product_id.name', 'like', 'Saldo PT'), ('sale_order_id', '!=', None)]-->
+<!--            </field>-->
         </record>
         <menuitem id="stock_report_pt_balance_menu"
                   sequence="20"
