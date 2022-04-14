@@ -28,35 +28,17 @@
                 </tree>
             </field>
         </record>
-        <record id="search_raw_report_view" model="ir.ui.view">
-            <field name="name">Filtro PT</field>
-            <field name="type">search</field>
-            <field name="model">stock.production.lot</field>
-            <field name="arch" type="xml">
-                <search>
-                    <field name="sale_order_id"/>
-                    <field name="producer_id"/>
-                    <field name="destiny_country_id"/>
-                    <group expand="1" string="Group By">
-                        <filter string="Pedido" name="group_by_sale_order_id" context="{'group_by':'sale_order_id'}"/>
-                        <filter string="Productor" name="group_by_producer" context="{'group_by':'producer_id'}"/>
-                        <filter string="Pais Destino" name="group_by_dest_country_id"
-                                context="{'group_by':'dest_country_id'}"/>
-                    </group>
-                </search>
-            </field>
-        </record>
         <record id="dimabe_manufacturing.stock_report_pt_balance" model="ir.actions.act_window">
             <field name="name">Informe de Saldo de PT</field>
             <field name="res_model">stock.production.lot</field>
             <field name="view_mode">tree,graph,form,pivot</field>
-            <field name="view_id" ref="view_stock_report_pt_tree"/>
+            <field name="view_id" ref="view_stock_report_pt_balance_tree"/>
             <field name="domain">
                 [('product_id.name', 'like', 'Saldo PT'), ('sale_order_id', '!=', None)]
             </field>
         </record>
         <menuitem id="stock_report_pt_balance_menu"
-                  sequence="13"
+                  sequence="20"
                   action="dimabe_manufacturing.stock_report_pt_balance"
                   name="Informe de Existencia de Saldo PT"
                   parent="stock_report_menu"
