@@ -264,11 +264,11 @@ class StockReportXlsx(models.TransientModel):
         report_name = f'Informe de Existencia {type_product} {date.today().strftime("%d/%m/%Y")}.xlsx'
         return {'file_name': report_name, 'base64': file_base64}
 
-    def generate_pt_report(self, list_condition):
+    def generate_pt_report(self, list_condition,type_product):
         # file_name = 'pt_name.xlsx'
         file_name = "C:\\Users\\fabia\\Documents\\test.xlsx"
         workbook = xlsxwriter.Workbook(file_name)
-        sheet = workbook.add_worksheet('Informe PT')
+        sheet = workbook.add_worksheet(f'Informe {type_product}')
         text_format = workbook.add_format({
             'text_wrap': True
         })
@@ -336,5 +336,5 @@ class StockReportXlsx(models.TransientModel):
         workbook.close()
         with open(file_name, "rb") as file:
             file_base64 = base64.b64encode(file.read())
-        report_name = f'Informe de Existencia de Producto Terminado {date.today().strftime("%d/%m/%Y")}.xlsx'
+        report_name = f'Informe de Existencia de {type_product} {date.today().strftime("%d/%m/%Y")}.xlsx'
         return {'file_name': report_name, 'base64': file_base64}
