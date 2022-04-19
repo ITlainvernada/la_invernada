@@ -11,6 +11,18 @@ class StockReturnPicking(models.TransientModel):
         })
         return res
 
+    @api.model
+    def default_get(self, fields):
+        res = super(StockReturnPicking, self).default_get(fields)
+        if 'product_return_move' in res.keys():
+            picking = self.env['stock.picking'].sudo().search([('id', '=', res['picking_id'])])
+            if picking.is_mp_reception:
+                for line in res['product_return_moves']:
+                    line_picking = picking.move_line_ids_without_package.filtered(
+                        lambda x: x.product_id.id == line[2]['product_id'])
+                    line[2]['quantity'] = line_picking.qty_done
+        return res
+
     def _create_returns(self):
         res = super(StockReturnPicking, self)._create_returns()
         if res:

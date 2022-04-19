@@ -391,7 +391,7 @@ class StockPicking(models.Model):
 
     @api.multi
     def button_validate(self):
-        if self.picking_type_code == 'incoming':
+        if self.picking_type_code == 'incoming' and not self.is_return:
             for stock_picking in self:
                 message = ''
                 if stock_picking.is_mp_reception or stock_picking.is_pt_reception:
@@ -439,8 +439,15 @@ class StockPicking(models.Model):
                     lot.lot_id.write({
                         'available_kg': lot.qty_done
                     })
+                
             return res
         # Se usaran datos de modulo de dimabe_manufacturing
+        if self.picking_type_code == 'incoming' and self.is_return:
+            for line in self.move_line_ids_without_package:
+                if line.lot_id:
+                    line.lot_id.stock_production_lot_serial_ids.write({
+                        'consumed': False,
+                    })
         if self.picking_type_code == 'outgoing':
             if all(s.consumed for s in self.packing_list_ids):
                 self.packing_list_ids.write({
