@@ -310,7 +310,7 @@ class StockPicking(models.Model):
 
     @api.multi
     def action_confirm(self):
-        if self.picking_type_code == 'incoming':
+        if self.picking_type_code == 'incoming' and not self.is_return:
             for stock_picking in self:
                 if stock_picking.is_mp_reception or stock_picking.is_pt_reception:
                     stock_picking.validate_mp_reception()
@@ -441,7 +441,7 @@ class StockPicking(models.Model):
                     })
             return res
         # Se usaran datos de modulo de dimabe_manufacturing
-        if self.picking_type_code == 'outgoing':
+        elif self.picking_type_code == 'outgoing':
             if all(s.consumed for s in self.packing_list_ids):
                 self.packing_list_ids.write({
                     'consumed': False
@@ -483,8 +483,8 @@ class StockPicking(models.Model):
                     # quant_id = self.env['stock.quant'].sudo().search([('lot_id.id','=',lot_id.id)])
                     # quant_id.sudo().unlink()
                     # lot_id.sudo().unlink()
-
-        return super(StockPicking, self).button_validate()
+        else:
+            return super(StockPicking, self).button_validate()
 
     def clean_reserved(self):
         for lot in self.move_line_ids_without_package.mapped('lot_id'):

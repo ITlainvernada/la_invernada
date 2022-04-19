@@ -4,6 +4,13 @@ from odoo import fields, models, api
 class StockReturnPicking(models.TransientModel):
     _inherit = 'stock.return.picking'
 
+    def _prepare_move_default_values(self, return_line, new_picking):
+        res = super(StockReturnPicking, self)._prepare_move_default_values(return_line, new_picking)
+        new_picking.write({
+            'is_return': True
+        })
+        return res
+
     def _create_returns(self):
         res = super(StockReturnPicking, self)._create_returns()
         if res:
@@ -26,7 +33,4 @@ class StockReturnPicking(models.TransientModel):
                     'move_id': picking.move_ids_without_package.filtered(
                         lambda x: x.product_id.id == line.product_id.id).id
                 })
-            picking.write({
-                'is_return': True
-            })
         return res
