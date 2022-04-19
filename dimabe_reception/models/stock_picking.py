@@ -441,7 +441,7 @@ class StockPicking(models.Model):
                     })
             return res
         # Se usaran datos de modulo de dimabe_manufacturing
-        elif self.picking_type_code == 'outgoing':
+        if self.picking_type_code == 'outgoing':
             if all(s.consumed for s in self.packing_list_ids):
                 self.packing_list_ids.write({
                     'consumed': False
