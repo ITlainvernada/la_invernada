@@ -483,8 +483,7 @@ class StockPicking(models.Model):
                     # quant_id = self.env['stock.quant'].sudo().search([('lot_id.id','=',lot_id.id)])
                     # quant_id.sudo().unlink()
                     # lot_id.sudo().unlink()
-        else:
-            return super(StockPicking, self).button_validate()
+        return super(StockPicking, self).button_validate()
 
     def clean_reserved(self):
         for lot in self.move_line_ids_without_package.mapped('lot_id'):
