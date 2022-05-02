@@ -1204,36 +1204,36 @@ class AccountInvoice(models.Model):
         res = super(AccountInvoice, self).write(vals)
 
         # self.valid_to_sii = False
-        for s in stock_picking_ids:
-            s.write({
-                'shipping_number': self.shipping_number,
-                'agent_id': self.agent_id.id,
-                'commission': self.commission,
-                'charging_mode': self.charging_mode,
-                'booking_number': self.booking_number,
-                'bl_number': self.bl_number,
-                'container_type': self.container_type.id,
-                'client_label': self.client_label,
-                'client_label_file': self.client_label_file,
-                'freight_value': self.freight_amount,
-                'safe_value': self.safe_amount,
-                'remarks': self.remarks_comex,
-                'shipping_company': self.shipping_company.id,
-                'ship': self.ship.id,
-                'ship_number': self.ship_number,
-                'type_transport': self.type_transport.id,
-                'departure_port': self.departure_port.id,
-                'arrival_port': self.arrival_port.id,
-                'etd': self.etd,
-                'eta': self.eta,
-                'departure_date': self.departure_date,
-                'arrival_date': self.arrival_date,
-                'customs_department': self.custom_department.id,
-                'transport': self.transport_to_port.name,
-                'consignee_id': self.consignee_id.id,
-                'notify_ids': [(6, 0, self.notify_ids.ids)],
-                'custom_notify_ids': [(6, 0, self.custom_notify_ids.ids)]
-            })
+        # for s in stock_picking_ids:
+        #     s.write({
+        #         'shipping_number': self.shipping_number,
+        #         'agent_id': self.agent_id.id,
+        #         'commission': self.commission,
+        #         'charging_mode': self.charging_mode,
+        #         'booking_number': self.booking_number,
+        #         'bl_number': self.bl_number,
+        #         'container_type': self.container_type.id,
+        #         'client_label': self.client_label,
+        #         'client_label_file': self.client_label_file,
+        #         'freight_value': self.freight_amount,
+        #         'safe_value': self.safe_amount,
+        #         'remarks': self.remarks_comex,
+        #         'shipping_company': self.shipping_company.id,
+        #         'ship': self.ship.id,
+        #         'ship_number': self.ship_number,
+        #         'type_transport': self.type_transport.id,
+        #         'departure_port': self.departure_port.id,
+        #         'arrival_port': self.arrival_port.id,
+        #         'etd': self.etd,
+        #         'eta': self.eta,
+        #         'departure_date': self.departure_date,
+        #         'arrival_date': self.arrival_date,
+        #         'customs_department': self.custom_department.id,
+        #         'transport': self.transport_to_port.name,
+        #         'consignee_id': self.consignee_id.id,
+        #         'notify_ids': [(6, 0, self.notify_ids.ids)],
+        #         'custom_notify_ids': [(6, 0, self.custom_notify_ids.ids)]
+        #     })
 
             # for line in invoice_line_ids:
             #    if line.stock_picking_id == s.id:
