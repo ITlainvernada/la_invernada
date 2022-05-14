@@ -10,6 +10,7 @@ import re
 from datetime import date, datetime, time, timedelta
 from dateutil.relativedelta import relativedelta
 from odoo.exceptions import ValidationError
+from odoo.tools import date_utils
 from odoo.tools.misc import DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FORMAT, format_date
 
 from pprint import pprint
@@ -24,6 +25,9 @@ from odoo.exceptions import ValidationError, Warning, CacheMiss
 from odoo.tools.misc import formatLang
 
 import xlsxwriter
+import logging
+
+_logger = logging.getLogger(__name__)
 
 YEAR_REGEX = re.compile("^[0-9]{4}$")
 DATE_FORMAT = '%Y-%m-%d'
@@ -39,11 +43,11 @@ class ExcelWizard(models.TransientModel):
     # start_date = fields.Datetime(string="Start Date", default=time.strftime('%Y-%m-01'), required=True)
     # end_date = fields.Datetime(string="End Date", default=datetime.datetime.now(), required=True)
 
-    option = fields.Selection(
-        string='Opciones',
-        selection=[('all', 'All'),
-                   ('company', 'Company'), ], default='all',
-        required=True)
+    # option = fields.Selection(
+    #     string='Opciones',
+    #     selection=[('all', 'All'),
+    #                ('company', 'Company'), ], default='all',
+    #     required=True)
 
     type_report = fields.Selection(
         string='Tipo de reporte',
@@ -70,8 +74,13 @@ class ExcelWizard(models.TransientModel):
         ('all', 'Todos'),
     ], 'Fecha', default='month', required=True)
 
-    company_id = fields.Many2one('res.company', string='Compañía', default=lambda self: self.env.company.id)
-
+    company_id = fields.Many2one(
+        comodel_name='res.company',
+        default=lambda self: self.env.user.company_id,
+        string='Company',
+        required=False,
+        ondelete='cascade',
+    )
     month = fields.Selection(MONTH_SELECTION, string='Mes', default=_default_month)
     year = fields.Char('Año', default=_default_year)
     date_start = fields.Date('Desde')
@@ -79,7 +88,7 @@ class ExcelWizard(models.TransientModel):
 
     def _get_current_date(self):
         """ :return current date """
-        return datetime.now(pytz.timezone(self.env.user.tz or 'America/Bogota'))
+        return datetime.now(pytz.timezone(self.env.user.tz or 'America/Bogota')).date()
 
     date_def = fields.Date('Día', default=lambda self: self._get_current_date())
     hour_def = fields.Float('Hora')
@@ -122,13 +131,13 @@ class ExcelWizard(models.TransientModel):
     def _get_name_rpt(self):
         if self.range == 'month':
             month_label = dict(self.fields_get("month", "selection")["month"]["selection"])
-            return f'{self.rpt_type_id.name} ({month_label[self.month]}/{self.year})'
+            return f'({month_label[self.month]}/{self.year}) para {self.company_id.name}'
         elif self.range == 'dates':
-            return f'{self.rpt_type_id.name} ({self.date_start} AL {self.date_end})'
+            return f'({self.date_start} AL {self.date_end})  para {self.company_id.name}'
         elif self.range == 'date':
-            return f'{self.rpt_type_id.name} ({self.date_start})'
+            return f'({self.date_start})  para {self.company_id.name}'
         else:
-            return f'{self.rpt_type_id.name} (Todos)'
+            return f'(Todos) para {self.company_id.name}'
 
     # def get_domain(self):
     #     domain = [('company_id', '=', self.company_id.id)]
@@ -141,9 +150,10 @@ class ExcelWizard(models.TransientModel):
 
         HRP = self.env['hr.payslip'].sudo()
         HRPL = self.env['hr.payslip.line'].sudo()
-        domain = []
-        if self.option == 'company':
-            domain += [('company_id', '=', self.company_id.id)]
+        domain = [('company_id', '=', self.company_id.id)]
+
+        # if self.option == 'company':
+        #     domain += [('company_id', '=', self.company_id.id)]
 
         # print(payslips[0].read())
 
@@ -154,12 +164,18 @@ class ExcelWizard(models.TransientModel):
             return hpl.slip_id.input_line_ids.filtered(lambda line: line.code == code_def).amount or False
 
         if self.type_report == 'detail':
-            # lines = HRPL.search(domain)
-
             # lines = []
             if self.range == 'dates':
-                domain += [('create_date', '>=', self.date_from), ('create_date', '<=', self.date_to)]
-                lines = HRPL.search(domain)
+                sql = """
+                    SELECT * FROM hr_payslip_line as hpl 
+                    WHERE DATE(hpl.create_date) BETWEEN '{0}' AND '{1}'
+                """.format(self.date_start, self.date_end)
+                _logger.info('SQL: {}'.format(sql))
+
+                self.env.cr.execute(sql)
+                query_res = self.env.cr.dictfetchall()
+                ids = [record['id'] for record in query_res]
+                lines = HRPL.browse(ids)
             elif self.range == 'month':
                 data = HRPL.search(domain)
                 lines = data.filtered(
@@ -199,7 +215,7 @@ class ExcelWizard(models.TransientModel):
             # payslips = HRP.search(domain)
 
             if self.range == 'dates':
-                domain += [('create_date', '>=', self.date_from), ('create_date', '<=', self.date_to)]
+                domain += [('create_date', '>=', self.date_start), ('create_date', '<=', self.date_end)]
                 payslips = HRP.search(domain)
             elif self.range == 'month':
                 data = HRP.search(domain)
@@ -284,13 +300,12 @@ class ExcelWizard(models.TransientModel):
             'lines': data,
             'type_report': self.type_report
         }
-        report_name = "Reporte de Nóminas {}".format("Completo" if self.option == 'all' else self.company_id.name)
         return {
             'type': 'ir_actions_xlsx_download',
             'data': {'model': 'backup.xlsx.report.wizard',
                      'options': json.dumps(data_dic, default=date_utils.json_default),
                      'output_format': 'xlsx',
-                     'report_name': report_name,
+                     'report_name': self._get_name_rpt(),
                      }
         }
 
