@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="example_xlsx_report_view" model="ir.ui.view">
+        <field name="name">Example xlsx Report</field>
+        <field name="model">backup.xlsx.report.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Report Options">
+                <!--                <separator string="Excel Report"/>-->
+                <!--                <group col="4">-->
+                <!--                    <field name="option"/>-->
+                <!--                                    <field name="type_report" widget="selection_badge"/>-->
+                <!--                    <field name="company_id" groups="base.group_multi_company" widget="selection"/>-->
+                <!--                </group>-->
+                <group>
+                    <field name="type_report" widget="selection_badge"/>
+                    <field name="range" widget="radio" options="{'horizontal': True}"/>
+                </group>
+                <group attrs="{'invisible': [('range', '=', 'all')]}">
+                    <label for="date_start"
+                           string="Desde / Hasta"
+                           attrs="{'invisible': [('range', '!=', 'dates')]}"/>
+                    <div attrs="{'invisible': [('range', '!=', 'dates')]}">
+                        <field name="date_start"
+                               class="oe_inline"
+                               options="{'datepicker': {'warn_future': true}}"
+                               attrs="{'required': [('range', '=', 'dates')]}"/>
+                        <span></span>
+                        <field name="date_end"
+                               class="oe_inline"
+                               options="{'datepicker': {'warn_future': true}}"
+                               attrs="{'required': [('range', '=', 'dates')]}"/>
+                    </div>
+                    <field name="date_def"
+                           options="{'datepicker':{'maxDate': 'now'}}"
+                           attrs="{'invisible': [('range', '!=', 'date')]}"/>
+
+                    <label for="month"
+                           string="Mes / año"
+                           attrs="{'invisible': [('range', '!=', 'month')]}"/>
+                    <div attrs="{'invisible': [('range', '!=', 'month')]}">
+                        <field name="month"
+                               class="oe_inline"
+                               attrs="{'required': [('range', '=', 'month')]}"/>
+                        <span>/</span>
+                        <field name="year"
+                               class="oe_inline"
+                               attrs="{'required': [('range', '=', 'month')]}"/>
+                    </div>
+                </group>
+                <group class="col-6">
+                    <field name="company_id" groups="base.group_multi_company" widget="selection"/>
+                </group>
+                <footer>
+                    <button name="print_xlsx" string="Generar reporte" type="object"
+                            default_focus="1" class="oe_highlight"/>
+                    <button string="Cancel" class="btn btn-default" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+    <record id="action_xlsx_report" model="ir.actions.act_window">
+        <field name="name">Excel HR Backup</field>
+        <field name="res_model">backup.xlsx.report.wizard</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem id="excel_report" name="Excel HR Report Backup"
+              parent="l10n_cl_hr.menu_cl_hr_payroll_master_data"
+              action="action_xlsx_report" sequence="100"/>
+</odoo>
