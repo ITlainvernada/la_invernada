@@ -1195,11 +1195,11 @@ class AccountInvoice(models.Model):
         #     if item.stock_picking_id:
         #         dispatch_list.append(item.stock_picking_id)
 
-        stock_picking_ids = self.env['stock.picking'].search([('id', 'in', dispatch_list)])
-
-        invoice_line_ids = self.env['account.invoice.line'].search([('invoice_id', '=', self.id)])
-        orders_to_invoice_ids = self.env['custom.orders.to.invoice'].search([('invoice_id', '=', self.id)])
-        custom_invoice_line_ids = self.env['custom.account.invoice.line'].search([('invoice_id', '=', self.id)])
+        # stock_picking_ids = self.env['stock.picking'].search([('id', 'in', dispatch_list)])
+        #
+        # invoice_line_ids = self.env['account.invoice.line'].search([('invoice_id', '=', self.id)])
+        # orders_to_invoice_ids = self.env['custom.orders.to.invoice'].search([('invoice_id', '=', self.id)])
+        # custom_invoice_line_ids = self.env['custom.account.invoice.line'].search([('invoice_id', '=', self.id)])
 
         res = super(AccountInvoice, self).write(vals)
 
