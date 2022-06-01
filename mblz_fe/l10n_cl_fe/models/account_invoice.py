@@ -970,10 +970,11 @@ a VAT."""))
         nds = [55, 56, 111]
         if self.document_class_id.sii_code in ncs + nds and not self.referencias:
             raise UserError("Las Notas deben llevar por obligación una referencia al documento que están afectando")
+        signature = self.env.user.get_digital_signature(self.company_id)
+        _logger.info(f'firma {signature}')
         if not self.env.user.get_digital_signature(self.company_id):
             raise UserError(
-                _(
-                    "Usuario no autorizado a usar firma electrónica para esta compañia. Por favor solicatar autorización en la ficha de compañia del documento por alguien con los permisos suficientes de administrador"
+                _("Usuario no autorizado a usar firma electrónica para esta compañia. Por favor solicitar autorización en la ficha de compañia del documento por alguien con los permisos suficientes de administrador"
                 )
             )
         if not self.env.ref("base.lang_es_CL").active:

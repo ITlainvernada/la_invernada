@@ -24,5 +24,6 @@ class ResUsers(models.Model):
         if signature:
             signature.check_signature()
             if signature.active:
+                _logger.info(f'LOG: -->>> firma {signature}')
                 return signature
         return self.env["sii.firma"]
