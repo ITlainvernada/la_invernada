@@ -46,12 +46,13 @@ class StockReportXlsx(models.TransientModel):
                 'Producto Partido')
         elif self.stock_selection == 'vain':
             dict_data = self.generate_excel_serial_report(
-                [('product_id.name', 'ilike', 'Vana'), ('harvest_filter', '=', self.year)], "Vana")
+                [('product_id.name', 'ilike', 'Vana'), ('product_id.name', 'not ilike', 'Servicio'),
+                 ('harvest_filter', '=', self.year)], "Vana")
         elif self.stock_selection == 'discard':
             dict_data = self.generate_excel_serial_report(
                 [('product_id.name', 'like', 'Descarte'), ('product_id.name', 'not like', 'Lavado'),
                  ('product_id.default_code', 'not like', 'PSES'), ('product_id.categ_id.name', 'not in', (
-                'Envasado NSC', 'Partido Manual Calidad', 'Partido Mecánico/Láser')),
+                    'Envasado NSC', 'Partido Manual Calidad', 'Partido Mecánico/Láser')),
                  ('harvest_filter', '=', self.year)], 'Descarte')
         elif self.stock_selection == 'washed':
             dict_data = self.generate_excel_serial_report(
@@ -70,8 +71,8 @@ class StockReportXlsx(models.TransientModel):
                 'Producto Lavado Servicio')
         elif self.stock_selection == 'split_service':
             dict_data = self.generate_excel_serial_report(
-                ["&", "|", ("product_id.categ_id.name", "=", "Producto Semi-elaborado / Envasado NSC Servicio"),
-                 ("product_id.categ_id.name", "=", "Partido Mecánico/Láser Servicio"),
+                [("product_id.categ_id.name", "in",
+                  ("Producto Semi-elaborado / Envasado NSC Servicio", "Partido Mecánico/Láser Servicio")),
                  ("harvest_filter", "=", self.year)],
                 'Producto Partido Servicio')
         elif self.stock_selection == 'calibrate_service':
@@ -82,13 +83,14 @@ class StockReportXlsx(models.TransientModel):
             )
         elif self.stock_selection == 'vain_service':
             dict_data = self.generate_excel_serial_report(
-                [('product_id.name', 'like', 'Vana'), ('product_id.categ_id.name', 'like', 'Servicio')],
+                [('product_id.name', 'like', 'Vana'), ('product_id.categ_id.name', 'like', 'Servicio'),
+                 ('harvest', '=', self.year)],
                 'Producto Vana Servicio'
             )
         elif self.stock_selection == 'discart_service':
             dict_data = self.generate_excel_serial_report(
-                [('product_id.name', 'like', 'Descarte'), ('product_id.categ_id.name', 'like', 'Servicio'),
-                 ('product_id.product_tmpl_id.id', '=', 996)],
+                [('product_id.categ_id.name', 'ilike', 'Envasado NCC Servicio'),
+                 ('product_id.name', 'ilike', 'Descarte'), ('harvest', '=', self.year)],
                 'Producto Descarte Servicio'
             )
         elif self.stock_selection == 'pt':
