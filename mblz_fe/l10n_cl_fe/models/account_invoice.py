@@ -1690,6 +1690,7 @@ a VAT."""))
             },
         ]
         result = fe.timbrar(datos)
+        result[0].get("sii_xml_request", '').replace(u"\u2013", "-")
         if result[0].get("error"):
             raise UserError(result[0].get("error"))
         self.write(
