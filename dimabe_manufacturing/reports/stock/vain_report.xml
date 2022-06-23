@@ -30,7 +30,7 @@
             <field name="view_mode">tree,graph,form,pivot</field>
             <field name="view_id" ref="view_stock_vain_report_tree"/>
             <field name="domain">
-                [('product_id.name','like','Vana')]
+                [('product_id.name','like','Vana'),('product_id.categ_id.name','not ilike', 'Servicio')]
             </field>
         </record>
         <menuitem id="stock_report_vain_tree_menu"
