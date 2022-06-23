@@ -992,6 +992,12 @@ a VAT."""))
                 )
         if self.company_id.tax_calculation_rounding_method != "round_globally":
             raise UserError("El método de redondeo debe ser Estríctamente Global")
+        
+    def _fix_special_chars(self):
+        for rec in self:
+            if rec.sii_xml_dte:
+                rec.sii_xml_dte = rec.sii_xml_dte.replace(u"\u2019", "+").replace(u"\u2013", "-")
+                
 
     @api.multi
     def invoice_validate(self):
@@ -1004,6 +1010,7 @@ a VAT."""))
                 inv.sii_result = "Proceso"
             else:
                 inv._timbrar()
+                inv._fix_special_chars()
                 tiempo_pasivo = datetime.now() + timedelta(
                     hours=int(self.env["ir.config_parameter"].sudo().get_param("account.auto_send_dte", default=1))
                 )
@@ -1683,6 +1690,7 @@ a VAT."""))
             },
         ]
         result = fe.timbrar(datos)
+        result[0].get("sii_xml_request", '').replace(u"\u2013", "-")
         if result[0].get("error"):
             raise UserError(result[0].get("error"))
         self.write(
