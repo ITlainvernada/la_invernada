@@ -274,7 +274,7 @@ class Exportacion(models.Model):
             Receptor['CiudadRecep'] = ciudad_recep
         Receptor['Nacionalidad'] = self.partner_id.commercial_partner_id.country_id.aduanas_id.code
         _logger.info('LOG:--->>> %s' % (Receptor))
-        error
+        # error
         return Receptor
 
     def _validaciones_uso_dte(self):
