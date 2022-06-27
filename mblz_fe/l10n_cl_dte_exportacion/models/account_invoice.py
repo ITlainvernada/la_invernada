@@ -235,19 +235,18 @@ class Exportacion(models.Model):
         commercial_partner_id = self.commercial_partner_id or self.partner_id.commercial_partner_id
         # if not commercial_partner_id.vat and not self._es_boleta() and not self._nc_boleta() and not self._es_exportacion():
         if not commercial_partner_id.document_number and not self._es_boleta() and not self._es_exportacion():
-            _logger.info('LOG: -->>>< aca pasa %s ' % (commercial_partner_id))
             raise UserError("Debe Ingresar RUT Receptor")
         #if self._es_boleta():
         #    Receptor['CdgIntRecep']
-        Receptor['RUTRecep'] = self.format_vat(commercial_partner_id.vat)
-        Receptor['RznSocRecep'] = self._acortar_str( commercial_partner_id.name, 100)
+        Receptor['RUTRecep'] = self.format_vat(commercial_partner_id.document_number)
+        Receptor['RznSocRecep'] = self._acortar_str(commercial_partner_id.name, 100)
         if not self.partner_id or (not self._es_exportacion() and Receptor['RUTRecep'] == '66666666-6'):
             return Receptor
         elif self._es_exportacion():
             Receptor['RUTRecep'] = '55.555.555-5'
         # if not self._es_boleta() and not self._nc_boleta():
         if not self._es_boleta():
-            GiroRecep = self.acteco_id.name or commercial_partner_id.activity_description.name
+            GiroRecep = commercial_partner_id.activity_description.name
             if not GiroRecep and not self._es_exportacion():
                 raise UserError(_('Seleccione giro del partner'))
             if GiroRecep:
@@ -274,6 +273,8 @@ class Exportacion(models.Model):
         if ciudad_recep:
             Receptor['CiudadRecep'] = ciudad_recep
         Receptor['Nacionalidad'] = self.partner_id.commercial_partner_id.country_id.aduanas_id.code
+        _logger.info('LOG:--->>> %s' % (Receptor))
+        error
         return Receptor
 
     def _validaciones_uso_dte(self):
