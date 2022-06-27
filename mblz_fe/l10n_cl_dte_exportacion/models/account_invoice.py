@@ -276,10 +276,10 @@ class Exportacion(models.Model):
             Receptor['Nacionalidad'] = self.partner_id.commercial_partner_id.country_id.aduanas_id.code
         if Receptor['RUTRecep'][-1] == '-':
             Receptor['RUTRecep'] = Receptor['RUTRecep'][:-1]
-        Receptor['RUTRecep'].replace('-', '')
-        dv = Receptor['RUTRecep'][-1]
-        number = Receptor['RUTRecep'][:-1]
-        Receptor['RUTRecep'] = '%s-%s' % (number, dv)
+        rut = Receptor['RUTRecep'].replace('-', '')
+        dv = rut[-1]
+        number = rut[:-1]
+        Receptor['RUTRecep'] = f'{number}-{dv}'
         
         _logger.info('LOG:--->>> %s' % (Receptor))
         # error
