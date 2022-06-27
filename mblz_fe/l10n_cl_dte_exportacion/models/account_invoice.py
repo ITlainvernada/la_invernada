@@ -272,9 +272,12 @@ class Exportacion(models.Model):
         ciudad_recep = self.partner_id.city or commercial_partner_id.city
         if ciudad_recep:
             Receptor['CiudadRecep'] = ciudad_recep
-        Receptor['Nacionalidad'] = self.partner_id.commercial_partner_id.country_id.aduanas_id.code
+        if self._es_exportacion():
+            Receptor['Nacionalidad'] = self.partner_id.commercial_partner_id.country_id.aduanas_id.code
+        if Receptor['RUTRecep'][-1] == '-':
+            Receptor['RUTRecep'] = Receptor['RUTRecep'][:-1]
         _logger.info('LOG:--->>> %s' % (Receptor))
-        # error
+        error
         return Receptor
 
     def _validaciones_uso_dte(self):
