@@ -276,8 +276,8 @@ class Exportacion(models.Model):
             Receptor['Nacionalidad'] = self.partner_id.commercial_partner_id.country_id.aduanas_id.code
         if Receptor['RUTRecep'][-1] == '-':
             Receptor['RUTRecep'] = Receptor['RUTRecep'][:-1]
-        _logger.info('LOG:--->>> %s' % (Receptor))
-        error
+        # _logger.info('LOG:--->>> %s' % (Receptor))
+        # error
         return Receptor
 
     def _validaciones_uso_dte(self):
