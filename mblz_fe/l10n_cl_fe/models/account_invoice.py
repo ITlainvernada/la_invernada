@@ -998,7 +998,7 @@ a VAT."""))
         for s in special_char_list:
             if s in dte:
                 _logger.info('LOG: special Char %s' % (s))
-                dte.replace(s, '')
+                dte.replace(u"\u2116", '/')
                 # _logger.info('LOG: new dte %s' % (dte))
         return dte
                 
