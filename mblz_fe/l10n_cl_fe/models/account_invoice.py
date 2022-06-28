@@ -994,9 +994,14 @@ a VAT."""))
             raise UserError("El método de redondeo debe ser Estríctamente Global")
         
     def _fix_special_chars(self):
+        special_char_list = ['&#8470;']
         for rec in self:
             if rec.sii_xml_dte:
-                rec.sii_xml_dte = rec.sii_xml_dte.replace(u"\u2019", "+").replace(u"\u2013", "-").replace(u"\u2116", " ")
+                for s in special_char_list:
+                    if s in rec.sii_xml_dte:
+                        _logger.info('LOG: special Char %s' % (s))
+                        rec.sii_xml_dte.replace(s, '+')
+                rec.sii_xml_dte = rec.sii_xml_dte.replace(u"\u2019", "+").replace(u"\u2013", "-")
                 
 
     @api.multi
