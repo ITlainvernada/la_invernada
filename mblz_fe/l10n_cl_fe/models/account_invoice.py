@@ -994,12 +994,13 @@ a VAT."""))
             raise UserError("El método de redondeo debe ser Estríctamente Global")
         
     def _fix_special_chars(self, dte):
-        special_char_list = ['&#8470;', '\u2013']
+        special_char_list = ['&#8470;', u"\u2013", u"\u2116"]
         for s in special_char_list:
             if s in dte:
                 _logger.info('LOG: special Char %s' % (s))
                 dte.replace(s, '+')
-                _logger.info('LOG: new dte %s' % (dte))
+                # _logger.info('LOG: new dte %s' % (dte))
+        return dte
                 
 
     @api.multi
@@ -1694,14 +1695,12 @@ a VAT."""))
             },
         ]
         result = fe.timbrar(datos)
-        # _logger.info('LOG: -->>> %s' % (result))
-        # err
-        # result[0].get("sii_xml_request", '').replace(u"\u2013", "-")
-        self._fix_special_chars(result[0].get("sii_xml_request", ''))
+        sii_xml_dte = self._fix_special_chars(result[0].get("sii_xml_request", ''))
+        _logger.info('LOG: ->>> nuevo dte %s' % (sii_xml_dte))
         if result[0].get("error"):
             raise UserError(result[0].get("error"))
         self.write(
-            {"sii_xml_dte": result[0].get("sii_xml_request", ''), "sii_barcode": result[0]["sii_barcode"],}
+            {"sii_xml_dte": sii_xml_dte, "sii_barcode": result[0]["sii_barcode"],}
         )
 
     def _crear_envio(self, n_atencion=None, RUTRecep="60803000-K"):
