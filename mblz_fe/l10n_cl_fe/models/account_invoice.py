@@ -996,7 +996,7 @@ a VAT."""))
     def _fix_special_chars(self):
         for rec in self:
             if rec.sii_xml_dte:
-                rec.sii_xml_dte = rec.sii_xml_dte.replace(u"\u2019", "+").replace(u"\u2013", "-")
+                rec.sii_xml_dte = rec.sii_xml_dte.replace(u"\u2019", "+").replace(u"\u2013", "-").replace(u"\u2116", " ")
                 
 
     @api.multi
