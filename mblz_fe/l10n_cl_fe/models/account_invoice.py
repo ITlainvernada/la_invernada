@@ -1696,7 +1696,7 @@ a VAT."""))
         result = fe.timbrar(datos)
         sii_xml_dte = self._fix_special_chars(result[0].get("sii_xml_request", ''))
         _logger.info('LOG: ->>> nuevo dte %s' % (sii_xml_dte))
-        err
+        # err
         if result[0].get("error"):
             raise UserError(result[0].get("error"))
         self.write(
