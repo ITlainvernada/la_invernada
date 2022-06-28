@@ -993,15 +993,13 @@ a VAT."""))
         if self.company_id.tax_calculation_rounding_method != "round_globally":
             raise UserError("El método de redondeo debe ser Estríctamente Global")
         
-    def _fix_special_chars(self):
-        special_char_list = ['&#8470;']
-        for rec in self:
-            if rec.sii_xml_dte:
-                for s in special_char_list:
-                    if s in rec.sii_xml_dte:
-                        _logger.info('LOG: special Char %s' % (s))
-                        rec.sii_xml_dte.replace(s, '+')
-                rec.sii_xml_dte = rec.sii_xml_dte.replace(u"\u2019", "+").replace(u"\u2013", "-")
+    def _fix_special_chars(self, dte):
+        special_char_list = ['&#8470;', '\u2013']
+        for s in special_char_list:
+            if s in dte:
+                _logger.info('LOG: special Char %s' % (s))
+                dte.replace(s, '+')
+                _logger.info('LOG: new dte %s' % (dte))
                 
 
     @api.multi
@@ -1015,7 +1013,7 @@ a VAT."""))
                 inv.sii_result = "Proceso"
             else:
                 inv._timbrar()
-                inv._fix_special_chars()
+                # inv._fix_special_chars()
                 tiempo_pasivo = datetime.now() + timedelta(
                     hours=int(self.env["ir.config_parameter"].sudo().get_param("account.auto_send_dte", default=1))
                 )
@@ -1698,7 +1696,8 @@ a VAT."""))
         result = fe.timbrar(datos)
         # _logger.info('LOG: -->>> %s' % (result))
         # err
-        result[0].get("sii_xml_request", '').replace(u"\u2013", "-")
+        # result[0].get("sii_xml_request", '').replace(u"\u2013", "-")
+        self._fix_special_chars(result[0].get("sii_xml_request", ''))
         if result[0].get("error"):
             raise UserError(result[0].get("error"))
         self.write(
