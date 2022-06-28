@@ -998,7 +998,7 @@ a VAT."""))
         for s in special_char_list:
             if s in dte:
                 _logger.info('LOG: special Char %s' % (s))
-                dte.replace(s, '+')
+                dte.replace(s, '')
                 # _logger.info('LOG: new dte %s' % (dte))
         return dte
                 
@@ -1014,7 +1014,6 @@ a VAT."""))
                 inv.sii_result = "Proceso"
             else:
                 inv._timbrar()
-                # inv._fix_special_chars()
                 tiempo_pasivo = datetime.now() + timedelta(
                     hours=int(self.env["ir.config_parameter"].sudo().get_param("account.auto_send_dte", default=1))
                 )
@@ -1697,6 +1696,7 @@ a VAT."""))
         result = fe.timbrar(datos)
         sii_xml_dte = self._fix_special_chars(result[0].get("sii_xml_request", ''))
         _logger.info('LOG: ->>> nuevo dte %s' % (sii_xml_dte))
+        err
         if result[0].get("error"):
             raise UserError(result[0].get("error"))
         self.write(
