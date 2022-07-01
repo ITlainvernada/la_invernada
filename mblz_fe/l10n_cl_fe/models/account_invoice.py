@@ -99,20 +99,26 @@ class AccountInvoice(models.Model):
     def get_dc_ids(self):
         for r in self:
             r.document_class_ids = []
+            if r.dte_type == 'credit_note':
+                dc_type = ['credit_note']
             dc_type = ["invoice"] if r.type in ["in_invoice", "out_invoice"] else ["credit_note"]
+            
             if r.type in ["in_invoice", "in_refund"]:
                 if r.type == "in_invoice":
                     dc_type.append("invoice_in")
-                    # dc_type.append("debit_note")
                 for dc in r.journal_id.document_class_ids:
                     if dc.document_type in dc_type:
                         r.document_class_ids += dc
             else:
-                dc_type.append("debit_note")
+                if r.dte_type == 'credit_note':
+                    dc_type = ['credit_note']
+                elif r.dte_type == 'debit_note':
+                    dc_type = ['debit_note']
                 jdc_ids = self.env["account.journal.sii_document_class"].search([
                     ("journal_id", "=", r.journal_id.id),
                     ("sii_document_class_id.document_type", "in", dc_type),
                     ])
+                
                 for dc in jdc_ids:
                     r.document_class_ids += dc.sii_document_class_id
 
