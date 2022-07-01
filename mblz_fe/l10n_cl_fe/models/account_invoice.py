@@ -121,6 +121,7 @@ class AccountInvoice(models.Model):
                     ])
                     if default_dn_journal_document_class_id:
                         r.journal_document_class_id = default_dn_journal_document_class_id[0]
+                _logger.info('LOG: ->> company %s' % (self.env.user.company_id))
                 jdc_ids = self.env["account.journal.sii_document_class"].search([
                     ("journal_id", "=", r.journal_id.id),
                     ("sii_document_class_id.document_type", "in", dc_type),
