@@ -103,11 +103,12 @@ class AccountInvoice(models.Model):
             if r.type in ["in_invoice", "in_refund"]:
                 if r.type == "in_invoice":
                     dc_type.append("invoice_in")
-                    dc_type.append("debit_note")
+                    # dc_type.append("debit_note")
                 for dc in r.journal_id.document_class_ids:
                     if dc.document_type in dc_type:
                         r.document_class_ids += dc
             else:
+                dc_type.append("debit_note")
                 jdc_ids = self.env["account.journal.sii_document_class"].search([
                     ("journal_id", "=", r.journal_id.id),
                     ("sii_document_class_id.document_type", "in", dc_type),
