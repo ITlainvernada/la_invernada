@@ -115,8 +115,8 @@ class AccountInvoice(models.Model):
                 elif r.dte_type == 'debit_note':
                     dc_type = ['debit_note']
                     default_dn_journal_document_class_id = self.env["account.journal.sii_document_class"].search([
-                        ("company_id", "=", self.env.user.company_id.id),
-                        ("sii_document_class_id.document_type", "in", dc_type),
+                        # ("company_id", "=", self.env.user.company_id.id),
+                        ("sii_document_class_id.document_type", "in", ['debit_note']),
                         ("journal_id", "=", r.journal_id.id)
                     ])
                     if default_dn_journal_document_class_id:
@@ -124,7 +124,7 @@ class AccountInvoice(models.Model):
                 jdc_ids = self.env["account.journal.sii_document_class"].search([
                     ("journal_id", "=", r.journal_id.id),
                     ("sii_document_class_id.document_type", "in", dc_type),
-                    ("company_id", "=", self.env.user.company_id.id)
+                    # ("company_id", "=", self.env.user.company_id.id)
                     ])
                 
                 for dc in jdc_ids:
