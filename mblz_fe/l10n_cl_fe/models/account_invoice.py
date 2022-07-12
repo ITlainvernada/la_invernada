@@ -1012,13 +1012,15 @@ a VAT."""))
             raise UserError("El método de redondeo debe ser Estríctamente Global")
         
     def _fix_special_chars(self, dte):
-        special_char_list = ['&#8470;', u"\u2013", u"\u2116"]
-        for s in special_char_list:
-            if s in dte:
-                _logger.info('LOG: special Char %s' % (s))
-                dte.replace(u"\u2116", '/')
-                # _logger.info('LOG: new dte %s' % (dte))
-        return dte
+        # special_char_list = ['&#8470;', u"\u2013", u"\u2116", "&#8211;"]
+        # for s in special_char_list:
+        #     if s in dte:
+        #         _logger.info('LOG: special Char %s' % (s))
+        #         dte.replace(u"\u2116", '/')
+        #         # _logger.info('LOG: new dte %s' % (dte))
+        strencode = dte.encode("ascii", "ignore")
+        strdecode = strencode.decode()
+        return strdecode
                 
 
     @api.multi
@@ -1713,8 +1715,6 @@ a VAT."""))
         ]
         result = fe.timbrar(datos)
         sii_xml_dte = self._fix_special_chars(result[0].get("sii_xml_request", ''))
-        _logger.info('LOG: ->>> nuevo dte %s' % (sii_xml_dte))
-        # err
         if result[0].get("error"):
             raise UserError(result[0].get("error"))
         self.write(
