@@ -33,8 +33,8 @@ class StockReportXlsx(models.TransientModel):
         dict_data = {}
         if self.stock_selection == 'raw':
             dict_data = self.generate_excel_raw_report(
-                [('product_id.categ_id.name', 'in',
-                  ('Seca', 'Desp. y Secado')), ('harvest', '=', self.year)],
+                [('product_id.default_code', 'like', 'MP'), ('product_id.default_code', 'not like', 'MPS'),
+                 ('product_id.name', 'not like', 'Verde'), ('harvest', '=', self.year)],
                 'Materia Prima')
         elif self.stock_selection == 'calibrate':
             dict_data = self.generate_excel_serial_report(
