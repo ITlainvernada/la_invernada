@@ -13,10 +13,13 @@ class StockReportXlsx(models.TransientModel):
 
     stock_selection = fields.Selection(
         [('raw', 'Informe existencia materia prima'), ('calibrate', 'Informe existencia producto calibrado'),
-         ('split', 'Informe existencia producto partido'), ('vain', 'Informe existencia producto vana'),
-         ('discard', 'Informe existencia descarte'), ('pt_balance', 'Informe de existencia de Saldo PT'),
+         ('split', 'Informe existencia producto partido'), ('vain',
+                                                            'Informe existencia producto vana'),
+         ('discard', 'Informe existencia descarte'), ('pt_balance',
+                                                      'Informe de existencia de Saldo PT'),
          ('pt', 'Informe existencia producto terminado'),
-         ('washed', 'Informe existencia producto lavado'), ('raw_service', 'Informe existencia materia prima servicio'),
+         ('washed', 'Informe existencia producto lavado'), ('raw_service',
+                                                            'Informe existencia materia prima servicio'),
          ('washed_service', 'Informe existencia producto lavado servicio'),
          ('split_service', 'Informe existencia producto partido servicio'),
          ('calibrate_service', 'Informe existencia Producto Calibrado Servicio'),
@@ -30,7 +33,8 @@ class StockReportXlsx(models.TransientModel):
         dict_data = {}
         if self.stock_selection == 'raw':
             dict_data = self.generate_excel_raw_report(
-                [('product_id.categ_id.name', 'in', ('Seca', 'Desp. y Secado')), ('harvest', '=', self.year)],
+                [('product_id.categ_id.name', 'in',
+                  ('Seca', 'Desp. y Secado')), ('harvest', '=', self.year)],
                 'Materia Prima')
         elif self.stock_selection == 'calibrate':
             dict_data = self.generate_excel_serial_report(
@@ -41,7 +45,8 @@ class StockReportXlsx(models.TransientModel):
             dict_data = self.generate_excel_serial_report(
                 [('product_id.categ_id.name', 'in',
                   ('Envasado NSC', 'Partido Manual Calidad', 'Partido Mecánico/Láser')),
-                 ('harvest_filter', '=', self.year), ('product_id.name', 'not ilike', 'Saldo PT'),
+                 ('harvest_filter', '=', self.year), ('product_id.name',
+                                                      'not ilike', 'Saldo PT'),
                  ('product_id.name', 'not like', 'Vana'), ('product_id.default_code', 'not like', 'PT')],
                 'Producto Partido')
         elif self.stock_selection == 'vain':
@@ -56,10 +61,7 @@ class StockReportXlsx(models.TransientModel):
                  ('harvest_filter', '=', self.year)], 'Descarte')
         elif self.stock_selection == 'washed':
             dict_data = self.generate_excel_serial_report(
-                [('product_id.default_code', 'like', 'PSE016'), (
-                    'product_id.categ_id.name', 'in',
-                    ('Envasado NSC', 'Partido Manual Calidad', 'Partido Mecánico/Láser')),
-                 ('product_id.name', 'not like', 'Vana'),
+                [('product_id.default_code', 'like', 'PSE016'), ('product_id.name', 'not like', 'Vana'),
                  ('product_id.name', 'not like', '(S)'), ('harvest_filter', '=', self.year)], 'Producto Lavado')
         elif self.stock_selection == 'raw_service':
             dict_data = self.generate_excel_raw_report(
@@ -67,7 +69,8 @@ class StockReportXlsx(models.TransientModel):
                  ('harvest', '=', self.year)], 'Materia Prima Servicio')
         elif self.stock_selection == 'washed_service':
             dict_data = self.generate_excel_serial_report(
-                [('product_id.default_code', 'like', 'PSES016'), ('harvest_filter', '=', self.year)],
+                [('product_id.default_code', 'like', 'PSES016'),
+                 ('harvest_filter', '=', self.year)],
                 'Producto Lavado Servicio')
         elif self.stock_selection == 'split_service':
             dict_data = self.generate_excel_serial_report(
@@ -99,7 +102,8 @@ class StockReportXlsx(models.TransientModel):
                  ("harvest", "=", self.year)], "Producto Terminado")
         elif self.stock_selection == 'pt_balance':
             dict_data = self.generate_pt_report(
-                [('product_id.name', 'ilike', 'Saldo PT'), ("sale_order_id", "!=", False), ('harvest', '=', self.year)],
+                [('product_id.name', 'ilike', 'Saldo PT'),
+                 ("sale_order_id", "!=", False), ('harvest', '=', self.year)],
                 "Saldo PT")
         attachment_id = self.env['ir.attachment'].sudo().create({
             'name': dict_data['file_name'],
@@ -126,9 +130,12 @@ class StockReportXlsx(models.TransientModel):
         row = 0
         col = 0
         titles = [(1, 'Productor:'), (2, 'Lote:'), (3, 'Kilos Disponible:'), (4, 'Variedad:'), (5, 'Calibre:'),
-                  (6, 'Ubicacion Sistema:'), (7, 'Producto:'), (8, 'N° Guia:'), (9, 'Año Cosecha:'),
-                  (10, 'Kilos Recepcionados:'), (11, 'Fecha Creacion:'), (12, 'Series Disponible:'),
-                  (13, 'Enviado a Proceso de:'), (14, 'Fecha de Envio:'), (15, 'Ubicacion Fisica:'),
+                  (6, 'Ubicacion Sistema:'), (7, 'Producto:'), (8,
+                                                                'N° Guia:'), (9, 'Año Cosecha:'),
+                  (10, 'Kilos Recepcionados:'), (11,
+                                                 'Fecha Creacion:'), (12, 'Series Disponible:'),
+                  (13, 'Enviado a Proceso de:'), (14,
+                                                  'Fecha de Envio:'), (15, 'Ubicacion Fisica:'),
                   (16, 'Fecha de Ventilacion:'), (17, 'Observaciones'),
                   (18, 'Lugar de Almacenamiento:')]
         for title in titles:
@@ -137,7 +144,8 @@ class StockReportXlsx(models.TransientModel):
         row += 1
         col = 0
 
-        lots = self.env['stock.production.lot'].sudo().search(list_condition).filtered(lambda x: not x.is_drying)
+        lots = self.env['stock.production.lot'].sudo().search(
+            list_condition).filtered(lambda x: not x.is_drying)
         for lot in lots:
             if lot.producer_id:
                 sheet.write(row, col, lot.producer_id.display_name)
@@ -167,7 +175,8 @@ class StockReportXlsx(models.TransientModel):
             col += 1
             sheet.write_datetime(row, col, lot.create_date, date_format)
             col += 1
-            sheet.write(row, col, len(lot.stock_production_lot_serial_ids.filtered(lambda a: not a.consumed)))
+            sheet.write(row, col, len(
+                lot.stock_production_lot_serial_ids.filtered(lambda a: not a.consumed)))
             col += 1
             if lot.workcenter_id:
                 sheet.write(row, col, lot.workcenter_id.display_name)
@@ -179,7 +188,8 @@ class StockReportXlsx(models.TransientModel):
                 sheet.write(row, col, lot.physical_location, text_format)
             col += 1
             if lot.ventilation_date:
-                sheet.write(row, col, lot.ventilation_date.strftime("%d-%m-%Y"))
+                sheet.write(
+                    row, col, lot.ventilation_date.strftime("%d-%m-%Y"))
             col += 1
             if lot.observations:
                 sheet.write(row, col, lot.observations)
@@ -209,9 +219,11 @@ class StockReportXlsx(models.TransientModel):
         titles = [(50.56, 'Productor'), (15.33, 'Serie'), (13.22, 'Kilos Producidos'), (13.22, 'Kilos Disponible'),
                   (8, 'Variedad'),
                   (12.22, 'Calibre'),
-                  (11, 'Ubicacion Sistema'), (54.22, 'Producto'), (9.22, 'Serie Disponible'),
+                  (11, 'Ubicacion Sistema'), (54.22,
+                                              'Producto'), (9.22, 'Serie Disponible'),
                   (9.56, 'Fecha de Produccion'),
-                  (10, 'Cliente o Calidad'), (22.89, 'Enviado a proceso'), (9.56, 'Fecha de Envio'),
+                  (10, 'Cliente o Calidad'), (22.89,
+                                              'Enviado a proceso'), (9.56, 'Fecha de Envio'),
                   (13.78, 'Ubicacion Fisica'), (10.89, 'Observacion')]
         for title in titles:
             sheet.set_column(col, col, title[0])
@@ -219,7 +231,8 @@ class StockReportXlsx(models.TransientModel):
             col += 1
         col = 0
         row += 1
-        serials = self.env['stock.production.lot.serial'].sudo().search(list_condition)
+        serials = self.env['stock.production.lot.serial'].sudo().search(
+            list_condition)
         for serial in serials:
             if serial.producer_id:
                 sheet.write(row, col, serial.producer_id.display_name)
@@ -237,7 +250,8 @@ class StockReportXlsx(models.TransientModel):
             sheet.write(row, col, serial.product_id.get_calibers())
             col += 1
             if serial.stock_production_lot_id.location_id:
-                sheet.write(row, col, serial.stock_production_lot_id.location_id.display_name)
+                sheet.write(
+                    row, col, serial.stock_production_lot_id.location_id.display_name)
             col += 1
             sheet.write(row, col, serial.product_id.display_name)
             col += 1
@@ -283,8 +297,10 @@ class StockReportXlsx(models.TransientModel):
         col = 0
         titles = [(1, 'Pedido'), (13, 'Lote'), (14, 'Producto'), (15, 'Productor'), (2, 'Medida'),
                   (3, 'Cantidad Producida'), (4, 'Kilos Producido'),
-                  (5, 'Fecha de Creacion'), (6, 'Estado de Produccion'), (7, 'Cantidad Disponible'),
-                  (8, 'Kilos Disponible'), (16, 'Estado de Despacho'), (9, 'Cliente'), (10, 'Pais Destino'),
+                  (5, 'Fecha de Creacion'), (6,
+                                             'Estado de Produccion'), (7, 'Cantidad Disponible'),
+                  (8, 'Kilos Disponible'), (16, 'Estado de Despacho'), (9,
+                                                                        'Cliente'), (10, 'Pais Destino'),
                   (10, 'Fecha Despacho'),
                   (11, 'Ubicacion Fisica'), (12, 'Observaciones')]
         for title in titles:
