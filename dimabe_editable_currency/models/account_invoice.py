@@ -24,7 +24,7 @@ class AccountInvoice(models.Model):
             rates = self.env['res.currency.rate'].search([
                 ('name', '=', date),
                 ('currency_id', '=', currency_id.id),
-                ('company', '=', self.env.user.company_id.id)
+                ('company_id', '=', self.env.user.company_id.id)
                 ])
             if len(rates) > 0:
                 rate = rates[0]
