@@ -27,11 +27,11 @@ class SaleOrder(models.Model):
     client_contract = fields.Char('Contrato Cliente')
 
     def _compute_company_id(self):
-        #for item in self:
-            if self.env.context.get('uid', False):
-                item.current_company_id = self.env.context.get('uid', False)
-            else:
-                item.current_company_id = False
+        # for item in self:
+        if self.env.context.get('uid', False):
+            item.current_company_id = self.env.context.get('uid', False)
+        else:
+            item.current_company_id = False
 
     def _compute_ships(self):
         for item in self:
@@ -39,15 +39,16 @@ class SaleOrder(models.Model):
 
     def _compute_ordered_quantity(self):
         for item in self:
-            item.ordered_quantity = item.order_line[0].product_uom_qty
+            item.ordered_quantity = item.order_line[0].product_uom_qty if item.order_line[0] else 0
 
     def _compute_delivered_quantity(self):
         for item in self:
-            item.delivered_quantity = item.order_line[0].qty_delivered
+            item.delivered_quantity = item.order_line[0].qty_delivered if item.order_line[0] else 0
 
     def _compute_unit_price(self):
         for item in self:
-            item.unit_price = item.order_line[0].price_unit
+            item.unit_price = item.order_line[0].price_unit if item.order_line[
+                0] else 0
 
     def _compute_departure_date(self):
         #valid if one dispatch of sale order havent date
@@ -70,4 +71,3 @@ class SaleOrder(models.Model):
         for pick in self.picking_ids:
             pick.clean_reserved()
         return res
-

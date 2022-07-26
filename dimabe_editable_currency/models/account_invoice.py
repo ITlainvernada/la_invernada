@@ -9,7 +9,7 @@ class AccountInvoice(models.Model):
     exchange_rate = fields.Float(
         'Tasa de Cambio'
     )
-
+    
     @api.model
     @api.onchange('date_invoice')
     def _default_exchange_rate(self):
@@ -17,25 +17,50 @@ class AccountInvoice(models.Model):
         if date:
             # currency_id = self.env['res.currency'].search([('name', '=', 'USD')])
             currency_id = self.currency_id
-            # rates = currency_id.rate_ids.search([('name', '=', date)])
-            # if len(rates) == 0:
-            #     currency_id.get_rate_by_date(date)
+            rates = currency_id.rate_ids.search([('name', '=', date)])
+            if len(rates) == 0:
+                currency_id.get_rate_by_date(date)
 
+            # rates = self.env['res.currency.rate'].search([('name', '<=', date)])
             rates = self.env['res.currency.rate'].search([
                 ('name', '=', date),
                 ('currency_id', '=', currency_id.id),
                 ('company_id', '=', self.env.user.company_id.id)
                 ])
+
             if len(rates) > 0:
                 rate = rates[0]
                 self.exchange_rate = 1 / rate.rate
                 self.exchange_rate_other_coin = 1 / rate.rate
-            else:
-                self.exchange_rate = 1 
-                self.exchange_rate_other_coin = 1 
-                
         else:
             self.exchange_rate_other_coin = 0
+
+    # @api.model
+    # @api.onchange('date_invoice')
+    # def _default_exchange_rate(self):
+    #     date = self.date_invoice
+    #     if date:
+    #         # currency_id = self.env['res.currency'].search([('name', '=', 'USD')])
+    #         currency_id = self.currency_id
+    #         # rates = currency_id.rate_ids.search([('name', '=', date)])
+    #         # if len(rates) == 0:
+    #         #     currency_id.get_rate_by_date(date)
+
+    #         rates = self.env['res.currency.rate'].search([
+    #             ('name', '=', date),
+    #             ('currency_id', '=', currency_id.id),
+    #             ('company_id', '=', self.env.user.company_id.id)
+    #             ])
+    #         if len(rates) > 0:
+    #             rate = rates[0]
+    #             self.exchange_rate = 1 / rate.rate
+    #             self.exchange_rate_other_coin = 1 / rate.rate
+    #         else:
+    #             self.exchange_rate = 1 
+    #             self.exchange_rate_other_coin = 1 
+                
+    #     else:
+    #         self.exchange_rate_other_coin = 0
 
    
     # def action_invoice_open(self):
