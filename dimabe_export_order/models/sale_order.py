@@ -39,16 +39,15 @@ class SaleOrder(models.Model):
 
     def _compute_ordered_quantity(self):
         for item in self:
-            item.ordered_quantity = item.order_line[0].product_uom_qty if item.order_line[0] else 0
+            item.ordered_quantity = item.order_line[0].product_uom_qty if item.order_line else 0
 
     def _compute_delivered_quantity(self):
         for item in self:
-            item.delivered_quantity = item.order_line[0].qty_delivered if item.order_line[0] else 0
+            item.delivered_quantity = item.order_line[0].qty_delivered if item.order_line else 0
 
     def _compute_unit_price(self):
         for item in self:
-            item.unit_price = item.order_line[0].price_unit if item.order_line[
-                0] else 0
+            item.unit_price = item.order_line[0].price_unit if item.order_line else 0
 
     def _compute_departure_date(self):
         #valid if one dispatch of sale order havent date
