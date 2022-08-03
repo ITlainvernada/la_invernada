@@ -1013,7 +1013,8 @@ a VAT."""))
         
         
     def _fix_special_chars(self, dte):
-        strencode = dte.encode("utf-8", "ignore")
+        strencode = dte.encode("unicode-escape")
+        _logger.info('LOG: -->>> process dte %s' % strencode.decode())
         return strencode.decode()
         
     # def _fix_special_chars(self, dte):
