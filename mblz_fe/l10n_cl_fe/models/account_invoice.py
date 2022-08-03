@@ -1011,16 +1011,21 @@ a VAT."""))
         if self.company_id.tax_calculation_rounding_method != "round_globally":
             raise UserError("El método de redondeo debe ser Estríctamente Global")
         
+        
     def _fix_special_chars(self, dte):
-        special_char_list = ['&#8470;', u"\u2013", u"\u2116", "&#8211;"]
-        for s in special_char_list:
-            if s in dte:
-                _logger.info('LOG: special Char %s' % (s))
-                dte.replace(s, ' ')
-                # _logger.info('LOG: new dte %s' % (dte))
-        # strencode = dte.encode("ascii", "ignore")
-        # strdecode = strencode.decode()
-        return dte
+        strencode = dte.encode("utf-8", "ignore")
+        return strencode.decode()
+        
+    # def _fix_special_chars(self, dte):
+    #     special_char_list = ['&#8470;', u"\u2013", u"\u2116", "&#8211;"]
+    #     for s in special_char_list:
+    #         if s in dte:
+    #             _logger.info('LOG: special Char %s' % (s))
+    #             dte.replace(s, ' ')
+    #             # _logger.info('LOG: new dte %s' % (dte))
+    #     # strencode = dte.encode("ascii", "ignore")
+    #     # strdecode = strencode.decode()
+    #     return dte
                 
 
     @api.multi
