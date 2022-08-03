@@ -1012,21 +1012,21 @@ a VAT."""))
             raise UserError("El método de redondeo debe ser Estríctamente Global")
         
         
-    def _fix_special_chars(self, dte):
-        strencode = dte.encode("unicode-escape")
-        _logger.info('LOG: -->>> process dte %s' % strencode.decode())
-        return strencode.decode()
-        
     # def _fix_special_chars(self, dte):
-    #     special_char_list = ['&#8470;', u"\u2013", u"\u2116", "&#8211;"]
-    #     for s in special_char_list:
-    #         if s in dte:
-    #             _logger.info('LOG: special Char %s' % (s))
-    #             dte.replace(s, ' ')
-    #             # _logger.info('LOG: new dte %s' % (dte))
-    #     # strencode = dte.encode("ascii", "ignore")
-    #     # strdecode = strencode.decode()
-    #     return dte
+    #     strencode = dte.encode("unicode-escape")
+    #     _logger.info('LOG: -->>> process dte %s' % strencode.decode())
+    #     return strencode.decode()
+        
+    def _fix_special_chars(self, dte):
+        special_char_list = ['&#8470;', u"\u2013", u"\u2116", "&#8211;", '&#932;', '&#919;', '&#927;', '&#924;' '&#913;']
+        for s in special_char_list:
+            if s in dte:
+                _logger.info('LOG: special Char %s' % (s))
+                dte.replace(s, ' ')
+                # _logger.info('LOG: new dte %s' % (dte))
+        # strencode = dte.encode("ascii", "ignore")
+        # strdecode = strencode.decode()
+        return dte
                 
 
     @api.multi
