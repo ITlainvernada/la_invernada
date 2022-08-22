@@ -11,3 +11,4 @@ pysftp
 PyMuPDF==1.16.14
 facturacion_electronica>=0.14.0
 py_linq
+googletrans==3.1.0a0

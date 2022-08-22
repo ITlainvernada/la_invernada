@@ -1,4 +1,7 @@
 from odoo import fields, models, api
+from googletrans import Translator
+import locale
+from datetime import datetime
 
 
 class PurchaseOrder(models.Model):
@@ -64,6 +67,14 @@ class PurchaseOrder(models.Model):
             order.message_post_with_template(template_id.id)
         return res
 
+    @api.multi
+    def get_money_translate_label(self):
+        for item in self:
+            if item.currency_id.name == 'CLP':
+                return 'Pesos'
+            translate = Translator()
+            return translate.translate(item.currency_id.currency_unit_label, dest='es').text.capitalize()
+
     @api.model
     def get_po_approve_data(self):
 
@@ -105,3 +116,8 @@ class PurchaseOrder(models.Model):
                     if not line.price_unit or line.price_unit == 0:
                         raise models.ValidationError('debe agregar precio unitario')
         return res
+
+    def get_translate_date(self,date_to_translate):
+        translate = Translator()
+        date_string = date_to_translate.strftime('%d of %B of %Y')
+        return translate.translate(date_string, dest='es').text.capitalize()
