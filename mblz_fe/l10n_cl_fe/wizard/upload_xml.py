@@ -333,7 +333,8 @@ class UploadXMLWizard(models.TransientModel):
             price = imp.compute_all(price, self.env.user.company_id.currency_id, 1)["total_excluded"]
         values = {
             "sale_ok": (self.type == "ventas"),
-            "name": line.find("NmbItem").text,
+            # "name": line.find("NmbItem").text,
+            "name": line.find("DscItem").text,
             "lst_price": price,
             "categ_id": self._default_category(),
             "taxes_id": [(6, 0, imp_sale.ids)],
