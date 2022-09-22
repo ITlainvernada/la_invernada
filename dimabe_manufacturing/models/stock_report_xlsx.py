@@ -51,7 +51,7 @@ class StockReportXlsx(models.TransientModel):
                 'Producto Partido')
         elif self.stock_selection == 'vain':
             dict_data = self.generate_excel_serial_report(
-                [('product_id.name', 'ilike', 'Vana'), ('product_id.name', 'not ilike', 'Servicio'),
+                [('product_id.name', 'ilike', 'Vana'), ('product_id.categ_id.name', 'not ilike', 'Servicio'),
                  ('harvest_filter', '=', self.year)], "Vana")
         elif self.stock_selection == 'discard':
             dict_data = self.generate_excel_serial_report(

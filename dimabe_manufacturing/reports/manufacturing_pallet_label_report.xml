@@ -36,6 +36,10 @@
                                     :
                                     <span t-esc="o.lot_serial_ids.mapped('production_id.stock_picking_id')[0].origin"/>
                                 </div>
+                                <div t-if="not o.lot_serial_ids.mapped('production_id.stock_picking_id') and lot_serial_ids[0].sale_order_id">
+                                    :
+                                    <span t-esc="o.lot_serial_ids[0].sale_order_id.name"/>
+                                </div>
                             </td>
                         </tr>
                         <tr>
