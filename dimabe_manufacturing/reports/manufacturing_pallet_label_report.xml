@@ -31,13 +31,11 @@
                         </tr>
                         <tr>
                             <th>Nro Pedido</th>
-                            <td>
+                            <td>:
                                 <div t-if="o.lot_serial_ids[0].sale_order_id">
-                                    :
                                     <span t-esc="o.lot_serial_ids[0].sale_order_id.name"/>
                                 </div>
                                 <div t-if="o.lot_serial_ids.mapped('production_id.stock_picking_id') and not o.lot_serial_ids[0].sale_order_id">
-                                    :
                                     <span t-esc="o.lot_serial_ids.mapped('production_id.stock_picking_id')[0].origin"/>
                                 </div>
                             </td>
@@ -108,9 +106,11 @@
                         </tr>
                         <tr>
                             <th>Nro Pedido</th>
-                            <td>
-                                <div t-if="o.lot_serial_ids.mapped('production_id.stock_picking_id')">
-                                    :
+                            <td>:
+                                <div t-if="o.lot_serial_ids[0].sale_order_id">
+                                    <span t-esc="o.lot_serial_ids[0].sale_order_id.name"/>
+                                </div>
+                                <div t-if="o.lot_serial_ids.mapped('production_id.stock_picking_id') and not o.lot_serial_ids[0].sale_order_id">
                                     <span t-esc="o.lot_serial_ids.mapped('production_id.stock_picking_id')[0].origin"/>
                                 </div>
                             </td>
@@ -237,7 +237,10 @@
                                     </div>
                                     <div>
                                         TRACE CODE (CÓDIGO De TRAZABILIDAD):
-                                        <t t-if="lot_serial_id.production_id.stock_picking_id.name">
+                                        <t t-if="lot_serial_id.sale_order_id">
+                                            <span t-field="lot_serial_id.sale_order_id.name"/>
+                                        </t>
+                                        <t t-elif="lot_serial_id.production_id.stock_picking_id.name">
                                             <span t-field="lot_serial_id.production_id.stock_picking_id.origin"/>
                                         </t>
                                         <t t-elif="lot_serial_id.production_id.name">
