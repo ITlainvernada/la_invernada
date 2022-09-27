@@ -334,7 +334,7 @@ class UploadXMLWizard(models.TransientModel):
         values = {
             "sale_ok": (self.type == "ventas"),
             # "name": line.find("NmbItem").text,
-            "name": line.find("DscItem").text,
+            "name": line.find("DscItem").text if line.find("DscItem") is not None else (line.find("NmbItem").text if line.find("NmbItem") is not None else ''),
             "lst_price": price,
             "categ_id": self._default_category(),
             "taxes_id": [(6, 0, imp_sale.ids)],
@@ -357,7 +357,7 @@ class UploadXMLWizard(models.TransientModel):
     def _buscar_producto(self, document_id, line, company_id, price_included=False, exenta=False):
         default_code = False
         CdgItem = line.find("CdgItem")
-        NmbItem = line.find("DscItem").text
+        NmbItem = line.find("DscItem").text if line.find("DscItem") is not None else (line.find("NmbItem").text if line.find("NmbItem") is not None else '')
         # NmbItem = line.find("NmbItem").text
         if NmbItem.isspace():
             NmbItem = "Producto Genérico"
@@ -437,7 +437,7 @@ class UploadXMLWizard(models.TransientModel):
             data.update(
                 {
                     "product_id": product_id,
-                    
+
                     }
             )
         elif not product_id:
@@ -446,7 +446,7 @@ class UploadXMLWizard(models.TransientModel):
         #     data.update({
         #         "name": product_id,
         #     })
-            
+
         price_subtotal = float(line.find("MontoItem").text)
         discount = 0
         if line.find("DescuentoPct") is not None:
