@@ -922,16 +922,20 @@ class StockProductionLot(models.Model):
             #         item.check_duplicate()
             return res
 
-    @api.model
     def get_stock_quant(self, location_id=None):
-        if self.location_id:
-            stock_quant = self.quant_ids.filtered(
-                lambda a: a.location_id.id == location_id)
-            return None if not stock_quant else stock_quant
+        if location_id:
+            quant_ids = self.quant_ids.filtered(lambda x: x.location_id.id == location_id)
         else:
-            return self.quant_ids.filtered(
-                lambda a: a.location_id.usage == 'internal'
-            )
+            quant_ids = self.quant_ids.filtered(lambda x: x.location_id.usage == 'internal')
+        return quant_ids
+        # if self.location_id:
+        #     stock_quant = self.quant_ids.filtered(
+        #         lambda a: a.location_id.id == location_id)
+        #     return None if not stock_quant else stock_quant
+        # else:
+        #     return self.quant_ids.filtered(
+        #         lambda a: a.location_id.usage == 'internal'
+        #     )
 
     @api.multi
     def delete_all_serial(self):
