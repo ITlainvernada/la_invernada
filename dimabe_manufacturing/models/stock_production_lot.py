@@ -367,13 +367,14 @@ class StockProductionLot(models.Model):
     def generate_temporary_serial(self):
         if self.qty_serial_without_lot > 400:
             raise models.UserError('No se pueden generar mas de 400 series al vez')
-        counter = self.get_last_serial() if len(self.temporary_serial_ids) > 0 and self.last_serial_number != '' else 1
+        counter = self.get_last_serial()
         serials = []
         for serial in range(self.qty_serial_without_lot):
             zeros = serial_utils.get_zeros(counter)
             production_id = self.env['mrp.workorder'].search([('final_lot_id.id', '=', self.id)]).production_id
             if not production_id:
-                production_id = self.env['stock.move.line'].sudo().search([('lot_id.id','=',self.id),('move_id.production_id','!=',False)]).move_id.production_id
+                production_id = self.env['stock.move.line'].sudo().search(
+                    [('lot_id.id', '=', self.id), ('move_id.production_id', '!=', False)]).move_id.production_id
             canning_id = self.get_possible_canning_id(production_id.id)[0]
             gross_weight = self.standard_weight + canning_id.weight
             serials.append({
@@ -399,22 +400,16 @@ class StockProductionLot(models.Model):
 
     @api.multi
     def get_last_serial(self):
-        if self.temporary_serial_ids or not self.last_serial_number:
-            if self.last_serial_number == self.temporary_serial_ids[-1].name:
-                if len(self.temporary_serial_ids) > 999:
-                    return int(self.temporary_serial_ids[-1].name[-4:]) + 1
-                else:
-                    return int(self.temporary_serial_ids[-1].name[-3:]) + 1
-            else:
-                if len(self.temporary_serial_ids) > 999:
-                    return int(self.last_serial_number[-4:]) + 1
-                else:
-                    return int(self.last_serial_number[-3:]) + 1
-        else:
-            if len(self.temporary_serial_ids) > 999:
-                return int(self.last_serial_number[-4:]) + 1
-            else:
-                return int(self.last_serial_number[-3:]) + 1
+        last_serial = 0
+        if len(self.temporary_serial_ids) > 0:
+            qty_number = -4 if len(self.temporary_serial_ids) > 999 else -3
+            last_serial = self.last_serial_number.name[qty_number:]
+        if len(self.temporary_serial_ids) == 0:
+            if len(self.stock_production_lot_serial_ids) > 0:
+                qty_number = -4 if len(self.stock_production_lot_serial_ids) > 999 else -3
+                last_serial = self.last_serial_number[qty_number:]
+
+        return int(last_serial) + 1
 
     @api.multi
     def generate_new_pallet(self):
