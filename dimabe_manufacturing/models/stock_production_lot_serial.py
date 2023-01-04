@@ -313,13 +313,13 @@ class StockProductionLotSerial(models.Model):
     @api.multi
     def _compute_harvest(self):
         for item in self:
-            item.harvest = item.packaging_date.year
+            item.harvest = item.stock_production_lot_id.harvest
 
     @api.multi
     @api.depends('packaging_date')
     def _compute_harvest_filter(self):
         for item in self:
-            item.harvest_filter = item.packaging_date.year
+            item.harvest_filter = item.stock_production_lot_id.harvest
 
     @api.multi
     def _compute_best_before_date(self):
