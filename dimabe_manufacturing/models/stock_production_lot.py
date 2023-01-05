@@ -403,7 +403,7 @@ class StockProductionLot(models.Model):
         last_serial = 0
         if len(self.temporary_serial_ids) > 0:
             qty_number = -4 if len(self.temporary_serial_ids) > 999 else -3
-            last_serial = self.last_serial_number.name[qty_number:]
+            last_serial = self.last_serial_number[qty_number:]
         if len(self.temporary_serial_ids) == 0:
             if len(self.stock_production_lot_serial_ids) > 0:
                 qty_number = -4 if len(self.stock_production_lot_serial_ids) > 999 else -3
