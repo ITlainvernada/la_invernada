@@ -306,7 +306,7 @@ class StockPicking(models.Model):
             if item.picking_type_code == 'outgoing':
                 domain = [
                     ('product_id', 'in', item.move_ids_without_package.mapped('product_id.id')),
-                    ('available_total_serial', '>', 0)
+                    ('available_kg', '>', 0)
                 ]
                 lot = self.env['stock.production.lot'].search(domain)
                 item.potential_lot_ids = lot
