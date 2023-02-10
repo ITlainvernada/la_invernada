@@ -24,9 +24,9 @@
             </xpath>
             <xpath expr="//field[@name='origin']" position="after">
                 <field name="is_multiple_dispatch" attrs="{'invisible':[('picking_type_code','!=','outgoing')]}"/>
-                <field name="sale_orders_id"
+                <field name="sale_order_ids"
                        attrs="{'invisible':[('is_multiple_dispatch','=',False)]}" />
-                <field name="dispatch_id" domain="[('sale_id','=',sale_orders_id),('state','!=','done')]" attrs="{'invisible':[('is_multiple_dispatch','=',False)]}" />
+                <field name="dispatch_id" domain="[('sale_id','=',sale_order_ids),('state','!=','done')]" attrs="{'invisible':[('is_multiple_dispatch','=',False)]}" />
                 <button name="add_orders_to_dispatch" type="object" string="Agregar"
                         attrs="{'invisible':[('is_multiple_dispatch','=',False)]}"/>
             </xpath>
@@ -96,7 +96,9 @@
                         </page>
                         <page string="Lotes Disponibles">
                             <group>
-                                <field name="sale_order_id"/>
+                                <field name="product_ids" invisible="1"/>
+                                <field name="lot_search_id" domain="[('product_id','in', product_ids),('available_kg', '>', 0)]" options="{'no_create': True}"/>
+                                <field name="sale_search_id"/>
                                 <field name="potential_lot_ids"
                                        groups="mrp.group_mrp_manager"
                                        attrs="{'invisible':[('state','=','done')]}"
