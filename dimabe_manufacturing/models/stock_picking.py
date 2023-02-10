@@ -20,6 +20,9 @@ class StockPicking(models.Model):
 
     product_ids = fields.Many2many('product.product', string="Productos", compute='compute_product_ids')
 
+    real_net_weigth = fields.Float('Kilos Netos Reales', compute='compute_net_weigth_real')
+
+
     # Packing List Info
 
     packing_list_ids = fields.One2many(
@@ -137,6 +140,11 @@ class StockPicking(models.Model):
                 return
             item.product_ids = None
 
+    @api.multi
+    def compute_net_weigth_real(self):
+        for item in self:
+            item.real_net_weigth = sum(item.packing_list_ids.mapped('display_weight'))
+
     # Onchange method
     @api.onchange('is_multiple_dispatch')
     def set_multiple_dispatch(self):
@@ -182,3 +190,175 @@ class StockPicking(models.Model):
                 }
             }
             return res
+
+    # Action Methods
+
+    @api.multi
+    def action_cancel(self):
+        for item in self:
+            lot = self.env['stock.production.lot'].search([('name', '=', item.name)])
+            if lot:
+                quant = self.env['stock.quant'].sudo().search([('lot_id.id', '=', lot.id)])
+                if quant:
+                    quant.sudo().unlink()
+                lot.stock_production_lot_serial_ids.sudo().unlink()
+                lot.sudo().unlink()
+            return super(StockPicking, self).action_cancel()
+
+    @api.multi
+    def calculate_last_serial(self):
+        if self.picking_type_code == 'incoming':
+            if len(canning) == 1:
+                if self.production_net_weight == self.net_weight:
+                    self.production_net_weight = self.net_weight - self.quality_weight
+
+                self.env['stock.production.lot.serial'].search([('stock_production_lot_id', '=', self.name)]).write({
+                    'real_weight': self.avg_unitary_weight
+                })
+                diff = self.production_net_weight - (canning.product_uom_qty * self.avg_unitary_weight)
+                self.env['stock.production.lot.serial'].search([('stock_production_lot_id', '=', self.name)])[-1].write(
+                    {
+                        'real_weight': self.avg_unitary_weight + diff
+                    })
+
+    @api.multi
+    def action_confirm(self):
+        res = super(StockPicking, self).action_confirm()
+        for stock_picking in self:
+            mp_move = stock_picking.get_mp_move()
+            if stock_picking.picking_type_id.require_dried:
+                for move_line in mp_move.move_line_ids:
+                    move_line.lot_id.unpelled_state = 'draft'
+            mp_move.move_line_ids.mapped('lot_id').write({
+                'stock_picking_id': stock_picking.id
+            })
+            for lot_id in mp_move.move_line_ids.mapped('lot_id'):
+                if lot_id.stock_production_lot_serial_ids:
+                    lot_id.stock_production_lot_serial_ids.write({
+                        'producer_id': lot_id.stock_picking_id.partner_id.id
+                    })
+        return res
+
+    def validate_barcode(self, barcode):
+        custom_serial = self.packing_list_ids.filtered(
+            lambda a: a.serial_number == barcode
+        )
+        if not custom_serial:
+            raise models.ValidationError('el código {} no corresponde a este despacho'.format(barcode))
+        return custom_serial
+
+    def on_barcode_scanned(self, barcode):
+        for item in self:
+            custom_serial = item.validate_barcode(barcode)
+            if custom_serial.consumed:
+                raise models.ValidationError('el código {} ya fue consumido'.format(barcode))
+
+            stock_move_line = self.move_line_ids_without_package.filtered(
+                lambda a: a.product_id == custom_serial.stock_production_lot_id.product_id and
+                          a.lot_id == custom_serial.stock_production_lot_id and
+                          a.product_uom_qty == custom_serial.display_weight and
+                          a.qty_done == 0
+            )
+
+            if len(stock_move_line) > 1:
+                stock_move_line[0].write({
+                    'qty_done': custom_serial.display_weight
+                })
+            else:
+                stock_move_line.write({
+                    'qty_done': custom_serial.display_weight
+                })
+
+            custom_serial.sudo().write({
+                'consumed': True
+            })
+
+    @api.multi
+    def remove_reserved_pallet(self):
+        lots = self.assigned_pallet_ids.filtered(lambda a: a.remove_picking).mapped('lot_id')
+        pallets = self.assigned_pallet_ids.filtered(
+            lambda a: a.remove_picking and a.reserved_to_stock_picking_id.id == self.id)
+        for pallet in pallets:
+            pallet.lot_serial_ids.filtered(lambda a: a.reserved_to_stock_picking_id.id == self.id).write({
+                'reserved_to_stock_picking_id': None
+            })
+            pallet.write({
+                'reserved_to_stock_picking_id': None,
+                'remove_picking': False
+            })
+        self.update_move(lots)
+
+    def update_move(self, lots):
+        for lot in lots:
+            move = self.move_line_ids_without_package.filtered(lambda a: a.lot_id.id == lot.id)
+            if move:
+                if lot.get_reserved_quantity_by_picking(self.id) > 0:
+                    move.write({
+                        'product_uom_qty': lot.get_reserved_quantity_by_picking(self.id)
+                    })
+                else:
+                    move.unlink()
+                self.dispatch_line_ids.filtered(lambda a: a.product_id.id == lot.product_id.id).mapped(
+                    'move_line_ids').filtered(lambda a: a.lot_id.id == lot.id).write({
+                    'product_uom_qty': lot.get_reserved_quantity_by_picking(self.id)
+                })
+                self.dispatch_line_ids.filtered(
+                    lambda a: a.product_id.id == lot.product_id.id and lot in a.move_line_ids.mapped('lot_id')).write({
+                    'real_dispatch_qty': sum(
+                        self.packing_list_ids.filtered(lambda a: a.stock_production_lot_id == lot).mapped(
+                            'display_weight'))
+                })
+
+    @api.multi
+    def _compute_packing_list_lot_ids(self):
+        for item in self:
+            if item.packing_list_ids and item.picking_type_code == 'outgoing':
+                item.packing_list_lot_ids = item.packing_list_ids.mapped('stock_production_lot_id')
+            else:
+                item.packing_list_lot_ids = []
+
+    @api.multi
+    def remove_reserved_serial(self):
+        lots = self.packing_list_ids.filtered(lambda a: a.to_delete).mapped('stock_production_lot_id')
+        self.packing_list_ids.filtered(lambda a: a.to_delete and a.reserved_to_stock_picking_id.id == self.id).write({
+            'reserved_to_stock_picking_id': None,
+            'to_delete': False
+        })
+        self.update_move(lots)
+
+    @api.multi
+    def add_orders_to_dispatch(self):
+        if self.is_multiple_dispatch:
+            if not self.sale_orders_id:
+                raise models.ValidationError('No se selecciono ningun numero de pedido')
+            if not self.dispatch_id:
+                raise models.ValidationError('No se selecciono ningun despacho')
+            if self.dispatch_id in self.dispatch_line_ids.mapped('dispatch_id'):
+                raise models.ValidationError('El despacho {} ya se encuentra agregado'.format(self.dispatch_id.id))
+            for product in self.dispatch_id.move_ids_without_package:
+                self.env['custom.dispatch.line'].create({
+                    'dispatch_real_id': self.id,
+                    'dispatch_id': self.dispatch_id.id,
+                    'sale_id': self.sale_orders_id.id,
+                    'product_id': product.product_id.id,
+                    'required_sale_qty': product.product_uom_qty,
+                })
+                # No existe producto
+                if not self.move_ids_without_package.filtered(lambda p: p.product_id.id == product.product_id.id):
+                    self.env['stock.move'].create({
+                        'product_id': product.product_id.id,
+                        'picking_id': self.id,
+                        'product_uom': product.product_id.uom_id.id,
+                        'product_uom_qty': product.product_uom_qty,
+                        'date': datetime.date.today(),
+                        'date_expected': self.scheduled_date,
+                        'location_dest_id': self.partner_id.property_stock_customer.id,
+                        'location_id': self.location_id.id,
+                        'name': product.product_id.name,
+                        'procure_method': 'make_to_stock',
+                    })
+                else:
+                    move = self.move_ids_without_package.filtered(lambda p: p.product_id.id == product.product_id.id)
+                    move.write({
+                        'product_uom_qty': move.product_uom_qty + product.product_uom_qty
+                    })
