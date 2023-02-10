@@ -190,7 +190,6 @@
                             </field>
                         </page>
                         <page string="Series">
-                            <label for="correlative_serial"/>
                             <div class="row">
                                 <div class="col-6">
                                     <group>
