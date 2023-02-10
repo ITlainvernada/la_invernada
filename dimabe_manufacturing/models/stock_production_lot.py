@@ -1039,6 +1039,9 @@ class StockProductionLot(models.Model):
         picking.write({
             'lot_search_id': None
         })
+        self.write({
+            'correlative_serial': None
+        })
 
     def add_selection_serial(self, picking_id, location_id):
         pallets = self.stock_production_lot_serial_ids.filtered(
