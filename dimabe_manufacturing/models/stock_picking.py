@@ -22,7 +22,6 @@ class StockPicking(models.Model):
 
     real_net_weigth = fields.Float('Kilos Netos Reales', compute='compute_net_weigth_real')
 
-
     # Packing List Info
 
     packing_list_ids = fields.One2many(
@@ -111,7 +110,9 @@ class StockPicking(models.Model):
                 if not item.sale_search_id and not item.lot_search_id:
                     domain = [('product_id.id', '=', item.move_ids_without_package.mapped('product_id').ids),
                               ('available_kg', '>', 0)]
-                item.potential_lot_ids = self.env['stock.production.lot'].sudo().search(domain)
+                lot_ids = self.env['stock.production.lot'].sudo().search(domain).filtered(lambda x: any(
+                    not serial.reserved_to_stock_picking_id for serial in x.stock_production_lot_serial_ids))
+                item.potential_lot_ids = lot_ids
                 return
             item.potential_lot_ids = None
 

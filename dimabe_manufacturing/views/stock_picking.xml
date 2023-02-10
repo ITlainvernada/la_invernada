@@ -97,7 +97,7 @@
                         <page string="Lotes Disponibles">
                             <group>
                                 <field name="product_ids" invisible="1"/>
-                                <field name="lot_search_id" domain="[('product_id','in', product_ids),('available_kg', '>', 0)]" options="{'no_create': True}"/>
+                                <field name="lot_search_id" domain="[('id','in',potential_lot_ids)]" options="{'no_create': True}"/>
                                 <field name="sale_search_id"/>
                                 <field name="potential_lot_ids"
                                        groups="mrp.group_mrp_manager"
@@ -108,7 +108,7 @@
                                     <tree editable="bottom" edit="true" delete="false" create="false">
                                         <field name="name" readonly="1"/>
                                         <field name="product_id" readonly="1"/>
-                                        <field name="available_total_serial" readonly="1"/>
+                                        <field name="available_kg" readonly="1"/>
                                         <button string="Agregar Reserva" type="object" name="add_to_packing_list"
                                                 context="{'stock_picking_id':parent.id}"/>
                                         <button string="Ver Series"

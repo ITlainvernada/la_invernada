@@ -281,6 +281,26 @@ class StockProductionLot(models.Model):
 
     is_drying = fields.Boolean('Esta secando?', compute='compute_is_drying')
 
+    correlative_serial = fields.Char('Correlativo de Serie')
+
+    serial_to_select_ids = fields.Many2many('stock.production.lot.serial', string='Series',
+                                            compute='compute_serial_to_select_ids')
+
+    def compute_serial_to_select_ids(self):
+        for item in self:
+            if item.id:
+                if item.correlative_serial and item.correlative_serial != '':
+                    serial_ids = self.env['stock.production.lot.serial'].search(
+                        [('serial_number', '=', f'{item.name}{item.correlative_serial}')])
+                    item.serial_to_select_ids = serial_ids
+                    return
+                else:
+                    serial_ids = self.env['stock.production.lot.serial'].sudo().search(
+                        [('consumed', '=', False), ('reserved_to_stock_picking_id', '=', False),
+                         ('stock_production_lot_id', '=', item.id)])
+                    item.serial_to_select_ids = serial_ids
+                    return
+
     @api.multi
     def compute_is_drying(self):
         for item in self:
@@ -1016,6 +1036,9 @@ class StockProductionLot(models.Model):
                 'real_dispatch_qty': self.get_reserved_quantity_by_picking(picking.id),
                 'move_line_ids': [(4, line_create.id)] if not line else [(4, line.id)]
             })
+        picking.write({
+            'lot_search_id': None
+        })
 
     def add_selection_serial(self, picking_id, location_id):
         pallets = self.stock_production_lot_serial_ids.filtered(
@@ -1256,3 +1279,15 @@ class StockProductionLot(models.Model):
             quant = self.env['stock.quant'].search([('lot_id.id', '=', lot.id), ('location_id.usage', '=', 'internal')])
             if quant:
                 quant.sudo().unlink()
+
+    @api.multi
+    def select_serial(self):
+        for item in self:
+            if item.correlative_serial or item.correlative_serial != '':
+                serial = f'{item.name}{item.correlative_serial}'
+                serial_id = self.env['stock.production.lot.serial'].sudo().search([('serial_number', '=', serial)])
+                if serial_id:
+                    serial_id.write({
+                        'to_add': True
+                    })
+                return {"type": "set_scrollTop"}
