@@ -288,18 +288,7 @@ class StockProductionLot(models.Model):
 
     def compute_serial_to_select_ids(self):
         for item in self:
-            if item.id:
-                if item.correlative_serial and item.correlative_serial != '':
-                    serial_ids = self.env['stock.production.lot.serial'].search(
-                        [('serial_number', '=', f'{item.name}{item.correlative_serial}')])
-                    item.serial_to_select_ids = serial_ids
-                    return
-                else:
-                    serial_ids = self.env['stock.production.lot.serial'].sudo().search(
-                        [('consumed', '=', False), ('reserved_to_stock_picking_id', '=', False),
-                         ('stock_production_lot_id', '=', item.id)])
-                    item.serial_to_select_ids = serial_ids
-                    return
+            item.serial_to_select_ids = item.stock_production_lot_serial_ids.filtered(lambda x: not x.reserved_to_stock_picking_id)
 
     @api.multi
     def compute_is_drying(self):
@@ -967,6 +956,7 @@ class StockProductionLot(models.Model):
             'view_mode': 'form',
             'views': [(self.env.ref('dimabe_manufacturing.available_lot_form_view').id, 'form')],
             'target': 'new',
+            'nodestroy': True,
             'context': self.env.context
         }
 
@@ -1012,8 +1002,9 @@ class StockProductionLot(models.Model):
             lambda a: a.lot_id.id == self.id and a.product_id.id == self.product_id.id)
 
         if line:
-            line.write({
-                'product_uom_qty': self.get_reserved_quantity_by_picking(picking_id)
+            test = self.get_reserved_quantity_by_picking(picking.id)
+            line.sudo().write({
+                'product_uom_qty': self.get_reserved_quantity_by_picking(picking.id)
             })
         else:
             line_create = self.env['stock.move.line'].create({
@@ -1293,4 +1284,4 @@ class StockProductionLot(models.Model):
                     serial_id.write({
                         'to_add': True
                     })
-                return {"type": "set_scrollTop"}
+                return {"type": "set_scrollTop" }
