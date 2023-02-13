@@ -1274,14 +1274,26 @@ class StockProductionLot(models.Model):
             if quant:
                 quant.sudo().unlink()
 
+    @api.onchange('correlative_serial')
     @api.multi
     def select_serial(self):
         for item in self:
             if item.correlative_serial or item.correlative_serial != '':
-                serial = f'{item.name}{item.correlative_serial}'
-                serial_id = self.env['stock.production.lot.serial'].sudo().search([('serial_number', '=', serial)])
-                if serial_id:
-                    serial_id.write({
-                        'to_add': True
-                    })
-                return {"type": "set_scrollTop" }
+                if ',' in item.correlative_serial:
+                    serials = item.correlative_serial.split(',')
+                    for serial in serials:
+                        serial_number = f'{item.name}{serial}'
+                        serial_id = self.env['stock.production.lot.serial'].sudo().search(
+                            [('serial_number', '=', serial_number)])
+                        if serial_id:
+                            serial_id.write({
+                                'to_add': True
+                            })
+                else:
+                    serial = f'{item.name}{item.correlative_serial}'
+                    serial_id = self.env['stock.production.lot.serial'].sudo().search([('serial_number', '=', serial)])
+                    if serial_id:
+                        serial_id.write({
+                            'to_add': True
+                        })
+                return {"type": "set_scrollTop"}

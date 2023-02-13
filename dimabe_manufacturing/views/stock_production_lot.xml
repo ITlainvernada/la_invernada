@@ -198,7 +198,7 @@
                                 </div>
                                 <div class="col-6">
                                     <button type="object" name="select_serial" string="=> Seleccionar serie"
-                                            class="oe_inline oe_link_icon"/>
+                                            class="oe_inline oe_link_icon" accesskey="x"/>
                                 </div>
                                 <field name="is_standard_weight" invisible="1"/>
                             </div>

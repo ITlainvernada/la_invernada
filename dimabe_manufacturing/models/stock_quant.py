@@ -75,6 +75,7 @@ class StockQuant(models.Model):
             if product_id.tracking == 'lot':
                 self.lot_id.get_and_update(product_id.id)
                 self.verify_negative_quant()
+                return
             res = super(StockQuant, self)._update_reserved_quantity(product_id, location_id, quantity, lot_id,
                                                                          package_id, owner_id, strict)
             self.verify_negative_quant()
