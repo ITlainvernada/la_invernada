@@ -434,7 +434,7 @@ class StockProductionLotSerial(models.Model):
                 raise models.ValidationError('debe agregar un peso a la serie')
             if not item.canning_id and item.bom_id:
                 item.set_bom_canning()
-            if 'consumed' in vals.keys() and 'without_update' in self.env.context.keys():
+            if 'consumed' in vals.keys():
                 item.stock_production_lot_id.verify_without_lot()
                 item.stock_production_lot_id.update_kg(item.stock_production_lot_id.id)
         return res
