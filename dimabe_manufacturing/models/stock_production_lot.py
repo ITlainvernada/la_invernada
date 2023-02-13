@@ -1280,34 +1280,24 @@ class StockProductionLot(models.Model):
         for item in self:
             view = self.env.ref('dimabe_manufacturing.available_lot_form_view_serial_selected')
             if item.correlative_serial or item.correlative_serial != '':
+                serials = []
                 if ',' in item.correlative_serial:
                     serials = item.correlative_serial.split(',')
-                    for serial in serials:
-                        serial_number = f'{item.name}{serial}'
-                        serial_id = self.env['stock.production.lot.serial'].sudo().search(
-                            [('serial_number', '=', serial_number)])
-                        if not serial_id:
-                            raise models.ValidationError(f'El correlativo {serial} no esta presente en el lote')
-                        if serial_id.consumed:
-                            raise models.ValidationError(f'El correlativo {serial} ya se encuentra consumido')
-                        if serial_id.reserved_to_stock_picking_id:
-                            raise models.ValidationError(
-                                f'El correlativo {serial} ya se encuentra reservado en el despacho {serial_id.reserved_to_stock_picking_id.name}')
-                        if serial_id.to_add:
-                            raise models.ValidationError(f'El correlativo {serial} ya fue seleccionado')
-                        serial_id.write({
-                            'to_add': True
-                        })
                 else:
-                    serial = f'{item.name}{item.correlative_serial}'
-                    serial_id = self.env['stock.production.lot.serial'].sudo().search([('serial_number', '=', serial)])
+                    serials.append(item.correlative_serial)
+                for serial in serials:
+                    serial_number = f'{item.name}{serial}'
+                    serial_id = self.env['stock.production.lot.serial'].sudo().search(
+                        [('serial_number', '=', serial_number)])
                     if not serial_id:
                         raise models.ValidationError(f'El correlativo {serial} no esta presente en el lote')
                     if serial_id.consumed:
-                        raise models.ValidationError(f'El correlativo {serial} ya se encuentra consumido')
+                        raise models.ValidationError(
+                            f'El correlativo {serial} ya fue utilizada en el despacho {serial_id.reserved_to_stock_picking_id.name}')
                     if serial_id.reserved_to_stock_picking_id:
                         raise models.ValidationError(
-                            f'El correlativo {serial} ya se encuentra reservado en el despacho {serial_id.reserved_to_stock_picking_id.name}')
+                            f'El correlativo {serial} ya se encuentra reservado en el despacho {serial_id.reserved_to_stock_picking_id.name}'
+                        )
                     if serial_id.to_add:
                         raise models.ValidationError(f'El correlativo {serial} ya fue seleccionado')
                     serial_id.write({
