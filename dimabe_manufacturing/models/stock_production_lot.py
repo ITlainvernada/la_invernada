@@ -1301,10 +1301,18 @@ class StockProductionLot(models.Model):
                 else:
                     serial = f'{item.name}{item.correlative_serial}'
                     serial_id = self.env['stock.production.lot.serial'].sudo().search([('serial_number', '=', serial)])
-                    if serial_id:
-                        serial_id.write({
-                            'to_add': True
-                        })
+                    if not serial_id:
+                        raise models.ValidationError(f'El correlativo {serial} no esta presente en el lote')
+                    if serial_id.consumed:
+                        raise models.ValidationError(f'El correlativo {serial} ya se encuentra consumido')
+                    if serial_id.reserved_to_stock_picking_id:
+                        raise models.ValidationError(
+                            f'El correlativo {serial} ya se encuentra reservado en el despacho {serial_id.reserved_to_stock_picking_id.name}')
+                    if serial_id.to_add:
+                        raise models.ValidationError(f'El correlativo {serial} ya fue seleccionado')
+                    serial_id.write({
+                        'to_add': True
+                    })
                 item.write({
                     'correlative_serial': None,
                 })
