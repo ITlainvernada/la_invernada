@@ -33,7 +33,8 @@ class StockPicking(models.Model):
         'Kilos Netos',
         compute='_compute_net_weight',
         store=True,
-        default=lambda self: self.move_ids_without_package[0].product_uom_qty  if self.is_return and len(self.move_ids_without_package) > 0 else 0,
+        default=lambda self: self.move_ids_without_package[0].product_uom_qty if self.is_return and len(
+            self.move_ids_without_package) > 0 else 0,
         digits=dp.get_precision('Product Unit of Measure')
     )
 
@@ -159,10 +160,7 @@ class StockPicking(models.Model):
 
     picking_return_id = fields.Many2one('stock.picking', string='Devuelto de ')
 
-    display_net_weight = fields.Float('Kilos Netos a mostrar',compute='compute_display_net_weight')
-
-
-
+    display_net_weight = fields.Float('Kilos Netos a mostrar', compute='compute_display_net_weight')
 
     @api.multi
     def compute_display_net_weight(self):
@@ -191,7 +189,7 @@ class StockPicking(models.Model):
         })
 
     @api.one
-    @api.depends('tare_weight', 'gross_weight', 'move_ids_without_package', 'quality_weight','is_return')
+    @api.depends('tare_weight', 'gross_weight', 'move_ids_without_package', 'quality_weight', 'is_return')
     def _compute_net_weight(self):
         if self.picking_type_code == 'incoming':
             self.net_weight = self.gross_weight - self.tare_weight + self.quality_weight
@@ -476,10 +474,10 @@ class StockPicking(models.Model):
                         'reserved_to_stock_picking_id': None
                     })
         elif self.picking_type_code == 'outgoing':
-            if all(s.consumed for s in self.packing_list_ids):
-                self.packing_list_ids.with_context(without_update=True).write({
-                    'consumed': False
-                })
+            # if all(s.consumed for s in self.packing_list_ids):
+            #     self.packing_list_ids.with_context(without_update=True).write({
+            #         'consumed': False
+            #     })
             if self.is_multiple_dispatch:
                 view = self.env.ref('dimabe_manufacturing.view_principal_order')
                 wiz = self.env['confirm.principal.order'].create({
@@ -499,10 +497,9 @@ class StockPicking(models.Model):
                     'res_id': wiz.id,
                     'context': self.env.context
                 }
-            for serial in self.packing_list_ids:
-                serial.sudo().write({
-                    'consumed': True
-                })
+            self.packing_list_ids.sudo().write({
+                'consumed': True
+            })
 
             if self.is_return:
                 line_id = self.move_line_ids_without_package.filtered(lambda x: x.lot_id)
