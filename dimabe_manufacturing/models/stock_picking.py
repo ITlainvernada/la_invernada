@@ -103,13 +103,12 @@ class StockPicking(models.Model):
     def compute_potential_lot(self):
         for item in self:
             if item.picking_type_code == 'outgoing':
+                domain = [('product_id.id', '=', item.move_ids_without_package.mapped('product_id').ids),
+                          ('available_kg', '>', 0)]
                 if item.lot_search_id:
                     domain = [('id', '=', item.lot_search_id.id)]
                 if item.sale_search_id:
                     domain = [('sale_order_id', '=', item.sale_search_id.id)]
-                if not item.sale_search_id and not item.lot_search_id:
-                    domain = [('product_id.id', '=', item.move_ids_without_package.mapped('product_id').ids),
-                              ('available_kg', '>', 0)]
                 lot_ids = self.env['stock.production.lot'].sudo().search(domain).filtered(lambda x: any(
                     not serial.reserved_to_stock_picking_id for serial in x.stock_production_lot_serial_ids))
                 item.potential_lot_ids = lot_ids
@@ -185,6 +184,9 @@ class StockPicking(models.Model):
         for item in self:
             if item.lot_search_id:
                 domain = [('id', '=', item.lot_search_id.id)]
+            else:
+                domain = [('product_id.id', '=', item.move_ids_without_package.mapped('product_id').ids),
+                 ('available_kg', '>', 0)]
             res = {
                 'domain': {
                     'potential_lot_ids': domain
