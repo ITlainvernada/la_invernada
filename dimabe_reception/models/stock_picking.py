@@ -477,7 +477,7 @@ class StockPicking(models.Model):
                     })
         elif self.picking_type_code == 'outgoing':
             if all(s.consumed for s in self.packing_list_ids):
-                self.packing_list_ids.write({
+                self.packing_list_ids.with_context(without_update=True).write({
                     'consumed': False
                 })
             if self.is_multiple_dispatch:
