@@ -288,7 +288,8 @@ class StockProductionLot(models.Model):
 
     def compute_serial_to_select_ids(self):
         for item in self:
-            item.serial_to_select_ids = item.stock_production_lot_serial_ids.filtered(lambda x: not x.reserved_to_stock_picking_id)
+            item.serial_to_select_ids = item.stock_production_lot_serial_ids.filtered(
+                lambda x: not x.reserved_to_stock_picking_id)
 
     @api.multi
     def compute_is_drying(self):
@@ -1274,10 +1275,10 @@ class StockProductionLot(models.Model):
             if quant:
                 quant.sudo().unlink()
 
-    @api.onchange('correlative_serial')
     @api.multi
     def select_serial(self):
         for item in self:
+            view = self.env.ref('dimabe_manufacturing.available_lot_form_view_serial_selected')
             if item.correlative_serial or item.correlative_serial != '':
                 if ',' in item.correlative_serial:
                     serials = item.correlative_serial.split(',')
@@ -1285,10 +1286,18 @@ class StockProductionLot(models.Model):
                         serial_number = f'{item.name}{serial}'
                         serial_id = self.env['stock.production.lot.serial'].sudo().search(
                             [('serial_number', '=', serial_number)])
-                        if serial_id:
-                            serial_id.write({
-                                'to_add': True
-                            })
+                        if not serial_id:
+                            raise models.ValidationError(f'El correlativo {serial} no esta presente en el lote')
+                        if serial_id.consumed:
+                            raise models.ValidationError(f'El correlativo {serial} ya se encuentra consumido')
+                        if serial_id.reserved_to_stock_picking_id:
+                            raise models.ValidationError(
+                                f'El correlativo {serial} ya se encuentra reservado en el despacho {serial_id.reserved_to_stock_picking_id.name}')
+                        if serial_id.to_add:
+                            raise models.ValidationError(f'El correlativo {serial} ya fue seleccionado')
+                        serial_id.write({
+                            'to_add': True
+                        })
                 else:
                     serial = f'{item.name}{item.correlative_serial}'
                     serial_id = self.env['stock.production.lot.serial'].sudo().search([('serial_number', '=', serial)])
@@ -1296,4 +1305,14 @@ class StockProductionLot(models.Model):
                         serial_id.write({
                             'to_add': True
                         })
-                return {"type": "set_scrollTop"}
+                item.write({
+                    'correlative_serial': None,
+                })
+                return {
+                    'type': 'ir.actions.act_window',
+                    'view_mode': 'form',
+                    'res_model': self._inherit,
+                    'target': 'new',
+                    'views': [(view.id, 'form')],
+                    'res_id': self.id
+                }

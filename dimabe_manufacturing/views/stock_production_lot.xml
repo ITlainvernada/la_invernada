@@ -202,7 +202,61 @@
                                 </div>
                                 <field name="is_standard_weight" invisible="1"/>
                             </div>
-                            <field name="serial_to_select_ids">
+                            <field name="serial_to_select_ids" options="{'reload_on_button': True}">
+                                <tree editable="bottom" default_order="to_add desc" decoration-success="to_add == True"
+                                      create="false" delete="false">
+                                    <field name="to_add"/>
+                                    <field name="pallet_id"/>
+                                    <field name="serial_number"/>
+                                    <field name="product_id"/>
+                                    <field name="display_weight"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                    <footer>
+                        <button type="object" name="add_selection" string="Agregar Selección"
+                                context="{'dispatch_id':context_picking_id}"/>
+                    </footer>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="available_lot_form_view_serial_selected" model="ir.ui.view">
+        <field name="name">Selección de Packing list</field>
+        <field name="model">stock.production.lot</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <field name="context_picking_id" invisible="1"/>
+                    <notebook>
+                        <page string="Pallets" attrs="{'invisible': [('is_standard_weight', '=', False)]}">
+                            <field name="pallet_ids">
+                                <tree editable="bottom" create="false" delete="false">
+                                    <field name="add_picking"/>
+                                    <field name="name" readonly="1"/>
+                                    <field name="total_available_weight"/>
+                                    <field name="total_available_content"/>
+                                    <field name="state" readonly="1"/>
+                                    <button string="Agregar Reserva" name="add_to_picking" type="object"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Series" autofocus="autofocus">
+                            <div class="row">
+                                <div class="col-6">
+                                    <group>
+                                        <field name="correlative_serial"/>
+                                    </group>
+                                </div>
+                                <div class="col-6">
+                                    <button type="object" name="select_serial" string="=> Seleccionar serie"
+                                            class="oe_inline oe_link_icon" accesskey="x"/>
+                                </div>
+                                <field name="is_standard_weight" invisible="1"/>
+                            </div>
+                            <field name="serial_to_select_ids" options="{'reload_on_button': True}">
                                 <tree editable="bottom" default_order="to_add desc" decoration-success="to_add == True"
                                       create="false" delete="false">
                                     <field name="to_add"/>
