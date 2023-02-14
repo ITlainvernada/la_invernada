@@ -154,6 +154,8 @@ class StockPicking(models.Model):
 
     #Comex Embarque Method
 
+    use_documents = fields.Boolean('Usa documentos', default=True)
+
     @api.model
     @api.onchange('etd')
     @api.depends('etd')

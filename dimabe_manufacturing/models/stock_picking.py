@@ -97,7 +97,7 @@ class StockPicking(models.Model):
 
     name_orders = fields.Char('Nombre de pedidos', compute='compute_name_orders')
 
-    use_documents = fields.Boolean('Usa documentos', default=True)
+
 
     # Compute Methods
 
