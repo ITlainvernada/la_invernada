@@ -517,7 +517,7 @@ class StockPicking(models.Model):
                     # lot_id.sudo().unlink()
         res = super(StockPicking, self).button_validate()
         if self.use_documents:
-            self.validation_fields()
+#            self.validation_fields()
             self.write({
                 'sii_result': 'NoEnviado'
             })
