@@ -182,6 +182,10 @@ class stock_picking(models.Model):
                         rec.sii_xml_request = False
                 rec.sii_result = "EnCola"
                 rec.sii_message = ""
+                rec.write({
+                    'sii_result': "EnCola",
+                    'sii_message': ""
+                })
                 ids.append(rec.id)
         if ids:
             self.env['sii.cola_envio'].create({
@@ -465,7 +469,7 @@ class stock_picking(models.Model):
         if result[0].get('error'):
             raise UserError(result[0].get('error'))
         self.write({
-            'sii_xml_dte': result[0]['sii_xml_request'],
+            'sii_xml_dte': result[0]['sii_xml_dte'],
             'sii_barcode': result[0]['sii_barcode'],
         })
         return True

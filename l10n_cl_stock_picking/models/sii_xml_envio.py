@@ -16,4 +16,7 @@ class SIIXMLEnvio(models.Model):
         result = super(SIIXMLEnvio, self).set_childs(state)
         for r in self.picking_ids:
             r.sii_result = state
+            r.write({
+                'sii_result': state
+            })
         return result

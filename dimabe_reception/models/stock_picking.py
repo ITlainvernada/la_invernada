@@ -519,7 +519,8 @@ class StockPicking(models.Model):
         if self.use_documents:
 #            self.validation_fields()
             self.write({
-                'sii_result': 'NoEnviado'
+                'sii_result': 'NoEnviado',
+                'sii_document_number': self.location_id.sequence_id.next_by_id()
             })
             self.do_dte_send_picking()
         return res
