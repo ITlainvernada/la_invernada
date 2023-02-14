@@ -23,12 +23,12 @@
                                 <field name="method_of_payment" attrs="{'readonly': [('dte_folio', '!=', False)]}"/>
                                 <field name="dispatch_type"/>
                                 <field name="transfer_indication"/>
-                                <field name="partner_activity_id" domain="[('id','in',partner_economic_activities)]"/>
+                                <field name="partner_activity_id" domain="[('id','in',partner_economic_activities)]" attrs="{'required':[('use_documents','=',True)]}"/>
                                 <field name="partner_economic_activities" invisible="1"/>
                                 <field name="company_economic_activities" invisible="1"/>
-                                <field name="company_activity_id" domain="[('id','in',company_economic_activities)]" />
+                                <field name="company_activity_id" domain="[('id','in',company_economic_activities)]" attrs="{'required':[('use_documents','=',True)]}" />
                                 <field name="dte_folio" readonly="1"/>
-                                <field name="dte_type_id" domain="[('code', '=', 52)]"  attrs="{'readonly': [('dte_folio', '!=', False)]}"/>
+                                <field name="dte_type_id" domain="[('code', '=', 52)]"  attrs="{'readonly': [('dte_folio', '!=', False)],'required': [('use_documents','=',True)]}"/>
                                 <field name="ted" widget="image"  readonly="1"/>
                                 <field name="pdf_url" widget="url" readonly="1" text="Url de Descarga"/>
                                 <field name="dte_xml" widget="binary" readonly="1" filename="dte.xml" />

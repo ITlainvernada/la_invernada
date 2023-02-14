@@ -406,8 +406,8 @@ class StockPicking(models.Model):
 
         valid_to_sii = False
 
-        if not self.date_due:
-            raise models.ValidationError('Por favor ingrese la Fecha de Vencimiento')
+        # if not self.date_due:
+        #     raise models.ValidationError('Por favor ingrese la Fecha de Vencimiento')
         if not self.partner_id:
             raise models.ValidationError('Por favor seleccione el Cliente')
         else:

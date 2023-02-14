@@ -1,5 +1,6 @@
 from odoo import models, api, fields
 from odoo.addons import decimal_precision as dp
+from datetime import datetime, date
 
 
 class StockPicking(models.Model):
@@ -96,6 +97,8 @@ class StockPicking(models.Model):
 
     name_orders = fields.Char('Nombre de pedidos', compute='compute_name_orders')
 
+    use_documents = fields.Boolean('Usa documentos', default=True)
+
     # Compute Methods
 
     @api.depends('lot_search_id', 'sale_search_id')
@@ -186,7 +189,7 @@ class StockPicking(models.Model):
                 domain = [('id', '=', item.lot_search_id.id)]
             else:
                 domain = [('product_id.id', '=', item.move_ids_without_package.mapped('product_id').ids),
-                 ('available_kg', '>', 0)]
+                          ('available_kg', '>', 0)]
             res = {
                 'domain': {
                     'potential_lot_ids': domain
@@ -332,7 +335,7 @@ class StockPicking(models.Model):
     @api.multi
     def add_orders_to_dispatch(self):
         if self.is_multiple_dispatch:
-            if not self.sale_orders_id:
+            if not self.sale_order_ids:
                 raise models.ValidationError('No se selecciono ningun numero de pedido')
             if not self.dispatch_id:
                 raise models.ValidationError('No se selecciono ningun despacho')
@@ -342,7 +345,7 @@ class StockPicking(models.Model):
                 self.env['custom.dispatch.line'].create({
                     'dispatch_real_id': self.id,
                     'dispatch_id': self.dispatch_id.id,
-                    'sale_id': self.sale_orders_id.id,
+                    'sale_id': self.sale_order_ids.id,
                     'product_id': product.product_id.id,
                     'required_sale_qty': product.product_uom_qty,
                 })
@@ -353,7 +356,7 @@ class StockPicking(models.Model):
                         'picking_id': self.id,
                         'product_uom': product.product_id.uom_id.id,
                         'product_uom_qty': product.product_uom_qty,
-                        'date': datetime.date.today(),
+                        'date': date.today(),
                         'date_expected': self.scheduled_date,
                         'location_dest_id': self.partner_id.property_stock_customer.id,
                         'location_id': self.location_id.id,

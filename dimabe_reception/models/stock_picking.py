@@ -501,6 +501,7 @@ class StockPicking(models.Model):
                 'consumed': True
             })
 
+
             if self.is_return:
                 line_id = self.move_line_ids_without_package.filtered(lambda x: x.lot_id)
                 if line_id:
@@ -514,7 +515,11 @@ class StockPicking(models.Model):
                     # quant_id = self.env['stock.quant'].sudo().search([('lot_id.id','=',lot_id.id)])
                     # quant_id.sudo().unlink()
                     # lot_id.sudo().unlink()
-        return super(StockPicking, self).button_validate()
+        res = super(StockPicking, self).button_validate()
+        if self.use_documents:
+            self.validation_fields()
+            self.do_dte_send_picking()
+        return res
 
     def clean_reserved(self):
         for lot in self.move_line_ids_without_package.mapped('lot_id'):
