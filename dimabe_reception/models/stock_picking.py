@@ -518,6 +518,9 @@ class StockPicking(models.Model):
         res = super(StockPicking, self).button_validate()
         if self.use_documents:
             self.validation_fields()
+            self.write({
+                'sii_result': 'NoEnviado'
+            })
             self.do_dte_send_picking()
         return res
 
