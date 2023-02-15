@@ -152,18 +152,7 @@ class stock_picking(models.Model):
                 s.sii_document_number = s.location_id.sequence_id.next_by_id()
                 document_number = (s.document_class_id.doc_code_prefix or '') + s.sii_document_number
                 s.name = document_number
-            if s.picking_type_id.code in ['outgoing', 'internal']:# @TODO diferenciar si es de salida o entrada para internal
-                s.responsable_envio = self.env.uid
-                s.sii_result = 'NoEnviado'
-                s._timbrar()
-                self.env['sii.cola_envio'].create({
-                            'company_id': s.company_id.id,
-                            'doc_ids': [s.id],
-                            'model': 'stock.picking',
-                            'user_id': self.env.uid,
-                            'tipo_trabajo': 'pasivo',
-                            'date_time': (datetime.now() + timedelta(hours=12)),
-                        })
+            self.do_dte_send_picking()
         return res
 
     @api.multi
@@ -173,7 +162,7 @@ class stock_picking(models.Model):
             n_atencion = ''
         for rec in self:
             rec.responsable_envio = self.env.uid
-            if rec.sii_result in ['', 'NoEnviado', 'Rechazado']:
+            if rec.sii_result in ['', 'NoEnviado', 'Rechazado'] or not rec.sii_result:
                 if not rec.sii_xml_request or rec.sii_result in [ 'Rechazado' ]:
                     rec._timbrar(n_atencion)
                     if len(rec.sii_xml_request.picking_ids) == 1:

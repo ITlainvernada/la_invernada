@@ -516,13 +516,6 @@ class StockPicking(models.Model):
                     # quant_id.sudo().unlink()
                     # lot_id.sudo().unlink()
         res = super(StockPicking, self).button_validate()
-        if self.use_documents:
-#            self.validation_fields()
-            self.write({
-                'sii_result': 'NoEnviado',
-                'sii_document_number': self.location_id.sequence_id.next_by_id()
-            })
-            self.do_dte_send_picking()
         return res
 
     def clean_reserved(self):
@@ -534,10 +527,12 @@ class StockPicking(models.Model):
 
     @api.multi
     def action_done(self):
-        super(StockPicking, self).action_done()
+        res = super(StockPicking, self).action_done()
         if self.picking_type_code == 'outgoing':
             for lot in self.move_line_ids_without_package.mapped('lot_id'):
                 lot.update_stock_quant(self.location_id.id)
+
+        return res
 
     def clean_reserved(self):
         for lot in self.move_line_ids_without_package.mapped('lot_id'):
