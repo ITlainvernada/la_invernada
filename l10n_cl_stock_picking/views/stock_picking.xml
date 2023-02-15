@@ -27,7 +27,7 @@
 
                 <field name="origin" position="after">
                     <field name="contact_id"/>
-                    <field name="use_documents"/>
+                    <field name="use_documents" attrs="{'invisible': [('picking_type_code','!=','outgoing')]}"/>
                 </field>
 
                 <xpath expr="//field[@name='move_ids_without_package']/tree//field[@name='product_uom']"
