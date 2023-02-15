@@ -10,9 +10,6 @@
                  </xpath>
                  <xpath expr="//header" position="inside">
                     <field name="valid_to_sii" invisible="1"/>
-                    <button type="object" string="Validar para SII" name="validation_fields"
-                    attrs="{'invisible':['|',('valid_to_sii', '=', True),('picking_type_code','!=','outgoing'),('state','=','draft')]}"
-                    />
                 </xpath>
                 <data>
                     <xpath expr="//form[1]/sheet[1]/notebook[1]" position="inside">   
@@ -24,12 +21,12 @@
                                 <field name="method_of_payment" attrs="{'readonly': [('dte_folio', '!=', False)]}"/>
                                 <field name="dispatch_type"/>
                                 <field name="transfer_indication"/>
-                                <field name="partner_activity_id" domain="[('id','in',partner_economic_activities)]" attrs="{'required':[('use_documents','=',True)]}"/>
+                                <field name="partner_activity_id" domain="[('id','in',partner_economic_activities)]"/>
                                 <field name="partner_economic_activities" invisible="1"/>
                                 <field name="company_economic_activities" invisible="1"/>
-                                <field name="company_activity_id" domain="[('id','in',company_economic_activities)]" attrs="{'required':[('use_documents','=',True)]}" />
+                                <field name="company_activity_id" domain="[('id','in',company_economic_activities)]" />
                                 <field name="dte_folio" readonly="1"/>
-                                <field name="dte_type_id" domain="[('code', '=', 52)]"  attrs="{'readonly': [('dte_folio', '!=', False)],'required': [('use_documents','=',True)]}"/>
+                                <field name="dte_type_id" domain="[('code', '=', 52)]"  attrs="{'readonly': [('dte_folio', '!=', False)]}"/>
                                 <field name="ted" widget="image"  readonly="1"/>
                                 <field name="pdf_url" widget="url" readonly="1" text="Url de Descarga"/>
                                 <field name="dte_xml" widget="binary" readonly="1" filename="dte.xml" />

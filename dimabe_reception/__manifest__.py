@@ -26,12 +26,14 @@
         'base',
         'stock',
         'mail',
-        'purchase_requisition'
+        'purchase_requisition',
+        'mblz_la_invernada'
     ],
 
     # always loaded
     'data': [
         'security/ir.model.access.csv',
+        'security/groups.xml',
         'views/views.xml',
         'views/stock_picking.xml',
         'views/res_partner.xml',
@@ -45,7 +47,8 @@
         'data/reception_notification_mail_template.xml',
         'views/stock_warehouse.xml',
         'views/product_category.xml',
-        'views/transport.xml'
+        'views/transport.xml',
+        'wizards/wizard_modify_delete_picking_view.xml',
     ],
     # only loaded in demonstration mode
     'demo': [

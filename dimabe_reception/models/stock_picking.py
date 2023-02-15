@@ -642,3 +642,22 @@ class StockPicking(models.Model):
                         lambda x: not x.reserved_to_stock_picking_id and not x.consumed).mapped('display_weight')),
                     'location_id': location_id
                 })
+
+    def action_modify(self):
+        for item in self:
+            view_id = self.env.ref('dimabe_reception.wizard_modify_delete_picking_form_view')
+            wiz_id = self.env['wizard.modify.delete.picking'].sudo().create({
+                'picking_id': item.id,
+            })
+            return {
+                'name': f'Modificar o eliminar la recepción {item.name}',
+                'type': 'ir.actions.act_window',
+                'view_type': 'form',
+                'view_mode': 'form',
+                'res_model': 'wizard.modify.delete.picking',
+                'views': [(view_id.id, 'form')],
+                'view_id': view_id.id,
+                'target': 'new',
+                'res_id': wiz_id.sudo().id,
+                'context': self.env.context
+            }
