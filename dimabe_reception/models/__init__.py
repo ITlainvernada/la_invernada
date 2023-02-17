@@ -13,3 +13,4 @@ from . import nut_variety
 from . import stock_production_lot_serial
 from . import res_company
 from . import transport
+from . import delete_picking_lot

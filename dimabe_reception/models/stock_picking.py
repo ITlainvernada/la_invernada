@@ -16,16 +16,19 @@ class StockPicking(models.Model):
         'Kilos Guía',
         compute='_compute_weight_guide',
         store=True,
+        track_visibility='onchange',
         digits=dp.get_precision('Product Unit of Measure')
     )
 
     gross_weight = fields.Float(
         'Kilos Brutos (Recepcion)',
+        track_visibility='onchange',
         digits=dp.get_precision('Product Unit of Measure')
     )
 
     tare_weight = fields.Float(
         'Peso Tara',
+        track_visibility='onchange',
         digits=dp.get_precision('Product Unit of Measure')
     )
 
@@ -33,6 +36,7 @@ class StockPicking(models.Model):
         'Kilos Netos',
         compute='_compute_net_weight',
         store=True,
+        track_visibility='onchange',
         default=lambda self: self.move_ids_without_package[0].product_uom_qty if self.is_return and len(
             self.move_ids_without_package) > 0 else 0,
         digits=dp.get_precision('Product Unit of Measure')
@@ -41,6 +45,7 @@ class StockPicking(models.Model):
     canning_weight = fields.Float(
         'Peso Envases',
         compute='_compute_canning_weight',
+        track_visibility='onchange',
         store=True,
         digits=dp.get_precision('Product Unit of Measure')
     )
@@ -48,6 +53,7 @@ class StockPicking(models.Model):
     production_net_weight = fields.Float(
         'Kilos Netos Producción',
         compute='_compute_production_net_weight',
+        track_visibility='onchange',
         store=True,
         digits=dp.get_precision('Product Unit of Measure')
     )
@@ -98,6 +104,7 @@ class StockPicking(models.Model):
 
     quality_weight = fields.Float(
         'Kilos Calidad',
+        track_visibility='onchange',
         digits=dp.get_precision('Product Unit of Measure')
     )
 
@@ -501,7 +508,6 @@ class StockPicking(models.Model):
                 'consumed': True
             })
 
-
             if self.is_return:
                 line_id = self.move_line_ids_without_package.filtered(lambda x: x.lot_id)
                 if line_id:
@@ -551,18 +557,6 @@ class StockPicking(models.Model):
     @api.model
     def validate_mp_reception(self):
         return True
-        # message = ''
-        # if not self.guide_number or not self.guide_number > 0:
-        #     message = 'debe agregar número de guía \n'
-        # if not self.weight_guide or not self.get_product_move():
-        #     message += 'debe agregar kilos guía \n'
-
-        # if not self.get_canning_move():
-        #     message += 'debe agregar envases'
-        # if not self.get_mp_move() and not self.get_pt_move() and not self.get_product_move():
-        #     message += 'debe agregar Materia a recepcionar'
-        # if message:
-        #     raise models.ValidationError(message)
 
     @api.multi
     def get_full_url(self):
@@ -645,19 +639,72 @@ class StockPicking(models.Model):
 
     def action_modify(self):
         for item in self:
-            view_id = self.env.ref('dimabe_reception.wizard_modify_delete_picking_form_view')
-            wiz_id = self.env['wizard.modify.delete.picking'].sudo().create({
-                'picking_id': item.id,
+            if any(line.lot_id for line in item.move_line_ids_without_package):
+                item.move_line_ids_without_package.filtered(
+                    lambda x: x.lot_id).lot_id.sudo().stock_production_lot_serial_ids.sudo()
+                item.move_line_ids_without_package.filtered(
+                    lambda x: x.lot_id).lot_id.quant_ids.sudo().unlink()
+                item.move_line_ids_without_package.filtered(
+                    lambda x: x.lot_id).lot_id.sudo().unlink()
+            item.write({
+                'state': 'draft',
             })
+            item.move_ids_without_package.sudo().write({
+                'state': 'draft',
+                'has_serial_generated': False
+            })
+            item.move_line_ids_without_package.sudo().write({
+                'state': 'draft'
+            })
+            item.move_line_ids_without_package.sudo().unlink()
+            item.message_post(f'Se procede a volver a habilitar la modificación de recepcion {item.name}','Modificacion de recepción')
+        # view_id = self.env.ref('dimabe_reception.wizard_modify_delete_picking_form_view')
+        # wiz_id = self.env['wizard.modify.delete.picking'].create({
+        #     'picking_id': item.id,
+        #     'producer_id': item.partner_id.id,
+        #     'picking_type_id': item.picking_type_id.id,
+        # })
+        # for line in item.move_line_ids_without_package:
+        #     self.env['modify.line.picking'].sudo().create({
+        #         'wiz_id': wiz_id.id,
+        #         'product_id': line.product_id.id,
+        #         'product_uom_id': line.product_uom_id.id,
+        #         'lot_id': line.lot_id.id,
+        #         'move_line_id': line.id,
+        #         'quantity': line.qty_done
+        #     })
+        # return {
+        #     'name': f"Modificar o eliminar la recepción {item.name}",
+        #     'type': "ir.actions.act_window",
+        #     'view_type': 'form',
+        #     'view_model': 'form',
+        #     'res_model': 'wizard.modify.delete.picking',
+        #     'views': [(view_id.id, 'form')],
+        #     'target': 'new',
+        #     'res_id': wiz_id.id,
+        #     'context': self.env.context
+        # }
+
+    def action_delete(self):
+        for item in self:
+            view_id = self.env.ref('dimabe_reception.delete_picking_lot_form_wizard_view')
+            lot_id = item.move_line_ids_without_package.mapped('lot_id')
+            wiz_id = self.env['delete.picking.lot'].sudo().create({
+                'picking_name': item.name,
+                'lot_name': lot_id.name,
+                'picking_id': item.id,
+                'picking_type_id': item.picking_type_id.id,
+                'user_id': self.env.uid,
+            })
+
             return {
-                'name': f'Modificar o eliminar la recepción {item.name}',
+                'name': f'Eliminar recepción {item.name}',
                 'type': 'ir.actions.act_window',
                 'view_type': 'form',
                 'view_mode': 'form',
-                'res_model': 'wizard.modify.delete.picking',
-                'views': [(view_id.id, 'form')],
-                'view_id': view_id.id,
+                'res_model': 'delete.picking.lot',
                 'target': 'new',
-                'res_id': wiz_id.sudo().id,
-                'context': self.env.context
+                'res_id': wiz_id.id,
+                'context': self.env.context,
+                'views': [(view_id.id, 'form')]
             }

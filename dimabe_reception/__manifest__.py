@@ -48,7 +48,7 @@
         'views/stock_warehouse.xml',
         'views/product_category.xml',
         'views/transport.xml',
-        'wizards/wizard_modify_delete_picking_view.xml',
+        'views/delete_picking_lot.xml',
     ],
     # only loaded in demonstration mode
     'demo': [

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="delete_picking_lot_form_wizard_view" model="ir.ui.view">
+        <field name="name">Formulario de eliminación</field>
+        <field name="model">delete.picking.lot</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <field name="message"/>
+                    <field name="reason" widget="html" placeholder="Ingrese razón de eliminación"/>
+                </sheet>
+                <footer>
+                    <button type="object" class="btn-danger" string="Eliminar" name="delete_picking"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="delete_picking_lot_form_view" model="ir.ui.view">
+        <field name="name">Eliminación de Recepción</field>
+        <field name="model">delete.picking.lot</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="lot_name" readonly="1" string="Lote eliminado"/>
+                        <field name="picking_name" readonly="1" string="Recepción eliminada"/>
+                        <field name="user_id" readonly="1" string="Usuario que realizo la accion"/>
+                    </group>
+                    <notebook>
+                        <page string="Razón de eliminación">
+                            <field name="reason" widget="html" readonly="1"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="delete_picking_lot_tree_view" model="ir.ui.view">
+        <field name="name">Recepciones eliminadas</field>
+        <field name="model">delete.picking.lot</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="picking_name" string="Recepción eliminada"/>
+                <field name="lot_name" string="Lote eliminado"/>
+                <field name="user_id"/>
+                <field name="create_date"/>
+            </tree>
+        </field>
+    </record>
+    <record id="delete_picking_lot_act_window" model="ir.actions.act_window">
+        <field name="name">Recepciones eliminadas</field>
+        <field name="res_model">delete.picking.lot</field>
+        <field name="view_ids"
+                   eval="[(5, 0, 0),
+                          (0, 0, {'view_mode': 'tree', 'view_id': ref('delete_picking_lot_tree_view')}),
+                          (0, 0, {'view_mode': 'form', 'view_id': ref('delete_picking_lot_form_view')}),]"/>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <menuitem id="delete_picking_lot_menuitem" action="delete_picking_lot_act_window" parent="stock.menu_stock_warehouse_mgmt" name="Recepciones eliminadas"/>
+</odoo>

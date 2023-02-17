@@ -4,3 +4,4 @@ access_dimabe_reception_reception_alert_config,dimabe_reception.reception_alert_
 access_dimabe_reception_nut_variety,dimabe_reception.nut_variety,model_nut_variety,,1,1,1,1
 access_dimabe_reception_stock_production_lot_serial,dimabe_reception.stock_production_lot_serial,model_stock_production_lot_serial,,1,1,1,1
 access_dimabe_reception_transport,dimabe_reception.transport,model_transport,,1,1,1,1
+access_dimabe_reception_delete_picking_lot,Lotes y Recepcion eliminados,model_delete_picking_lot,,1,1,1,1
