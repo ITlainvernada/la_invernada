@@ -19,6 +19,8 @@ class DeletePickingLot(models.Model):
 
     user_id = fields.Many2one('res.users', string='Usuario')
 
+    is_done = fields.Boolean('Realizado')
+
     def compute_message(self):
         for item in self:
             message = f'<h3>¿Esta seguro de eliminar la recepción {item.picking_name} y el lote {item.lot_name}?</h3> <br/>'
@@ -41,6 +43,9 @@ class DeletePickingLot(models.Model):
             })
             item.picking_id.sudo().unlink()
             action_id = self.env.ref('stock.stock_picking_action_picking_type').read()[0]
+            item.write({
+                'is_done': True
+            })
             return {
                 'name': action_id['name'],
                 'type': action_id['type'],

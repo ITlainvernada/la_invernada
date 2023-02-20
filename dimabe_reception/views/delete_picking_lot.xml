@@ -26,6 +26,7 @@
                         <field name="lot_name" readonly="1" string="Lote eliminado"/>
                         <field name="picking_name" readonly="1" string="Recepción eliminada"/>
                         <field name="user_id" readonly="1" string="Usuario que realizo la accion"/>
+                        <field name="create_date" string="Fecha de realización"/>
                     </group>
                     <notebook>
                         <page string="Razón de eliminación">
@@ -45,6 +46,7 @@
                 <field name="picking_name" string="Recepción eliminada"/>
                 <field name="lot_name" string="Lote eliminado"/>
                 <field name="user_id"/>
+                <field name="reason"/>
                 <field name="create_date"/>
             </tree>
         </field>
@@ -57,6 +59,7 @@
                           (0, 0, {'view_mode': 'tree', 'view_id': ref('delete_picking_lot_tree_view')}),
                           (0, 0, {'view_mode': 'form', 'view_id': ref('delete_picking_lot_form_view')}),]"/>
         <field name="view_mode">tree,form</field>
+        <field name="domain">[('is_done', '=', True)]</field>
     </record>
     <menuitem id="delete_picking_lot_menuitem" action="delete_picking_lot_act_window" parent="stock.menu_stock_warehouse_mgmt" name="Recepciones eliminadas"/>
 </odoo>

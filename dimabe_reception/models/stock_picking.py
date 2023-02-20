@@ -639,6 +639,7 @@ class StockPicking(models.Model):
 
     def action_modify(self):
         for item in self:
+            self.validate_lot()
             if any(line.lot_id for line in item.move_line_ids_without_package):
                 item.move_line_ids_without_package.filtered(
                     lambda x: x.lot_id).lot_id.sudo().stock_production_lot_serial_ids.sudo()
@@ -657,36 +658,12 @@ class StockPicking(models.Model):
                 'state': 'draft'
             })
             item.move_line_ids_without_package.sudo().unlink()
-            item.message_post(f'Se procede a volver a habilitar la modificación de recepcion {item.name}','Modificacion de recepción')
-        # view_id = self.env.ref('dimabe_reception.wizard_modify_delete_picking_form_view')
-        # wiz_id = self.env['wizard.modify.delete.picking'].create({
-        #     'picking_id': item.id,
-        #     'producer_id': item.partner_id.id,
-        #     'picking_type_id': item.picking_type_id.id,
-        # })
-        # for line in item.move_line_ids_without_package:
-        #     self.env['modify.line.picking'].sudo().create({
-        #         'wiz_id': wiz_id.id,
-        #         'product_id': line.product_id.id,
-        #         'product_uom_id': line.product_uom_id.id,
-        #         'lot_id': line.lot_id.id,
-        #         'move_line_id': line.id,
-        #         'quantity': line.qty_done
-        #     })
-        # return {
-        #     'name': f"Modificar o eliminar la recepción {item.name}",
-        #     'type': "ir.actions.act_window",
-        #     'view_type': 'form',
-        #     'view_model': 'form',
-        #     'res_model': 'wizard.modify.delete.picking',
-        #     'views': [(view_id.id, 'form')],
-        #     'target': 'new',
-        #     'res_id': wiz_id.id,
-        #     'context': self.env.context
-        # }
+            item.message_post(f'Se procede a volver a habilitar la modificación de recepcion {item.name}',
+                              'Modificacion de recepción')
 
     def action_delete(self):
         for item in self:
+            self.validate_lot()
             view_id = self.env.ref('dimabe_reception.delete_picking_lot_form_wizard_view')
             lot_id = item.move_line_ids_without_package.mapped('lot_id')
             wiz_id = self.env['delete.picking.lot'].sudo().create({
@@ -695,6 +672,7 @@ class StockPicking(models.Model):
                 'picking_id': item.id,
                 'picking_type_id': item.picking_type_id.id,
                 'user_id': self.env.uid,
+                'is_done': True,
             })
 
             return {
@@ -708,3 +686,10 @@ class StockPicking(models.Model):
                 'context': self.env.context,
                 'views': [(view_id.id, 'form')]
             }
+
+    def validate_lot(self):
+        for item in self:
+            lot_id = self.move_line_ids_without_package.mapped('lot_id')
+            if any(serial.consumed for serial in lot_id.stock_production_lot_serial_ids):
+                raise models.ValidationError(
+                    'No se puede realizar la acción, ya que el lote ya fue utilizado en un proceso de producción')
