@@ -68,7 +68,7 @@ class ConfirmPrincipalOrder(models.TransientModel):
                         'state': 'assigned',
                         'picking_id': item.dispatch_id.id,
                     })
-            if item.dispach_id.state != 'done':
+            if item.dispatch_id.state != 'done':
                 if item.real_dispatch_qty > 0:
                     precision_digits = self.env['decimal.precision'].precision_get('Product Unit of Measure')
                     no_quantities_done = all(
