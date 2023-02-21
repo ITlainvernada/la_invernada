@@ -65,7 +65,7 @@ class ConfirmPrincipalOrder(models.TransientModel):
                         'location_id': line.location_id.id,
                         'location_dest_id': line.location_dest_id.id,
                         'date': line.date,
-                        'state': 'done',
+                        'state': 'assigned',
                         'picking_id': item.dispatch_id.id,
                     })
             if item.real_dispatch_qty > 0:
