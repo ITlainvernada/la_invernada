@@ -55,32 +55,31 @@ class ConfirmPrincipalOrder(models.TransientModel):
             for line in item.move_line_ids:
                 self.update_stock_quant(line.product_id.id,line.location_id.id)
                 if item.dispatch_id.id != self.picking_id.id:
-                    line_create = self.env['stock.move.line'].create({
+                    self.env['stock.move.line'].create({
                         'move_id': item.dispatch_id.move_ids_without_package.filtered(
                             lambda a: a.product_id.id == line.product_id.id).id,
                         'product_id': line.product_id.id,
-                        'product_uom_qty': item.real_dispatch_qty,
+                        'qty_done': item.real_dispatch_qty,
                         'product_uom_id': line.product_id.uom_id.id,
                         'lot_id': line.lot_id.id,
                         'location_id': line.location_id.id,
                         'location_dest_id': line.location_dest_id.id,
                         'date': line.date,
-                        'state': 'assigned',
+                        'state': 'done',
                         'picking_id': item.dispatch_id.id,
                     })
-            if item.dispatch_id.state != 'done':
-                if item.real_dispatch_qty > 0:
-                    precision_digits = self.env['decimal.precision'].precision_get('Product Unit of Measure')
-                    no_quantities_done = all(
-                        float_is_zero(move_line.qty_done, precision_digits=precision_digits) for move_line in
-                        item.dispatch_id.move_line_ids.filtered(lambda m: m.state not in ('done', 'cancel')))
-                    if no_quantities_done:
-                        self.inmediate_transfer(item.dispatch_id)
-                    if self.check_backorder(item.dispatch_id):
+            if item.real_dispatch_qty > 0 or item.dispatch_id.id == self.picking_id.id:
+                precision_digits = self.env['decimal.precision'].precision_get('Product Unit of Measure')
+                no_quantities_done = all(
+                    float_is_zero(move_line.qty_done, precision_digits=precision_digits) for move_line in
+                    item.dispatch_id.move_line_ids.filtered(lambda m: m.state not in ('done', 'cancel')))
+                if no_quantities_done:
+                    self.inmediate_transfer(item.dispatch_id)
+                if self.check_backorder(item.dispatch_id):
 
-                        self.process_backorder(item.dispatch_id)
-                    else:
-                        item.dispatch_id.action_done()
+                    self.process_backorder(item.dispatch_id)
+                else:
+                    item.dispatch_id.action_done()
 
     @api.multi
     def inmediate_transfer(self, picking):
