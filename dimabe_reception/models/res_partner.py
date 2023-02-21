@@ -16,6 +16,10 @@ class ResPartner(models.Model):
         compute='_compute_short_name'
     )
 
+    type = fields.Selection(
+        selection_add=[('ranch', 'Fundo')]
+    )
+
     @api.one
     def _compute_short_name(self):
         if self.name:
