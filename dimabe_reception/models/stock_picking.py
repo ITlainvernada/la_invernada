@@ -169,6 +169,18 @@ class StockPicking(models.Model):
 
     display_net_weight = fields.Float('Kilos Netos a mostrar', compute='compute_display_net_weight')
 
+    ranch_id = fields.Many2one('res.partner', string='Fundo', domain=[('type', '=', 'ranch')])
+
+    @api.onchange('partner_id')
+    def on_change_domain_ranch_id(self):
+        for item in self:
+            res = {
+                'domain': {
+                    'ranch_id': [('parent_id','=',item.partner_id.id), ('type','=', 'ranch')]
+                }
+            }
+            return res
+
     @api.multi
     def compute_display_net_weight(self):
         for item in self:

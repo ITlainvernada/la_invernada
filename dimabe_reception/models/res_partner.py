@@ -20,7 +20,15 @@ class ResPartner(models.Model):
         selection_add=[('ranch', 'Fundo')]
     )
 
+    ranch_ids = fields.One2many('res.partner', 'parent_id', string='Fundos', domain=[('type', '=', 'ranch')])
+
     @api.one
     def _compute_short_name(self):
         if self.name:
             self.short_name = self.name[0:25]
+
+    @api.model
+    def create(self, values_list):
+        res = super(ResPartner, self).create(values_list)
+        return res
+

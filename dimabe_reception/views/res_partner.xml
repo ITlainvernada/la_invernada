@@ -3,12 +3,44 @@
         <record model="ir.ui.view" id="res_partner_form_inherit">
             <field name="name">Formulario de Contacto</field>
             <field name="model">res.partner</field>
-            <field name="inherit_id" ref="base.view_partner_form" />
+            <field name="inherit_id" ref="base.view_partner_form"/>
             <field name="arch" type="xml">
                 <field name="vat" position="after">
-                    <field name="sag_code" attrs="{'invisible':[('supplier', '=', False)]}" />
-                    <field name="is_sag_active"  attrs="{'invisible':[('supplier', '=', False)]}" />
+                    <field name="sag_code" attrs="{'invisible':[('supplier', '=', False)]}"/>
+                    <field name="is_sag_active" attrs="{'invisible':[('supplier', '=', False)]}"/>
                 </field>
+                <xpath expr="//field[@name='child_ids']" position="attributes">
+                    <attribute name="domain">[('active','=',True),('type','!=','ranch')]</attribute>
+                </xpath>
+                <xpath expr="//notebook//page[1]" position="after">
+                    <page string="Fundos" attrs="{'invisible': [('supplier','=',False)]}">
+                        <field name="ranch_ids" context="{'default_parent_id': active_id, 'default_type': 'ranch', 'default_supplier': True}">
+                            <tree>
+                                <field name="name"/>
+                            </tree>
+                            <form>
+                                <sheet>
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <group>
+                                                <field name="type" invisible="1"/>
+                                                <field name="name" required="1"/>
+                                            </group>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <group>
+                                                <field name="street" placeholder="Calle ..."/>
+                                                <field name="street2" placeholder="Calle 2 ..."/>
+                                            </group>
+                                        </div>
+                                    </div>
+                                </sheet>
+                            </form>
+                        </field>
+                    </page>
+                </xpath>
             </field>
         </record>
     </data>
