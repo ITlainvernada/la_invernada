@@ -169,17 +169,23 @@ class ReportRawLot(models.Model):
             col += 1
             sheet.write(row, col, r_lot.available_series, self.get_format('text', workbook))
             col += 1
-            sheet.write(row, col, r_lot.send_to_process_id.display_name, self.get_format('text', workbook))
+            if r_lot.send_to_process_id:
+                sheet.write(row, col, r_lot.send_to_process_id.display_name, self.get_format('text', workbook))
             col += 1
-            sheet.write(row, col, r_lot.send_date, self.get_format('datetime', workbook))
+            if r_lot.send_date:
+                sheet.write(row, col, r_lot.send_date, self.get_format('datetime', workbook))
             col += 1
-            sheet.write(row, col, r_lot.warehouse, self.get_format('text', workbook))
+            if r_lot.warehouse:
+                sheet.write(row, col, r_lot.warehouse, self.get_format('text', workbook))
             col += 1
-            sheet.write(row, col, r_lot.street, self.get_format('text', workbook))
+            if r_lot.street:
+                sheet.write(row, col, r_lot.street, self.get_format('text', workbook))
             col += 1
-            sheet.write(row, col, r_lot.packaging_qty, self.get_format('text', workbook))
+            if r_lot.packaging_qty > 0:
+                sheet.write(row, col, r_lot.packaging_qty, self.get_format('text', workbook))
             col += 1
-            sheet.write(row, col, r_lot.position, self.get_format('text', workbook))
+            if r_lot.position > 0:
+                sheet.write(row, col, r_lot.position, self.get_format('text', workbook))
             col = 0
             row += 1
         sheet.autofit()
