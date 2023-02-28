@@ -8,14 +8,14 @@
                 <tree editable="bottom" create="false" delete="false">
                     <field name="producer_id" readonly="1"/>
                     <field name="lot_id" widget="many2one" readonly="1"/>
-                    <field name="available_weight" string="Kgs disponibles" readonly="1"/>
+                    <field name="available_weight" sum="Kgs disponibles" string="Kgs disponibles" readonly="1"/>
                     <field name="product_variety" readonly="1"/>
                     <field name="product_caliber" readonly="1"/>
                     <field name="location_id" readonly="1"/>
                     <field name="product_id" readonly="1"/>
                     <field name="guide_number" readonly="1"/>
                     <field name="lot_harvest" readonly="1"/>
-                    <field name="reception_weight" readonly="1"/>
+                    <field name="reception_weight" sum="Kilos recepcionados" readonly="1"/>
                     <field name="available_series" readonly="1"/>
                     <field name="date"/>
                     <field name="send_to_process_id"/>
@@ -25,7 +25,6 @@
                     <field name="packaging_qty"/>
                     <field name="position"/>
                     <button type="object" name="generate_new_position" string="Nueva posición"/>
-                    <button type="object" name="export_to_xlsx" string="Test"/>
                 </tree>
             </field>
         </record>
@@ -35,6 +34,8 @@
             <field name="model">report.raw.lot</field>
             <field name="arch" type="xml">
                 <search>
+                    <filter name="Año actual" domain="[('lot_harvest','=', str(context_today().year))]"/>
+                    <filter name="Año anterior" domain="[('lot_harvest','=', str((context_today() - relativedelta(years=1)).year))]"/>
                     <field name="product_id"/>
                     <field name="lot_id"/>
                     <field name="lot_harvest"/>
@@ -46,15 +47,15 @@
         </record>
 
         <record id="report_raw_lot_act_window" model="ir.actions.act_window">
-            <field name="name">Reporte de materia prima</field>
+            <field name="name">Informe de existencia materia prima</field>
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">report.raw.lot</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
         </record>
 
-        <menuitem name="Informe de existencia materia prima" sequence="1" id="report_raw_lot_menu"
-                  parent="dimabe_manufacturing.stock_report"
+        <menuitem name="Informe de existencia materia prima" id="report_raw_lot_menu_test"
+                  parent="stock_report_menu"
                   action="report_raw_lot_act_window"/>
 
     </data>
