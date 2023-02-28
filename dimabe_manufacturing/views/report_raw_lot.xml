@@ -55,7 +55,7 @@
         </record>
 
         <menuitem name="Informe de existencia materia prima" id="report_raw_lot_menu_test"
-                  parent="stock_report_menu"
+                  parent="stock_report_menu" sequence="1"
                   action="report_raw_lot_act_window"/>
 
     </data>
