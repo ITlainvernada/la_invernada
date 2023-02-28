@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="report_raw_lot_tree_view" model="ir.ui.view">
+            <field name="name">Reporte de Materia prima</field>
+            <field name="model">report.raw.lot</field>
+            <field name="arch" type="xml">
+                <tree editable="bottom" create="false" delete="false">
+                    <field name="producer_id" readonly="1"/>
+                    <field name="lot_id" widget="many2one" readonly="1"/>
+                    <field name="available_weight" string="Kgs disponibles" readonly="1"/>
+                    <field name="product_variety" readonly="1"/>
+                    <field name="product_caliber" readonly="1"/>
+                    <field name="location_id" readonly="1"/>
+                    <field name="product_id" readonly="1"/>
+                    <field name="guide_number" readonly="1"/>
+                    <field name="lot_harvest" readonly="1"/>
+                    <field name="reception_weight" readonly="1"/>
+                    <field name="available_series" readonly="1"/>
+                    <field name="date"/>
+                    <field name="send_to_process_id"/>
+                    <field name="send_date"/>
+                    <field name="warehouse"/>
+                    <field name="street"/>
+                    <field name="packaging_qty"/>
+                    <field name="position"/>
+                    <button type="object" name="generate_new_position" string="Nueva posición"/>
+                    <button type="object" name="export_to_xlsx" string="Test"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="report_raw_lot_search_view" model="ir.ui.view">
+            <field name="name">Busqueda</field>
+            <field name="model">report.raw.lot</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="product_id"/>
+                    <field name="lot_id"/>
+                    <field name="lot_harvest"/>
+                    <field name="location_id"/>
+                    <field name="product_variety"/>
+                    <field name="producer_id"/>
+                </search>
+            </field>
+        </record>
+
+        <record id="report_raw_lot_act_window" model="ir.actions.act_window">
+            <field name="name">Reporte de materia prima</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">report.raw.lot</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <menuitem name="Informe de existencia materia prima" sequence="1" id="report_raw_lot_menu"
+                  parent="dimabe_manufacturing.stock_report"
+                  action="report_raw_lot_act_window"/>
+
+    </data>
+</odoo>

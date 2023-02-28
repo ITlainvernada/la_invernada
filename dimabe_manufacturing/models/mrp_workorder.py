@@ -433,7 +433,6 @@ class MrpWorkorder(models.Model):
         res.final_lot_id = final_lot.id
         return res
 
-
     def open_tablet_view(self):
         for check in self.check_ids:
             if not check.component_is_byproduct:
@@ -588,6 +587,13 @@ class MrpWorkorder(models.Model):
         dict_write['confirmed_serial'] = None
         dict_write['current_quality_check_id'] = check.id
         dict_write['in_weight'] = sum(serial.display_weight for serial in self.potential_serial_planned_ids)
+        raw_report_id = self.env['report.raw.lot'].sudo().search([('lot_id', '=', serial.stock_production_lot_id.id)])
+        raw_report_id.sudo().write({
+            'available_weight': sum(serial.stock_production_lot_id.stock_production_lot_serial_ids.filtered(
+                lambda x: not x.consumed).mapped('display_weight')),
+            'available_series': len(
+                serial.stock_production_lot_id.stock_production_lot_serial_ids.filtered(lambda x: not x.consumed)),
+        })
         if self.start_date:
             dict_write['start_date'] = fields.Datetime.now()
         self.write(dict_write)
@@ -662,4 +668,3 @@ class MrpWorkorder(models.Model):
         quant.write({
             'quantity': sum(lot.stock_production_lot_serial_ids.mapped('real_weight'))
         })
-

@@ -405,6 +405,7 @@ class StockProductionLotSerial(models.Model):
                 res.stock_production_lot_id.update_kg(res.stock_production_lot_id.product_id.id)
         else:
             res = super(StockProductionLotSerial, self).create(values_list)
+
         return res
 
     @api.model

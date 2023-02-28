@@ -176,7 +176,7 @@ class StockPicking(models.Model):
         for item in self:
             res = {
                 'domain': {
-                    'ranch_id': [('parent_id','=',item.partner_id.id), ('type','=', 'ranch')]
+                    'ranch_id': [('parent_id', '=', item.partner_id.id), ('type', '=', 'ranch')]
                 }
             }
             return res
@@ -468,6 +468,24 @@ class StockPicking(models.Model):
                         })
             if self.get_mp_move or self.get_pt_move() and self.get_product_move():
                 m_move = self.get_mp_move()
+                if self.get_mp_move():
+                    lot = self.env['stock.move.line'].search([('move_id.id', '=', m_move.id)], limit=1)
+                    lot.lot_id.write({
+                        'available_kg': lot.qty_done
+                    })
+                    self.env['report.raw.lot'].sudo().create({
+                        'lot_id': lot.lot_id.id,
+                        'producer_id': lot.lot_id.producer_id.id,
+                        'product_id': lot.lot_id.product_id.id,
+                        'available_weight': lot.qty_done,
+                        'product_variety': lot.lot_id.product_id.get_variety(),
+                        'product_caliber': lot.lot_id.product_id.get_calibers(),
+                        'location_id': lot.location_dest_id.id,
+                        'guide_number': lot.picking_id.guide_number,
+                        'lot_harvest': self.harvest,
+                        'reception_weight': lot.lot_id.reception_weight,
+                        'available_series': len(lot.lot_id.stock_production_lot_serial_ids),
+                    })
                 if not m_move:
                     m_move = self.get_pt_move()
                 if not m_move:
@@ -476,6 +494,19 @@ class StockPicking(models.Model):
                     lot = self.env['stock.move.line'].search([('move_id.id', '=', m_move.id)], limit=1)
                     lot.lot_id.write({
                         'available_kg': lot.qty_done
+                    })
+                    self.env['report.raw.lot'].sudo().create({
+                        'lot_id': lot.lot_id.id,
+                        'producer_id': lot.lot_id.producer_id.id,
+                        'product_id': lot.lot_id.product_id.id,
+                        'available_weight': lot.qty_done,
+                        'product_variety': lot.lot_id.product_id.get_variety(),
+                        'product_caliber': lot.lot_id.product_id.get_calibers(),
+                        'location_id': lot.location_dest_id.id,
+                        'guide_number': lot.picking_id.guide_number,
+                        'lot_harvest': lot.lot_id.harvest,
+                        'reception_weight': lot.lot_id.reception_weight,
+                        'available_series': len(lot.lot_id.stock_production_lot_serial_ids),
                     })
             return res
         # Se usaran datos de modulo de dimabe_manufacturing

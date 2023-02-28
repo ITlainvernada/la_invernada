@@ -106,6 +106,7 @@
         'wizard/confirm_re_print_serial.xml',
         'wizard/custom_re_print_temporary_serial.xml',
         'views/web_assets.xml',
+        'views/report_raw_lot.xml',
     ],
     # only loaded in demonstration mode
     'demo': [
