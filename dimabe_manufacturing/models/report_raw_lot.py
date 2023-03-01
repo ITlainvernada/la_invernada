@@ -45,7 +45,7 @@ class ReportRawLot(models.Model):
 
     packaging_qty = fields.Integer('Cantidad de envases')
 
-    position = fields.Integer('Posición')
+    position = fields.Char('Posición')
 
     # TODO Eliminar luego de su implementacion
     def set_raw_lot(self):
