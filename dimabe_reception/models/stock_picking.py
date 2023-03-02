@@ -149,7 +149,7 @@ class StockPicking(models.Model):
 
     sag_code = fields.Char(
         'CSG',
-        # related='partner_id.sag_code'
+        compute='compute_sag_code'
     )
 
     is_pt_dispatch = fields.Boolean('Es PT Despacho', compute='_compute_is_pt_dispatch')
@@ -170,6 +170,16 @@ class StockPicking(models.Model):
     display_net_weight = fields.Float('Kilos Netos a mostrar', compute='compute_display_net_weight')
 
     ranch_id = fields.Many2one('res.partner', string='Fundo', domain=[('type', '=', 'ranch')])
+
+    @api.depends('partner_id', 'ranch_id')
+    def compute_sag_code(self):
+        for item in self:
+            if item.ranch_id:
+                item.sag_code = item.ranch_id.sag_code
+                return
+            item.sag_code = item.partner_id.sag_code
+            return
+
 
     @api.onchange('partner_id')
     def on_change_domain_ranch_id(self):
