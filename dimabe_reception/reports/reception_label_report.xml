@@ -168,38 +168,16 @@
                 <t t-foreach="o.get_mp_move().move_line_ids" t-as="move_line">
                     <t t-foreach="move_line.lot_id.stock_production_lot_serial_ids" t-as="serial">
                         <div class="page">
-                            <table>
-                                <tr>
-                                    <td colspan="2">
-                                        <img
-                                                t-att-src="'data:image/png;base64,%s' % to_text(res_company.logo)"
-                                                style="width:100px !important;"
-                                        />
-                                    </td>
-                                </tr>
-                                <t t-if="o.ranch_id">
+                            <t t-if="o.ranch_id">
+                                <table style="font-size: 12px;">
                                     <tr>
-                                        <td style="text-align: right !important;">PRODUCTOR:</td>
-                                        <td>
-                                            <span t-field="o.partner_id.short_name"/>
+                                        <td colspan="2">
+                                            <img
+                                                    t-att-src="'data:image/png;base64,%s' % to_text(res_company.logo)"
+                                                    style="width:100px !important;"
+                                            />
                                         </td>
                                     </tr>
-                                    <tr>
-                                        <td style="text-align: right !important;">
-                                            FUNDO
-                                        </td>
-                                        <td>
-                                            <span t-field="o.ranch_id.name"/>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td style="text-align: right !important;">CSG:</td>
-                                        <td>
-                                            <span t-field="o.sag_code"/>
-                                        </td>
-                                    </tr>
-                                </t>
-                                <t t-else="">
                                     <tr>
                                         <td style="text-align: right !important;">PRODUCTOR:</td>
                                         <td>
@@ -209,62 +187,137 @@
                                     <tr>
                                         <td style="text-align: right !important;">CSG:</td>
                                         <td>
-                                            <span t-field="o.sag_code"/>
+                                            <span t-field="o.partner_id.sag_code"/>
                                         </td>
                                     </tr>
-                                </t>
-                                <tr>
-                                    <td style="text-align: right !important;">N° DE GUÍA:</td>
-                                    <td>
-                                        <span t-field="o.guide_number"/>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td style="text-align: right !important;">KILOS NETOS:</td>
-                                    <td>
-                                        <span t-field="serial.display_weight"/>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td style="text-align: right !important;">N° DE BULTOS:</td>
-                                    <td>
-                                        <span t-field="o.get_canning_move().quantity_done"/>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td style="text-align: right !important;">PRODUCTO:</td>
-                                    <td>
-                                        <span t-field="move_line.product_id.short_name"/>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td style="text-align: right !important;">VARIEDAD:</td>
-                                    <td>
-                                        <span t-esc="move_line.product_id.get_variety()"/>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td style="text-align: right !important;">ENVASE:</td>
-                                    <td>
-                                        <span t-esc="o.get_canning_move().name"/>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td colspan="2">
-                                        <h3 style="text-align: center !important;">
-                                            N° SERIE:
-                                            <span t-field="serial.serial_number"/>
-                                        </h3>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td colspan="2">
-                                        <img
-                                                t-att-src="'%s/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % (o.get_full_url(), 'Code128',serial.serial_number,450, 41)"
-                                        />
-                                    </td>
-                                </tr>
-                            </table>
+                                    <tr>
+                                        <td style="text-align: right !important;">N° DE GUÍA:</td>
+                                        <td>
+                                            <span t-field="o.guide_number"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align: right !important;">KILOS NETOS:</td>
+                                        <td>
+                                            <span t-field="serial.display_weight"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align: right !important;">N° DE BULTOS:</td>
+                                        <td>
+                                            <span t-field="o.get_canning_move().quantity_done"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align: right !important;">PRODUCTO:</td>
+                                        <td>
+                                            <span t-field="move_line.product_id.short_name"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align: right !important;">VARIEDAD:</td>
+                                        <td>
+                                            <span t-esc="move_line.product_id.get_variety()"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align: right !important;">ENVASE:</td>
+                                        <td>
+                                            <span t-esc="o.get_canning_move().name"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2">
+                                            <h3 style="text-align: center !important;">
+                                                N° SERIE:
+                                                <span t-field="serial.serial_number"/>
+                                            </h3>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2">
+                                            <img
+                                                    t-att-src="'%s/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % (o.get_full_url(), 'Code128',serial.serial_number,450, 41)"
+                                            />
+                                        </td>
+                                    </tr>
+                                </table>
+                            </t>
+                            <t t-if="not o.ranch_id">
+                                <table>
+                                    <tr>
+                                        <td colspan="2">
+                                            <img
+                                                    t-att-src="'data:image/png;base64,%s' % to_text(res_company.logo)"
+                                                    style="width:100px !important;"
+                                            />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align: right !important;">PRODUCTOR:</td>
+                                        <td>
+                                            <span t-field="o.partner_id.short_name"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align: right !important;">CSG:</td>
+                                        <td>
+                                            <span t-field="o.partner_id.sag_code"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align: right !important;">N° DE GUÍA:</td>
+                                        <td>
+                                            <span t-field="o.guide_number"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align: right !important;">KILOS NETOS:</td>
+                                        <td>
+                                            <span t-field="serial.display_weight"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align: right !important;">N° DE BULTOS:</td>
+                                        <td>
+                                            <span t-field="o.get_canning_move().quantity_done"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align: right !important;">PRODUCTO:</td>
+                                        <td>
+                                            <span t-field="move_line.product_id.short_name"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align: right !important;">VARIEDAD:</td>
+                                        <td>
+                                            <span t-esc="move_line.product_id.get_variety()"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align: right !important;">ENVASE:</td>
+                                        <td>
+                                            <span t-esc="o.get_canning_move().name"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2">
+                                            <h3 style="text-align: center !important;">
+                                                N° SERIE:
+                                                <span t-field="serial.serial_number"/>
+                                            </h3>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2">
+                                            <img
+                                                    t-att-src="'%s/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % (o.get_full_url(), 'Code128',serial.serial_number,450, 41)"
+                                            />
+                                        </td>
+                                    </tr>
+                                </table>
+                            </t>
                             <t t-if="not move_line.lot_id.stock_production_lot_serial_ids[-1].serial_number == serial.serial_number">
                                 <p style="page-break-after:always;"></p>
                             </t>
