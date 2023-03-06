@@ -185,9 +185,17 @@
                                         </td>
                                     </tr>
                                     <tr>
+                                        <td style="text-align: right !important;">
+                                            FUNDO
+                                        </td>
+                                        <td>
+                                            <span t-field="o.ranch_id"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
                                         <td style="text-align: right !important;">CSG:</td>
                                         <td>
-                                            <span t-field="o.partner_id.sag_code"/>
+                                            <span t-field="o.sag_code"/>
                                         </td>
                                     </tr>
                                     <tr>
