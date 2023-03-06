@@ -169,7 +169,7 @@
                     <t t-foreach="move_line.lot_id.stock_production_lot_serial_ids" t-as="serial">
                         <div class="page">
                             <t t-if="o.ranch_id">
-                                <table style="font-size: 13.5px;">
+                                <table style="font-size: 14px;">
                                     <tr>
                                         <td colspan="2">
                                             <img
