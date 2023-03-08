@@ -16,12 +16,6 @@ class ResPartner(models.Model):
         compute='_compute_short_name'
     )
 
-    type = fields.Selection(
-        selection_add=[('ranch', 'Fundo')]
-    )
-
-    ranch_ids = fields.One2many('res.partner', 'parent_id', string='Fundos', domain=[('type', '=', 'ranch')])
-
     @api.one
     def _compute_short_name(self):
         if self.name:

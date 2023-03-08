@@ -78,9 +78,6 @@
                         </group>
                     </page>
                 </xpath>
-                <xpath expr="//field[@name='partner_id']" position="after">
-                    <field name="ranch_id" attrs="{'invisible': [('picking_type_code','!=','incoming'),('partner_id','=',False)]}" options="{'no_create': True}"/>
-                </xpath>
             </field>
         </record>
 
