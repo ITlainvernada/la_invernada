@@ -8,7 +8,7 @@
             <button name="do_unreserve" position="replace"/>
             <xpath expr="//notebook[1]//page[1]" position="after">
                 <page string="Lineas de Despacho" name="dispatch_line_ids"
-                      attrs="{'invisible':[('is_multiple_dispatch','=',False),('picking_type_code','!=','outgoing')]}">
+                      attrs="{'invisible':[('is_multiple_dispatch','=',False)]}">
                     <field name="dispatch_line_ids"
                            attrs="{'invisible':[('picking_type_code','!=','outgoing')],'read_only':[('state','=','done')]}">
                         <tree editable="bottom" edit="true" delete="true" create="false">

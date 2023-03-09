@@ -9,3 +9,5 @@ class StockPickingType(models.Model):
     )
 
     is_pt = fields.Boolean('Es Despacho Pt')
+
+    show_in_canning_report = fields.Boolean('Mostrar en reporte de control de envases')

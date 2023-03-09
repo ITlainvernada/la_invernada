@@ -101,18 +101,19 @@
         'reports/stock/discart_service_report.xml',
         'reports/stock/calibrate_service_report.xml',
         'reports/stock/vain_service.xml',
-        #'reports/stock/pt_balance_report.xml',
+        # 'reports/stock/pt_balance_report.xml',
         'wizard/wizard_generate_temporary_serial.xml',
         'wizard/confirm_re_print_serial.xml',
         'wizard/custom_re_print_temporary_serial.xml',
         'views/web_assets.xml',
         'views/report_raw_lot.xml',
+        'views/report_canning_xlsx.xml',
     ],
     # only loaded in demonstration mode
     'demo': [
         'demo/demo.xml',
     ],
-    'qweb':[
+    'qweb': [
         'static/src/xml/widget_view.xml'
     ]
 }
