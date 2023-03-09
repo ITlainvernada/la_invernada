@@ -2,6 +2,7 @@ import base64
 
 from odoo import models, fields
 
+from pytz import timezone
 import xlsxwriter
 
 
@@ -29,6 +30,8 @@ class ReportCanningXlsx(models.TransientModel):
         col = 0
         row += 1
         for canning in canning_ids:
+            date_done_tz = canning.picking_id.date_done.astimezone(timezone('America/Santiago')).strftime(
+                '"%m/%d/%Y, %H:%M:%S"')
             qty = canning.qty_done if canning.picking_id.picking_type_id.code == 'incoming' else -canning.qty_done
             show_name = canning.product_id.name
             if len(canning.product_id.attribute_value_ids) > 0:
@@ -45,7 +48,7 @@ class ReportCanningXlsx(models.TransientModel):
             col += 1
             sheet.write(row, col, canning.picking_id.name, self.get_format('text', workbook))
             col += 1
-            sheet.write_datetime(row, col, canning.picking_id.date_done, self.get_format('datetime', workbook))
+            sheet.write(row, col, date_done_tz, self.get_format('datetime', workbook))
             row += 1
             col = 0
         with open(file_name, 'rb') as file:
