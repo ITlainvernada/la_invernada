@@ -17,7 +17,7 @@ class ReportCanningXlsx(models.TransientModel):
         file_name = 'temp.xlsx'
         file_path = Path(file_name)
         file_path.touch(exist_ok=True)
-        workbook = xlsxwriter.Workbook(file_name, {'strings_to_numbers': True})
+        workbook = xlsxwriter.Workbook(file_name, {'strings_to_numbers': True, 'remove_timezone': True})
         sheet = workbook.add_worksheet('Envases')
         titles = ['Productor', 'Codigo de envase', 'Nombre de envase', 'Cantidad de envases', 'Operación',
                   'Fecha efectiva']
