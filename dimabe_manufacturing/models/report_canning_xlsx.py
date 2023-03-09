@@ -52,7 +52,7 @@ class ReportCanningXlsx(models.TransientModel):
             sheet.write(row, col, date_done_tz, self.get_format('datetime', workbook))
             row += 1
             col = 0
-        with open(file_name, 'rb') as file:
+        with open(file_name, 'rbx') as file:
             file_base64 = base64.b64encode(file.read())
         attachment_id = self.env['ir.attachment'].sudo().create({
             'name': f'Reporte de envases {fields.Date.to_string(self.start_date)} - {fields.Date.to_string(self.end_date)}.xlsx',
