@@ -1,7 +1,7 @@
 import base64
 
 from odoo import models, fields
-
+from pathlib import Path
 from pytz import timezone
 import xlsxwriter
 
@@ -15,6 +15,8 @@ class ReportCanningXlsx(models.TransientModel):
 
     def generate_xlsx(self):
         file_name = 'temp.xlsx'
+        file_path = Path(file_name)
+        file_path.touch(exist_ok=True)
         workbook = xlsxwriter.Workbook(file_name, {'strings_to_numbers': True})
         sheet = workbook.add_worksheet('Envases')
         titles = ['Productor', 'Codigo de enavase', 'Nombre de envase', 'Cantidad de envases', 'Operación',
@@ -51,12 +53,8 @@ class ReportCanningXlsx(models.TransientModel):
             sheet.write(row, col, date_done_tz, self.get_format('datetime', workbook))
             row += 1
             col = 0
-        try:
-            with open(file_name, 'rb') as file:
-                file_base64 = base64.b64encode(file.read())
-        except FileNotFoundError:
-            with open(file_name, 'rwb') as file:
-                file_base64 = base64.b64encode(file.read())
+        with open(file_path, 'rb') as file:
+            file_base64 = base64.b64encode(file.read())
         attachment_id = self.env['ir.attachment'].sudo().create({
             'name': f'Reporte de envases {fields.Date.to_string(self.start_date)} - {fields.Date.to_string(self.end_date)}.xlsx',
             'datas_fname': f'Reporte de envases {fields.Date.to_string(self.start_date)} - {fields.Date.to_string(self.end_date)}.xlsx',
