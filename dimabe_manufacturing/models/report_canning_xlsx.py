@@ -14,7 +14,7 @@ class ReportCanningXlsx(models.TransientModel):
     end_date = fields.Date('Fecha de final')
 
     def generate_xlsx(self):
-        file_name = 'C:\\Users\\fabia\\Documents\\test_test.xlsx'
+        file_name = 'test_test.xlsx'
         workbook = xlsxwriter.Workbook(file_name, {'strings_to_numbers': True})
         sheet = workbook.add_worksheet('Envases')
         titles = ['Productor', 'Codigo de enavase', 'Nombre de envase', 'Cantidad de envases', 'Operación',
