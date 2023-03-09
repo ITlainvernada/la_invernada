@@ -19,12 +19,13 @@ class ReportCanningXlsx(models.TransientModel):
         file_path.touch(exist_ok=True)
         workbook = xlsxwriter.Workbook(file_name, {'strings_to_numbers': True})
         sheet = workbook.add_worksheet('Envases')
-        titles = ['Productor', 'Codigo de enavase', 'Nombre de envase', 'Cantidad de envases', 'Operación',
+        titles = ['Productor', 'Codigo de envase', 'Nombre de envase', 'Cantidad de envases', 'Operación',
                   'Fecha efectiva']
         row = col = 0
         for title in titles:
             sheet.write(row, col, title, self.get_format('header', workbook))
             col += 1
+        sheet.autofilter(0,0,len(title) - 1, len(title) - 1)
         canning_ids = self.env['stock.move.line'].sudo().search(
             [('picking_id.picking_type_id.show_in_canning_report', '=', True), ('state', '=', 'done'),
              ('product_id.categ_id.parent_id', '=', 95), ('picking_id.date_done', '>=', self.start_date),
@@ -52,6 +53,7 @@ class ReportCanningXlsx(models.TransientModel):
             sheet.write(row, col, date_done_tz, self.get_format('datetime', workbook))
             row += 1
             col = 0
+
         with open(file_path, 'rb') as file:
             file_base64 = base64.b64encode(file.read())
         attachment_id = self.env['ir.attachment'].sudo().create({
