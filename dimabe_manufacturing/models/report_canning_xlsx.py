@@ -25,7 +25,7 @@ class ReportCanningXlsx(models.TransientModel):
         for title in titles:
             sheet.write(row, col, title, self.get_format('header', workbook))
             col += 1
-        sheet.autofilter(0,0,len(title) - 1, len(title) - 1)
+        sheet.autofilter(0,0,0, len(title) - 1)
         canning_ids = self.env['stock.move.line'].sudo().search(
             [('picking_id.picking_type_id.show_in_canning_report', '=', True), ('state', '=', 'done'),
              ('product_id.categ_id.parent_id', '=', 95), ('picking_id.date_done', '>=', self.start_date),
