@@ -32,8 +32,7 @@ class ReportCanningXlsx(models.TransientModel):
         col = 0
         row += 1
         for canning in canning_ids:
-            date_done_tz = canning.picking_id.date_done.astimezone(timezone('America/Santiago')).strftime(
-                '"%m/%d/%Y, %H:%M:%S"')
+            date_done_tz = canning.picking_id.date_done
             qty = canning.qty_done if canning.picking_id.picking_type_id.code == 'incoming' else -canning.qty_done
             show_name = canning.product_id.name
             if len(canning.product_id.attribute_value_ids) > 0:
