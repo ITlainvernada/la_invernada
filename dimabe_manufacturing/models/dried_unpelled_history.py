@@ -290,10 +290,8 @@ class DriedUnpelledHistory(models.Model):
 
     def get_quality_login_token(self):
         url = 'https://qacalidadapi.lainvernada.com/api/auth/login'
-        http = urllib3.PoolManager()
         headers = {
             'Content-Type': 'application/json',
-            'Accept': 'application/json',
             'Transfer-Encoding': 'chunked',
             'Host': 'qacalidadapi.lainvernada.com'
         }
@@ -313,7 +311,6 @@ class DriedUnpelledHistory(models.Model):
             url = 'https://qacalidadapi.lainvernada.com/api/LotFromDryers/add'
             headers = {
                 'Content-Type': 'application/json',
-                'Accept': "application/json",
                 'Transfer-Encoding': 'chunked',
                 'Host': 'qacalidadapi.lainvernada.com',
                 'Authorization': 'Bearer {}'.format(token),

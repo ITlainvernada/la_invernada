@@ -1,7 +1,5 @@
 from odoo import models, fields
-import urllib3
 import json
-import pytz
 import requests
 
 class ResCompany(models.Model):
@@ -11,12 +9,10 @@ class ResCompany(models.Model):
 
     def get_quality_login_token(self):
         url = 'https://qacalidadapi.lainvernada.com/api/auth/login'
-        http = urllib3.PoolManager()
         headers = {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-            'Transfer-Encoding': 'chunked',
-            'Host': 'qacalidadapi.lainvernada.com',
+            "Content-Type": "application/json",
+            "Transfer-Encoding": "chunked",
+            "Host": "qacalidadapi.lainvernada.com",
         }
         json_data = {
             'Username': '66.666.666-6',
@@ -32,10 +28,8 @@ class ResCompany(models.Model):
         token = self.get_quality_login_token()
         if token:
             url = 'https://qacalidadapi.lainvernada.com/api/LotFromDryers/add'
-            http = urllib3.PoolManager()
             headers = {
                 'Content-Type': 'application/json',
-                'Accept': "application/json",
                 'Authorization': 'Bearer {}'.format(token),
                 'Transfer-Encoding': 'chunked',
                 'Host': 'qacalidadapi.lainvernada.com',
