@@ -20,7 +20,8 @@ class ReportCanningXlsx(models.TransientModel):
         file_path.touch(exist_ok=True)
         workbook = xlsxwriter.Workbook(file_name, {'strings_to_numbers': True})
         sheet = workbook.add_worksheet('Envases')
-        titles = ['Productor', 'Codigo de envase', 'Nombre de envase', 'Cantidad de envases', 'Operación',
+        titles = ['Productor', 'Codigo de envase', 'Nombre de envase', 'Cantidad de envases',
+                  'Cantidad de Envases (Con simbolo)', 'Operación',
                   'Tipo de operación',
                   'Fecha efectiva']
         row = col = 0
@@ -47,6 +48,8 @@ class ReportCanningXlsx(models.TransientModel):
             sheet.write(row, col, canning.product_id.default_code, self.get_format('text', workbook))
             col += 1
             sheet.write(row, col, show_name, self.get_format('text', workbook))
+            col += 1
+            sheet.write(row, col, canning.qty_done, self.get_format('text', workbook))
             col += 1
             sheet.write(row, col, qty, self.get_format('text', workbook))
             col += 1
