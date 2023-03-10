@@ -170,12 +170,12 @@ class StockPicking(models.Model):
     display_net_weight = fields.Float('Kilos Netos a mostrar', compute='compute_display_net_weight')
 
 
+
     @api.depends('partner_id')
     def compute_sag_code(self):
         for item in self:
             item.sag_code = item.partner_id.sag_code
             return
-
 
     @api.multi
     def compute_display_net_weight(self):

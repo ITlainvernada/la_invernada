@@ -125,4 +125,18 @@
             </page>
         </field>
     </record>
+
+    <record id="view_picking_form_inherit_reception_dimabe" model="ir.ui.view">
+        <field name="name">Formulario de picking</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="dimabe_reception.reception_stock_picking_form_inherit"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='guide_number']" position="after">
+                <field name="show_guide_in_form" invisible="1"/>
+            </xpath>
+            <xpath expr="//field[@name='guide_number']" position="attributes">
+                <attribute name="attrs">{'invisible':[('show_guide_in_form','=',False)], 'readonly': [('state', '=', 'done')]}</attribute>
+            </xpath>
+        </field>
+    </record>
 </odoo>
