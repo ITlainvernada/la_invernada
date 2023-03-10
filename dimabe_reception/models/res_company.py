@@ -2,6 +2,7 @@ from odoo import models, fields
 import urllib3
 import json
 import pytz
+import requests
 
 class ResCompany(models.Model):
     _inherit = 'res.company'
@@ -19,7 +20,7 @@ class ResCompany(models.Model):
             'Username': '66.666.666-6',
             'Password': 'Dimabe2023$'
         }
-        res = http.request('POST', url, json=json.dumps(json_data), headers=headers)
+        res = requests.post(url, json=json.dumps(json_data), headers=headers)
 
         if res.token:
             return res.token
@@ -52,4 +53,4 @@ class ResCompany(models.Model):
                 'ArticleCode': '1000010001',
                 'ArticleDescription': 'NUEZ CHANDLER C/CÁSCARA SIN CALIBRAR'
             }
-            res = http.request('POST', url, json=json.dumps(json_data), headers=headers)
+            res = requests.post(url, json=json.dumps(json_data), headers=headers)

@@ -5,6 +5,7 @@ from ..helpers import date_helper
 import urllib3
 import json
 import pytz
+import requests
 
 class DriedUnpelledHistory(models.Model):
     _name = 'dried.unpelled.history'
@@ -298,7 +299,7 @@ class DriedUnpelledHistory(models.Model):
             'Username': '66.666.666-6',
             'Password': 'Dimabe2023$'
         }
-        res = http.request('POST', url, json=json.dumps(json_data), headers=headers)
+        res = requests.post(url, json=json.dumps(json_data), headers=headers)
 
         if res.token:
             return res.token
@@ -332,7 +333,7 @@ class DriedUnpelledHistory(models.Model):
                 'ArticleCode': model.out_product_id.default_code,
                 'ArticleDescription': model.out_product_id.name
             }
-            res = http.request('POST', url, json=json.dumps(json_data), headers=headers)
+            res = requests.post(url, json=json.dumps(json_data), headers=headers)
 
 
     @api.multi
