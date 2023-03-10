@@ -21,7 +21,7 @@ class ReportCanningXlsx(models.TransientModel):
         workbook = xlsxwriter.Workbook(file_name, {'strings_to_numbers': True})
         sheet = workbook.add_worksheet('Envases')
         titles = ['Productor', 'Codigo de envase', 'Nombre de envase', 'Cantidad de envases',
-                  'Cantidad de Envases (Con simbolo)', 'Operación', 'N° de guía'
+                  'Cantidad de Envases (Con simbolo)', 'Operación', 'N° de guía',
                                                                     'Tipo de operación',
                   'Fecha efectiva']
         row = col = 0
