@@ -21,7 +21,7 @@ class ResCompany(models.Model):
             'Password': 'Dimabe2023$'
         }
         res = requests.post(url, json=json.dumps(json_data), headers=headers)
-
+        raise models.ValidationError(res)
         if res.token:
             return res.token
         return False
