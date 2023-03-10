@@ -17,8 +17,10 @@ class ResCompany(models.Model):
             'Accept': 'application/json'
         }
         json_data = {
-            "Username": "66.666.666-6",
-            "Password": "Dimabe2023$"
+            'Username': '66.666.666-6',
+            'Password': 'Dimabe2023$',
+            'Content-Length': '<calculated when request is sent>',
+            'Host': '<calculated when request is sent>'
         }
         res = requests.post(url, json=json.dumps(json_data), headers=headers)
         raise models.ValidationError(res)
