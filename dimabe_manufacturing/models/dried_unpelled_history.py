@@ -2,7 +2,9 @@ from odoo import fields, models, api
 from odoo.addons import decimal_precision as dp
 import datetime
 from ..helpers import date_helper
-
+import urllib3
+import json
+import pytz
 
 class DriedUnpelledHistory(models.Model):
     _name = 'dried.unpelled.history'
@@ -279,7 +281,59 @@ class DriedUnpelledHistory(models.Model):
                 res.origin_location_id = unpelled_dried_id.origin_location_id.id
                 res.dest_location_id = unpelled_dried_id.dest_location_id.id
                 res.canning_id = unpelled_dried_id.canning_id
+
+
+
+        self.set_lot_to_quality_api(res)
         return res
+
+    def get_quality_login_token(self):
+        url = 'https://qacalidadapi.lainvernada.com/api/auth/login'
+        http = urllib3.PoolManager()
+        headers = {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+        }
+        json_data = {
+            'Username': '66.666.666-6',
+            'Password': 'Dimabe2023$'
+        }
+        res = http.request('POST', url, data=json.dumps(json_data), headers=headers)
+
+        if res.token:
+            return res.token
+        return False
+
+    def set_lot_to_quality_api(self, model):
+        token = self.get_quality_login_token()
+        if token:
+            url = 'https://qacalidadapi.lainvernada.com/api/LotFromDryers/add'
+            http = urllib3.PoolManager()
+            headers = {
+                'Content-Type': 'application/json',
+                'Accept': "application/json",
+                'Authorization': 'Bearer {}'.format(token)
+            }
+            json_data = {
+                'ProducerCode': model.producer_id.id,
+                'ProducerName': model.producer_id.name,
+                'VarietyName': model.in_product_variety,
+                'LotNumber': model.out_lot_id.name,
+                'DispatchGuideNumber': model.lot_guide_numbers,
+                'ReceptionDate': self.time_to_tz_naive(model.finish_date, pytz.utc,
+                                                       model.timezone("America/Santiago")),
+                'ReceptionKgs': model.total_out_weight,
+                'ContainerType': model.canning_id.display_name,
+                'ContainerWeightAverage': model.total_out_weight / model.out_serial_count,
+                'ContainerWeight': model.canning_id.weight,
+                'Season': model.finish_date.year,
+                'Warehouse': model.sudo().picking_type_id.name,
+                'ContainerQuantity': model.out_serial_count,
+                'ArticleCode': model.out_product_id.default_code,
+                'ArticleDescription': model.out_product_id.name
+            }
+            res = http.request('POST', url, data=json.dumps(json_data), headers=headers)
+
 
     @api.multi
     def adjust_stock(self):
