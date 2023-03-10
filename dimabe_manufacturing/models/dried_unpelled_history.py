@@ -298,7 +298,7 @@ class DriedUnpelledHistory(models.Model):
             'Username': '66.666.666-6',
             'Password': 'Dimabe2023$'
         }
-        res = http.request('POST', url, data=json.dumps(json_data), headers=headers)
+        res = http.request('POST', url, json=json.dumps(json_data), headers=headers)
 
         if res.token:
             return res.token
@@ -332,7 +332,7 @@ class DriedUnpelledHistory(models.Model):
                 'ArticleCode': model.out_product_id.default_code,
                 'ArticleDescription': model.out_product_id.name
             }
-            res = http.request('POST', url, data=json.dumps(json_data), headers=headers)
+            res = http.request('POST', url, json=json.dumps(json_data), headers=headers)
 
 
     @api.multi
