@@ -293,7 +293,9 @@ class DriedUnpelledHistory(models.Model):
         http = urllib3.PoolManager()
         headers = {
             'Content-Type': 'application/json',
-            'Accept': 'application/json'
+            'Accept': 'application/json',
+            'Transfer-Encoding': 'chunked',
+            'Host': 'qacalidadapi.lainvernada.com'
         }
         json_data = {
             'Username': '66.666.666-6',
@@ -309,11 +311,12 @@ class DriedUnpelledHistory(models.Model):
         token = self.get_quality_login_token()
         if token:
             url = 'https://qacalidadapi.lainvernada.com/api/LotFromDryers/add'
-            http = urllib3.PoolManager()
             headers = {
                 'Content-Type': 'application/json',
                 'Accept': "application/json",
-                'Authorization': 'Bearer {}'.format(token)
+                'Transfer-Encoding': 'chunked',
+                'Host': 'qacalidadapi.lainvernada.com',
+                'Authorization': 'Bearer {}'.format(token),
             }
             json_data = {
                 'ProducerCode': model.producer_id.id,
