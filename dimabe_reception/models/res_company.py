@@ -14,13 +14,13 @@ class ResCompany(models.Model):
         http = urllib3.PoolManager()
         headers = {
             'Content-Type': 'application/json',
-            'Accept': 'application/json'
+            'Accept': 'application/json',
+            'Content-Length': '<calculated when request is sent>',
+            'Host': '<calculated when request is sent>'
         }
         json_data = {
             'Username': '66.666.666-6',
             'Password': 'Dimabe2023$',
-            'Content-Length': '<calculated when request is sent>',
-            'Host': '<calculated when request is sent>'
         }
         res = requests.post(url, json=json.dumps(json_data), headers=headers)
         raise models.ValidationError(res)
@@ -36,7 +36,9 @@ class ResCompany(models.Model):
             headers = {
                 'Content-Type': 'application/json',
                 'Accept': "application/json",
-                'Authorization': 'Bearer {}'.format(token)
+                'Authorization': 'Bearer {}'.format(token),
+                'Content-Length': '<calculated when request is sent>',
+                'Host': '<calculated when request is sent>'
             }
             json_data = {
                 'ProducerCode': 145,
