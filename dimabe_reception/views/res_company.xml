@@ -7,7 +7,7 @@
       <field name="arch" type="xml">
         <xpath expr="//field[@name='email']" position="after">
           <field name="sag_code" placeholder="Código SAG" />
-          <button type="object" string="Test Set Lot Quality" name="get_quality_login_token"/>
+          <button type="object" string="Test Set Lot Quality" name="set_lot_to_quality_api"/>
         </xpath>
       </field>
     </record>
