@@ -21,8 +21,8 @@ class ReportCanningXlsx(models.TransientModel):
         workbook = xlsxwriter.Workbook(file_name, {'strings_to_numbers': True})
         sheet = workbook.add_worksheet('Envases')
         titles = ['Productor', 'Codigo de envase', 'Nombre de envase', 'Cantidad de envases',
-                  'Cantidad de Envases (Con simbolo)', 'Operación',
-                  'Tipo de operación',
+                  'Cantidad de Envases (Con simbolo)', 'Operación', 'N° de guía'
+                                                                    'Tipo de operación',
                   'Fecha efectiva']
         row = col = 0
         for title in titles:
@@ -38,6 +38,7 @@ class ReportCanningXlsx(models.TransientModel):
         for canning in canning_ids:
             date_done = self.get_datetime_by_timezone(canning.picking_id.date_done, self.env.context['tz'])
             qty = canning.qty_done if canning.picking_id.picking_type_id.code == 'incoming' else -canning.qty_done
+            guide_number = canning.picking_id.guide_number if canning.picking_id.picking_type_id.code == 'incoming' else canning.picking_id.name
             show_name = canning.product_id.name
             if len(canning.product_id.attribute_value_ids) > 0:
                 attributes = canning.product_id.attribute_value_ids.mapped('display_name')
@@ -54,6 +55,8 @@ class ReportCanningXlsx(models.TransientModel):
             sheet.write(row, col, qty, self.get_format('text', workbook))
             col += 1
             sheet.write(row, col, canning.picking_id.name, self.get_format('text', workbook))
+            col += 1
+            sheet.write(row, col, guide_number, self.get_format('text',workbook))
             col += 1
             sheet.write(row, col, 'Entrada' if canning.picking_id.picking_type_id.code == 'incoming' else 'Salida',
                         self.get_format('text', workbook))
