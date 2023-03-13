@@ -2,7 +2,7 @@ from odoo import fields, models, api
 from odoo.addons import decimal_precision as dp
 import datetime
 from ..helpers import date_helper
-
+import pytz
 import json
 import pytz
 import requests
@@ -316,7 +316,7 @@ class DriedUnpelledHistory(models.Model):
                 "LotNumber": self.out_lot_id.name,
                 "DispatchGuideNumber": self.lot_guide_numbers,
                 "ReceptionDate": self.time_to_tz_naive(self.finish_date, pytz.utc,
-                                                       self.timezone("America/Santiago")),
+                                                       pytz.timezone("America/Santiago")),
                 "ReceptionKgs": self.total_out_weight,
                 "ContainerType": self.canning_id.display_name,
                 "ContainerWeightAverage":  self.total_out_weight / self.out_serial_count if self.out_serial_count > 0 else 0,
