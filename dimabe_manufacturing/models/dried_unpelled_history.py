@@ -329,6 +329,9 @@ class DriedUnpelledHistory(models.Model):
             }
             res = requests.post(url, json=json_data, headers=headers)
 
+            if res.status_code != 200:
+                raise models.ValidationError(f'Error {res.status_code}: {res.text} ')
+
     def time_to_tz_naive(self, t, tz_in, tz_out):
         return tz_in.localize(t).astimezone(tz_out)
 
