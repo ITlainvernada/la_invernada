@@ -16,16 +16,19 @@ class StockPicking(models.Model):
         'Kilos Guía',
         compute='_compute_weight_guide',
         store=True,
+        track_visibility='onchange',
         digits=dp.get_precision('Product Unit of Measure')
     )
 
     gross_weight = fields.Float(
         'Kilos Brutos (Recepcion)',
+        track_visibility='onchange',
         digits=dp.get_precision('Product Unit of Measure')
     )
 
     tare_weight = fields.Float(
         'Peso Tara',
+        track_visibility='onchange',
         digits=dp.get_precision('Product Unit of Measure')
     )
 
@@ -33,13 +36,16 @@ class StockPicking(models.Model):
         'Kilos Netos',
         compute='_compute_net_weight',
         store=True,
-        default=lambda self: self.move_ids_without_package[0].product_uom_qty  if self.is_return and len(self.move_ids_without_package) > 0 else 0,
+        track_visibility='onchange',
+        default=lambda self: self.move_ids_without_package[0].product_uom_qty if self.is_return and len(
+            self.move_ids_without_package) > 0 else 0,
         digits=dp.get_precision('Product Unit of Measure')
     )
 
     canning_weight = fields.Float(
         'Peso Envases',
         compute='_compute_canning_weight',
+        track_visibility='onchange',
         store=True,
         digits=dp.get_precision('Product Unit of Measure')
     )
@@ -47,6 +53,7 @@ class StockPicking(models.Model):
     production_net_weight = fields.Float(
         'Kilos Netos Producción',
         compute='_compute_production_net_weight',
+        track_visibility='onchange',
         store=True,
         digits=dp.get_precision('Product Unit of Measure')
     )
@@ -97,6 +104,7 @@ class StockPicking(models.Model):
 
     quality_weight = fields.Float(
         'Kilos Calidad',
+        track_visibility='onchange',
         digits=dp.get_precision('Product Unit of Measure')
     )
 
@@ -141,7 +149,7 @@ class StockPicking(models.Model):
 
     sag_code = fields.Char(
         'CSG',
-        # related='partner_id.sag_code'
+        compute='compute_sag_code'
     )
 
     is_pt_dispatch = fields.Boolean('Es PT Despacho', compute='_compute_is_pt_dispatch')
@@ -159,10 +167,15 @@ class StockPicking(models.Model):
 
     picking_return_id = fields.Many2one('stock.picking', string='Devuelto de ')
 
-    display_net_weight = fields.Float('Kilos Netos a mostrar',compute='compute_display_net_weight')
+    display_net_weight = fields.Float('Kilos Netos a mostrar', compute='compute_display_net_weight')
 
 
 
+    @api.depends('partner_id')
+    def compute_sag_code(self):
+        for item in self:
+            item.sag_code = item.partner_id.sag_code
+            return
 
     @api.multi
     def compute_display_net_weight(self):
@@ -191,7 +204,7 @@ class StockPicking(models.Model):
         })
 
     @api.one
-    @api.depends('tare_weight', 'gross_weight', 'move_ids_without_package', 'quality_weight','is_return')
+    @api.depends('tare_weight', 'gross_weight', 'move_ids_without_package', 'quality_weight', 'is_return')
     def _compute_net_weight(self):
         if self.picking_type_code == 'incoming':
             self.net_weight = self.gross_weight - self.tare_weight + self.quality_weight
@@ -342,18 +355,19 @@ class StockPicking(models.Model):
                     m_move = stock_picking.get_pt_move()
                 if not m_move:
                     m_move = stock_picking.get_product_move()
-                if not m_move.move_line_ids or len(m_move.move_line_ids) == 0:
-                    for move in stock_picking.move_ids_without_package:
-                        self.env['stock.move.line'].create({
-                            'move_id': move.id,
-                            'picking_id': stock_picking.id,
-                            'product_id': move.product_id.id,
-                            'product_uom_id': move.product_id.uom_id.id,
-                            'product_uom_qty': move.product_uom_qty,
-                            'location_id': 9,
-                            'location_dest_id': stock_picking.location_dest_id.id,
-                            'date': date.today(),
-                        })
+                if m_move:
+                    if not m_move.move_line_ids or len(m_move.move_line_ids) == 0:
+                        for move in stock_picking.move_ids_without_package:
+                            self.env['stock.move.line'].create({
+                                'move_id': move.id,
+                                'picking_id': stock_picking.id,
+                                'product_id': move.product_id.id,
+                                'product_uom_id': move.product_id.uom_id.id,
+                                'product_uom_qty': move.product_uom_qty,
+                                'location_id': 9,
+                                'location_dest_id': stock_picking.location_dest_id.id,
+                                'date': date.today(),
+                            })
                 if m_move and m_move.move_line_ids and m_move.picking_id.picking_type_code == 'incoming':
 
                     for move_line in m_move.move_line_ids:
@@ -451,6 +465,24 @@ class StockPicking(models.Model):
                         })
             if self.get_mp_move or self.get_pt_move() and self.get_product_move():
                 m_move = self.get_mp_move()
+                if self.get_mp_move():
+                    lot = self.env['stock.move.line'].search([('move_id.id', '=', m_move.id)], limit=1)
+                    lot.lot_id.write({
+                        'available_kg': lot.qty_done
+                    })
+                    self.env['report.raw.lot'].sudo().create({
+                        'lot_id': lot.lot_id.id,
+                        'producer_id': lot.lot_id.producer_id.id,
+                        'product_id': lot.lot_id.product_id.id,
+                        'available_weight': lot.qty_done,
+                        'product_variety': lot.lot_id.product_id.get_variety(),
+                        'product_caliber': lot.lot_id.product_id.get_calibers(),
+                        'location_id': lot.location_dest_id.id,
+                        'guide_number': lot.picking_id.guide_number,
+                        'lot_harvest': self.harvest,
+                        'reception_weight': lot.lot_id.reception_weight,
+                        'available_series': len(lot.lot_id.stock_production_lot_serial_ids),
+                    })
                 if not m_move:
                     m_move = self.get_pt_move()
                 if not m_move:
@@ -459,6 +491,19 @@ class StockPicking(models.Model):
                     lot = self.env['stock.move.line'].search([('move_id.id', '=', m_move.id)], limit=1)
                     lot.lot_id.write({
                         'available_kg': lot.qty_done
+                    })
+                    self.env['report.raw.lot'].sudo().create({
+                        'lot_id': lot.lot_id.id,
+                        'producer_id': lot.lot_id.producer_id.id,
+                        'product_id': lot.lot_id.product_id.id,
+                        'available_weight': lot.qty_done,
+                        'product_variety': lot.lot_id.product_id.get_variety(),
+                        'product_caliber': lot.lot_id.product_id.get_calibers(),
+                        'location_id': lot.location_dest_id.id,
+                        'guide_number': lot.picking_id.guide_number,
+                        'lot_harvest': lot.lot_id.harvest,
+                        'reception_weight': lot.lot_id.reception_weight,
+                        'available_series': len(lot.lot_id.stock_production_lot_serial_ids),
                     })
             return res
         # Se usaran datos de modulo de dimabe_manufacturing
@@ -476,10 +521,10 @@ class StockPicking(models.Model):
                         'reserved_to_stock_picking_id': None
                     })
         elif self.picking_type_code == 'outgoing':
-            if all(s.consumed for s in self.packing_list_ids):
-                self.packing_list_ids.write({
-                    'consumed': False
-                })
+            # if all(s.consumed for s in self.packing_list_ids):
+            #     self.packing_list_ids.with_context(without_update=True).write({
+            #         'consumed': False
+            #     })
             if self.is_multiple_dispatch:
                 view = self.env.ref('dimabe_manufacturing.view_principal_order')
                 wiz = self.env['confirm.principal.order'].create({
@@ -499,10 +544,9 @@ class StockPicking(models.Model):
                     'res_id': wiz.id,
                     'context': self.env.context
                 }
-            for serial in self.packing_list_ids:
-                serial.sudo().write({
-                    'consumed': True
-                })
+            self.packing_list_ids.sudo().write({
+                'consumed': True
+            })
 
             if self.is_return:
                 line_id = self.move_line_ids_without_package.filtered(lambda x: x.lot_id)
@@ -517,7 +561,8 @@ class StockPicking(models.Model):
                     # quant_id = self.env['stock.quant'].sudo().search([('lot_id.id','=',lot_id.id)])
                     # quant_id.sudo().unlink()
                     # lot_id.sudo().unlink()
-        return super(StockPicking, self).button_validate()
+        res = super(StockPicking, self).button_validate()
+        return res
 
     def clean_reserved(self):
         for lot in self.move_line_ids_without_package.mapped('lot_id'):
@@ -528,10 +573,12 @@ class StockPicking(models.Model):
 
     @api.multi
     def action_done(self):
-        super(StockPicking, self).action_done()
+        res = super(StockPicking, self).action_done()
         if self.picking_type_code == 'outgoing':
             for lot in self.move_line_ids_without_package.mapped('lot_id'):
                 lot.update_stock_quant(self.location_id.id)
+
+        return res
 
     def clean_reserved(self):
         for lot in self.move_line_ids_without_package.mapped('lot_id'):
@@ -550,18 +597,6 @@ class StockPicking(models.Model):
     @api.model
     def validate_mp_reception(self):
         return True
-        # message = ''
-        # if not self.guide_number or not self.guide_number > 0:
-        #     message = 'debe agregar número de guía \n'
-        # if not self.weight_guide or not self.get_product_move():
-        #     message += 'debe agregar kilos guía \n'
-
-        # if not self.get_canning_move():
-        #     message += 'debe agregar envases'
-        # if not self.get_mp_move() and not self.get_pt_move() and not self.get_product_move():
-        #     message += 'debe agregar Materia a recepcionar'
-        # if message:
-        #     raise models.ValidationError(message)
 
     @api.multi
     def get_full_url(self):
@@ -641,3 +676,60 @@ class StockPicking(models.Model):
                         lambda x: not x.reserved_to_stock_picking_id and not x.consumed).mapped('display_weight')),
                     'location_id': location_id
                 })
+
+    def action_modify(self):
+        for item in self:
+            self.validate_lot()
+            if any(line.lot_id for line in item.move_line_ids_without_package):
+                item.move_line_ids_without_package.filtered(
+                    lambda x: x.lot_id).lot_id.sudo().stock_production_lot_serial_ids.sudo()
+                item.move_line_ids_without_package.filtered(
+                    lambda x: x.lot_id).lot_id.quant_ids.sudo().unlink()
+                item.move_line_ids_without_package.filtered(
+                    lambda x: x.lot_id).lot_id.sudo().unlink()
+            item.write({
+                'state': 'draft',
+            })
+            item.move_ids_without_package.sudo().write({
+                'state': 'draft',
+                'has_serial_generated': False
+            })
+            item.move_line_ids_without_package.sudo().write({
+                'state': 'draft'
+            })
+            item.move_line_ids_without_package.sudo().unlink()
+            item.message_post(f'Se procede a volver a habilitar la modificación de recepcion {item.name}',
+                              'Modificacion de recepción')
+
+    def action_delete(self):
+        for item in self:
+            self.validate_lot()
+            view_id = self.env.ref('dimabe_reception.delete_picking_lot_form_wizard_view')
+            lot_id = item.move_line_ids_without_package.mapped('lot_id')
+            wiz_id = self.env['delete.picking.lot'].sudo().create({
+                'picking_name': item.name,
+                'lot_name': lot_id.name,
+                'picking_id': item.id,
+                'picking_type_id': item.picking_type_id.id,
+                'user_id': self.env.uid,
+                'is_done': True,
+            })
+
+            return {
+                'name': f'Eliminar recepción {item.name}',
+                'type': 'ir.actions.act_window',
+                'view_type': 'form',
+                'view_mode': 'form',
+                'res_model': 'delete.picking.lot',
+                'target': 'new',
+                'res_id': wiz_id.id,
+                'context': self.env.context,
+                'views': [(view_id.id, 'form')]
+            }
+
+    def validate_lot(self):
+        for item in self:
+            lot_id = self.move_line_ids_without_package.mapped('lot_id')
+            if any(serial.consumed for serial in lot_id.stock_production_lot_serial_ids):
+                raise models.ValidationError(
+                    'No se puede realizar la acción, ya que el lote ya fue utilizado en un proceso de producción')

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="group_modify_delete_picking" model="res.groups">
+        <field name="name">Administración de recepción</field>
+    </record>
+</odoo>

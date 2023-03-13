@@ -20,3 +20,9 @@ class ResPartner(models.Model):
     def _compute_short_name(self):
         if self.name:
             self.short_name = self.name[0:25]
+
+    @api.model
+    def create(self, values_list):
+        res = super(ResPartner, self).create(values_list)
+        return res
+

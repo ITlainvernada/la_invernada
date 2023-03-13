@@ -1,6 +1,6 @@
 <odoo>
     <data>
-        <record id="stock_picking_form_inherit" model="ir.ui.view">
+        <record id="reception_stock_picking_form_inherit" model="ir.ui.view">
             <field name="name">Export Page</field>
             <field name="model">stock.picking</field>
             <field name="inherit_id" ref="stock.view_picking_form"/>
@@ -31,7 +31,6 @@
                            attrs="{'invisible':['&amp;','&amp;',('is_mp_reception', '=', False),('is_pt_reception','=',False),('is_satelite_reception','=',False)], 'readonly': [('state', '=', 'done')]}"
                     />
                     <field name="guide_number"
-                           attrs="{'invisible':['&amp;','&amp;',('is_mp_reception', '=', False),('is_pt_reception','=',False),('is_satelite_reception','=',False)], 'readonly': [('state', '=', 'done')]}"
                     />
                     <field name="weight_guide"
                            attrs="{'invisible':['&amp;','&amp;',('is_mp_reception', '=', False),('is_pt_reception','=',False),('is_satelite_reception','=',False)], 'readonly': 1}"
@@ -63,6 +62,8 @@
                             attrs="{'invisible':['&amp;','&amp;',('is_mp_reception', '=', False),('is_pt_reception','=',False),('is_satelite_reception','=',False),('gross_weight', '=', 0)], 'readonly': [('state', '=', 'done')]}"
                             confirm="¿Está seguro de modificar el peso tara?"
                     />
+                    <button type="object" groups="dimabe_reception.group_modify_delete_picking" attrs="{'invisible': [('state','!=','done')]}" string="Modificar" name="action_modify"/>
+                    <button type="object" groups="dimabe_reception.group_modify_delete_picking" attrs="{'invisible': [('state','!=','done')]}" string="Eliminar" name="action_delete"/>
                 </xpath>
                 <xpath expr="//page[@name='note']" position="after">
                     <page string="Transportista" name="carrier_page"

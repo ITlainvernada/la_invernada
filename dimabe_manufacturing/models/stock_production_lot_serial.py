@@ -6,7 +6,7 @@ import math
 
 class StockProductionLotSerial(models.Model):
     _inherit = 'stock.production.lot.serial'
-    
+
     # _sql_constraints = [
     #     ('serial_uniq', 'UNIQUE(serial_number)', 'la serie ya se encuentra en el sistema.')
     # ]
@@ -327,7 +327,6 @@ class StockProductionLotSerial(models.Model):
             months = item.label_durability_id.month_qty
             item.best_before_date = item.packaging_date + relativedelta(months=months)
 
-
     @api.model
     def create(self, values_list):
         if 'is_pallet' not in self.env.context.keys():
@@ -352,7 +351,7 @@ class StockProductionLotSerial(models.Model):
             res = super(StockProductionLotSerial, self).create(values_list)
             if res.display_weight == 0 and res.gross_weight == 0:
                 raise models.ValidationError('debe agregar un peso a la serie')
-    
+
             stock_move_line = self.env['stock.move.line'].search([
                 ('lot_id', '=', res.stock_production_lot_id.id),
                 ('lot_id.is_prd_lot', '=', True)
@@ -372,16 +371,16 @@ class StockProductionLotSerial(models.Model):
                 ])
                 work_order.sudo().write({
                     'out_weight': sum(
-                            work_order.summary_out_serial_ids.mapped('display_weight')),
-                        'pt_out_weight': sum(work_order.summary_out_serial_ids.filtered(
-                            lambda a: a.product_id.categ_id.parent_id.name == 'Producto Terminado').mapped(
-                            'display_weight'))
+                        work_order.summary_out_serial_ids.mapped('display_weight')),
+                    'pt_out_weight': sum(work_order.summary_out_serial_ids.filtered(
+                        lambda a: a.product_id.categ_id.parent_id.name == 'Producto Terminado').mapped(
+                        'display_weight'))
                 })
                 res.producer_id = res.stock_production_lot_id.producer_id.id
-    
+
                 if work_order.production_id:
                     production = work_order.production_id[0]
-    
+
             if production:
                 res.production_id = production.id
                 res.reserve_to_stock_picking_id = production.stock_picking_id.id
@@ -392,7 +391,7 @@ class StockProductionLotSerial(models.Model):
                 res.stock_production_lot_id.get_and_update(res.product_id.id)
                 res.stock_production_lot_id.update_kg(res.stock_production_lot_id.product_id.id)
             res.label_durability_id = res.stock_production_lot_id.label_durability_id
-    
+
             if res.bom_id:
                 if res.bom_id.product_id != res.product_id:
                     res.gross_weight = res.display_weight
@@ -406,6 +405,7 @@ class StockProductionLotSerial(models.Model):
                 res.stock_production_lot_id.update_kg(res.stock_production_lot_id.product_id.id)
         else:
             res = super(StockProductionLotSerial, self).create(values_list)
+
         return res
 
     @api.model
@@ -454,7 +454,7 @@ class StockProductionLotSerial(models.Model):
             lot.get_and_update(lot.product_id.id)
             if item.production_id and item.production_id.state != 'done':
                 production = self.env['mrp.production'].search([('id', '=', item.production_id.id)])
-                workorder = self.env['mrp.workorder'].search([('production_id','=',item.production_id.id)])
+                workorder = self.env['mrp.workorder'].search([('production_id', '=', item.production_id.id)])
                 workorder.sudo().write({
                     'out_weight': sum(
                         workorder.summary_out_serial_ids.mapped('display_weight')),
@@ -502,7 +502,6 @@ class StockProductionLotSerial(models.Model):
                 'res_id': wiz_id.id,
                 'context': self.env.context
             }
-
 
     @api.multi
     def get_full_url(self):

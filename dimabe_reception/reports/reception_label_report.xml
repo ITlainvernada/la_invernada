@@ -2,657 +2,657 @@
 
 <odoo>
 
-  <template id="report_reception_standard_label_template">
-    <t t-call="web.html_container">
-      <t t-foreach="docs" t-as="o">
-        <t t-if="o.get_mp_move()">
-          <t t-foreach="o.get_mp_move().move_line_ids" t-as="move_line">
-            <t t-foreach="move_line.lot_id.stock_production_lot_serial_ids" t-as="serial">
-              <div class="page">
-                <table style="font-size: 11px !important;">
-                  <tr>
-                    <td colspan="2" style="text-align: center; font-weight: bold;">
-                      <span t-field="move_line.product_id.name"/>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td style="text-align: right !important;">GROWER/PRODUCTOR:</td>
-                    <td>PACKED BY/EMBALADO POR</td>
-                  </tr>
-                  <tr>
-                    <td style="text-align: right !important;">
-                      <span t-field="o.partner_id.short_name"/>
-                    </td>
-                    <td>
-                      <span t-field="o.company_id.name"/>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td style="text-align: right !important;">
-                      CSG:
-                      <span t-field="o.partner_id.sag_code"/>
-                    </td>
-                    <td>
-                      CSP:
-                      <span t-field="o.company_id.sag_code"/>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td style="text-align: right !important;">
-                      PROVINCE/PROVINCIA:
-                      <span t-field="o.partner_id.state_id.name"/>
-                    </td>
-                    <td>
-                      PROVINCE/PROVINCIA:
-                      <span t-field="o.company_id.state_id.name"/>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td style="text-align: right !important;">
-                      TOWNSHIP/COMUNA:
-                      <span t-field="o.partner_id.city"/>
-                    </td>
-                    <td>
-                      TOWNSHIP/COMUNA:
-                      <span t-field="o.company_id.city"/>
-                    </td>
-                  </tr>
-                </table>
-                <p style="page-break-after:always;"></p>
-              </div>
+    <template id="report_reception_standard_label_template">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-if="o.get_mp_move()">
+                    <t t-foreach="o.get_mp_move().move_line_ids" t-as="move_line">
+                        <t t-foreach="move_line.lot_id.stock_production_lot_serial_ids" t-as="serial">
+                            <div class="page">
+                                <table style="font-size: 11px !important;">
+                                    <tr>
+                                        <td colspan="2" style="text-align: center; font-weight: bold;">
+                                            <span t-field="move_line.product_id.name"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align: right !important;">GROWER/PRODUCTOR:</td>
+                                        <td>PACKED BY/EMBALADO POR</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align: right !important;">
+                                            <span t-field="o.partner_id.short_name"/>
+                                        </td>
+                                        <td>
+                                            <span t-field="o.company_id.name"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align: right !important;">
+                                            CSG:
+                                            <span t-field="o.partner_id.sag_code"/>
+                                        </td>
+                                        <td>
+                                            CSP:
+                                            <span t-field="o.company_id.sag_code"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align: right !important;">
+                                            PROVINCE/PROVINCIA:
+                                            <span t-field="o.partner_id.state_id.name"/>
+                                        </td>
+                                        <td>
+                                            PROVINCE/PROVINCIA:
+                                            <span t-field="o.company_id.state_id.name"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align: right !important;">
+                                            TOWNSHIP/COMUNA:
+                                            <span t-field="o.partner_id.city"/>
+                                        </td>
+                                        <td>
+                                            TOWNSHIP/COMUNA:
+                                            <span t-field="o.company_id.city"/>
+                                        </td>
+                                    </tr>
+                                </table>
+                                <p style="page-break-after:always;"></p>
+                            </div>
+                        </t>
+                    </t>
+                </t>
+                <t t-if="o.get_pt_move()">
+                    <t t-foreach="o.get_pt_move().move_line_ids" t-as="move_line">
+                        <t t-foreach="move_line.lot_id.stock_production_lot_serial_ids" t-as="serial">
+                            <div class="page">
+                                <table style="font-size: 11px !important;">
+                                    <tr>
+                                        <td colspan="2" style="text-align: center; font-weight: bold;">
+                                            <span t-field="move_line.product_id.name"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align: right !important;">GROWER/PRODUCTOR:</td>
+                                        <td>PACKED BY/EMBALADO POR</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align: right !important;">
+                                            <span t-field="o.partner_id.short_name"/>
+                                        </td>
+                                        <td>
+                                            <span t-field="o.company_id.name"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align: right !important;">
+                                            CSG:
+                                            <span t-field="o.partner_id.sag_code"/>
+                                        </td>
+                                        <td>
+                                            CSP:
+                                            <span t-field="o.company_id.sag_code"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align: right !important;">
+                                            PROVINCE/PROVINCIA:
+                                            <span t-field="o.partner_id.state_id.name"/>
+                                        </td>
+                                        <td>
+                                            PROVINCE/PROVINCIA:
+                                            <span t-field="o.company_id.state_id.name"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align: right !important;">
+                                            TOWNSHIP/COMUNA:
+                                            <span t-field="o.partner_id.city"/>
+                                        </td>
+                                        <td>
+                                            TOWNSHIP/COMUNA:
+                                            <span t-field="o.company_id.city"/>
+                                        </td>
+                                    </tr>
+                                </table>
+                                <p style="page-break-after:always;"></p>
+                            </div>
+                        </t>
+                    </t>
+                </t>
             </t>
-          </t>
         </t>
-        <t t-if="o.get_pt_move()">
-          <t t-foreach="o.get_pt_move().move_line_ids" t-as="move_line">
-            <t t-foreach="move_line.lot_id.stock_production_lot_serial_ids" t-as="serial">
-              <div class="page">
-                <table style="font-size: 11px !important;">
-                  <tr>
-                    <td colspan="2" style="text-align: center; font-weight: bold;">
-                      <span t-field="move_line.product_id.name"/>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td style="text-align: right !important;">GROWER/PRODUCTOR:</td>
-                    <td>PACKED BY/EMBALADO POR</td>
-                  </tr>
-                  <tr>
-                    <td style="text-align: right !important;">
-                      <span t-field="o.partner_id.short_name"/>
-                    </td>
-                    <td>
-                      <span t-field="o.company_id.name"/>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td style="text-align: right !important;">
-                      CSG:
-                      <span t-field="o.partner_id.sag_code"/>
-                    </td>
-                    <td>
-                      CSP:
-                      <span t-field="o.company_id.sag_code"/>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td style="text-align: right !important;">
-                      PROVINCE/PROVINCIA:
-                      <span t-field="o.partner_id.state_id.name"/>
-                    </td>
-                    <td>
-                      PROVINCE/PROVINCIA:
-                      <span t-field="o.company_id.state_id.name"/>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td style="text-align: right !important;">
-                      TOWNSHIP/COMUNA:
-                      <span t-field="o.partner_id.city"/>
-                    </td>
-                    <td>
-                      TOWNSHIP/COMUNA:
-                      <span t-field="o.company_id.city"/>
-                    </td>
-                  </tr>
-                </table>
-                <p style="page-break-after:always;"></p>
-              </div>
-            </t>
-          </t>
-        </t>
-      </t>
-    </t>
-  </template>
+    </template>
 
-  <template id="report_reception_supplies_label_template">
-    <t t-call="web.html_container">
-      <t t-foreach="docs" t-as="o">
-        <t t-foreach="o.move_ids_without_package" t-as="move_line">
-          <table style="margin: 0">
-            <tr style="background-color: lightgray;">
-              <th style="padding:25px;text-align:left !important;">
-                <span t-field="move_line.product_id.display_name"/>
-                <br/>
-                <br/>
-                Fecha de Recepción:
-                <span t-field="o.date_done"/>
-              </th>
-            </tr>
-            <tr style="text-align:center">
-              <td>
-                <img style="margin-top: 25px;"
-                     t-att-src="'%s/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % (o.get_full_url(), 'Code128',o.name,450, 82)"
-                />
-                <div>
-                  <span t-field="o.name"/>
+    <template id="report_reception_supplies_label_template">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-foreach="o.move_ids_without_package" t-as="move_line">
+                    <table style="margin: 0">
+                        <tr style="background-color: lightgray;">
+                            <th style="padding:25px;text-align:left !important;">
+                                <span t-field="move_line.product_id.display_name"/>
+                                <br/>
+                                <br/>
+                                Fecha de Recepción:
+                                <span t-field="o.date_done"/>
+                            </th>
+                        </tr>
+                        <tr style="text-align:center">
+                            <td>
+                                <img style="margin-top: 25px;"
+                                     t-att-src="'%s/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % (o.get_full_url(), 'Code128',o.name,450, 82)"
+                                />
+                                <div>
+                                    <span t-field="o.name"/>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                    <t t-if="not o.move_ids_without_package[-1].id == move_line.id">
+                        <p style="page-break-after:always;"></p>
+                    </t>
+                    <t t-else="">
+                        <p style="page-break-after:avoid;"></p>
+                    </t>
+                </t>
+            </t>
+        </t>
+    </template>
+
+
+    <template id="report_reception_label_template">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-foreach="o.get_mp_move().move_line_ids" t-as="move_line">
+                    <t t-foreach="move_line.lot_id.stock_production_lot_serial_ids" t-as="serial">
+                        <div class="page">
+                            <table>
+                                <tr>
+                                    <td colspan="2">
+                                        <img
+                                                t-att-src="'data:image/png;base64,%s' % to_text(res_company.logo)"
+                                                style="width:100px !important;"
+                                        />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: right !important;">PRODUCTOR:</td>
+                                    <td>
+                                        <span t-field="o.partner_id.short_name"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: right !important;">CSG:</td>
+                                    <td>
+                                        <span t-field="o.partner_id.sag_code"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: right !important;">N° DE GUÍA:</td>
+                                    <td>
+                                        <span t-field="o.guide_number"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: right !important;">KILOS NETOS:</td>
+                                    <td>
+                                        <span t-field="serial.display_weight"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: right !important;">N° DE BULTOS:</td>
+                                    <td>
+                                        <span t-field="o.get_canning_move().quantity_done"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: right !important;">PRODUCTO:</td>
+                                    <td>
+                                        <span t-field="move_line.product_id.short_name"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: right !important;">VARIEDAD:</td>
+                                    <td>
+                                        <span t-esc="move_line.product_id.get_variety()"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: right !important;">ENVASE:</td>
+                                    <td>
+                                        <span t-esc="o.get_canning_move().name"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2">
+                                        <h3 style="text-align: center !important;">
+                                            N° SERIE:
+                                            <span t-field="serial.serial_number"/>
+                                        </h3>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2">
+                                        <img
+                                                t-att-src="'%s/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % (o.get_full_url(), 'Code128',serial.serial_number,450, 41)"
+                                        />
+                                    </td>
+                                </tr>
+                            </table>
+                            <t t-if="not move_line.lot_id.stock_production_lot_serial_ids[-1].serial_number == serial.serial_number">
+                                <p style="page-break-after:always;"></p>
+                            </t>
+                            <t t-else="">
+                                <p style="page-break-after:avoid;"></p>
+                            </t>
+                        </div>
+                    </t>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <template id="report_weighing_template">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <div class="page">
+                    <t t-foreach="o.get_mp_move().move_line_ids" t-as="move_line">
+                        <table style="width:100% !important; border:1px solid; text-align:center;">
+                            <tr style="padding: 10px;">
+                                <th>
+                                    DETALLE DE PESAJE
+                                </th>
+                                <th>
+                                    <img
+                                            t-att-src="'data:image/png;base64,%s' % to_text(res_company.logo)"
+                                            style="width:200px !important;"
+                                    />
+                                </th>
+                            </tr>
+                        </table>
+                        <table style="width:50% !important; border:1px solid;float:left; margin-top:15px">
+                            <tr>
+                                <th>Producto:</th>
+                                <th>
+                                    <span t-field="move_line.product_id.display_name"/>
+                                </th>
+                            </tr>
+                            <tr>
+                                <th>Productor:</th>
+                                <th>
+                                    <span t-field="o.partner_id.name"/>
+                                </th>
+                            </tr>
+                            <tr>
+                                <th>Fecha Recepción:</th>
+                                <th>
+                                    <span t-field="o.date_done"/>
+                                </th>
+                            </tr>
+                        </table>
+                        <table style="width:100% !important; border:1px solid;float:left;margin-top:15px;text-align:center">
+                            <tr>
+                                <th>Lote</th>
+                                <th>Serie</th>
+                                <th>Peso</th>
+                            </tr>
+                            <t t-foreach="move_line.lot_id.stock_production_lot_serial_ids" t-as="serial">
+                                <tr>
+                                    <td>
+                                        <span t-field="o.name"/>
+                                    </td>
+                                    <td>
+                                        <span t-field="serial.serial_number"/>
+                                    </td>
+                                    <td>
+                                        <span t-field="serial.display_weight"/>
+                                    </td>
+                                </tr>
+                            </t>
+                        </table>
+                    </t>
                 </div>
-              </td>
-            </tr>
-          </table>
-          <t t-if="not o.move_ids_without_package[-1].id == move_line.id">
-            <p style="page-break-after:always;"></p>
-          </t>
-          <t t-else="">
-            <p style="page-break-after:avoid;"></p>
-          </t>
-        </t>
-      </t>
-    </t>
-  </template>
-
-
-  <template id="report_reception_label_template">
-    <t t-call="web.html_container">
-      <t t-foreach="docs" t-as="o">
-        <t t-foreach="o.get_mp_move().move_line_ids" t-as="move_line">
-          <t t-foreach="move_line.lot_id.stock_production_lot_serial_ids" t-as="serial">
-            <div class="page">
-              <table>
-                <tr>
-                  <td colspan="2">
-                    <img
-                      t-att-src="'data:image/png;base64,%s' % to_text(res_company.logo)"
-                      style="width:100px !important;"
-                    />
-                  </td>
-                </tr>
-                <tr>
-                  <td style="text-align: right !important;">PRODUCTOR:</td>
-                  <td>
-                    <span t-field="o.partner_id.short_name"/>
-                  </td>
-                </tr>
-                <tr>
-                  <td style="text-align: right !important;">CSG:</td>
-                  <td>
-                    <span t-field="o.partner_id.sag_code"/>
-                  </td>
-                </tr>
-                <tr>
-                  <td style="text-align: right !important;">N° DE GUÍA:</td>
-                  <td>
-                    <span t-field="o.guide_number"/>
-                  </td>
-                </tr>
-                <tr>
-                  <td style="text-align: right !important;">KILOS NETOS:</td>
-                  <td>
-                    <span t-field="serial.display_weight"/>
-                  </td>
-                </tr>
-                <tr>
-                  <td style="text-align: right !important;">N° DE BULTOS:</td>
-                  <td>
-                    <span t-field="o.get_canning_move().quantity_done"/>
-                  </td>
-                </tr>
-                <tr>
-                  <td style="text-align: right !important;">PRODUCTO:</td>
-                  <td>
-                    <span t-field="move_line.product_id.short_name"/>
-                  </td>
-                </tr>
-                <tr>
-                  <td style="text-align: right !important;">VARIEDAD:</td>
-                  <td>
-                    <span t-esc="move_line.product_id.get_variety()"/>
-                  </td>
-                </tr>
-                <tr>
-                  <td style="text-align: right !important;">ENVASE:</td>
-                  <td>
-                    <span t-esc="o.get_canning_move().name"/>
-                  </td>
-                </tr>
-                <tr>
-                  <td colspan="2">
-                    <h3 style="text-align: center !important;">
-                      N° SERIE:
-                      <span t-field="serial.serial_number"/>
-                    </h3>
-                  </td>
-                </tr>
-                <tr>
-                  <td colspan="2">
-                    <img
-                      t-att-src="'%s/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % (o.get_full_url(), 'Code128',serial.serial_number,450, 41)"
-                    />
-                  </td>
-                </tr>
-              </table>
-              <t t-if="not move_line.lot_id.stock_production_lot_serial_ids[-1].serial_number == serial.serial_number">
-                <p style="page-break-after:always;"></p>
-              </t>
-              <t t-else="">
-                <p style="page-break-after:avoid;"></p>
-              </t>
-            </div>
-          </t>
-        </t>
-      </t>
-    </t>
-  </template>
-
-  <template id="report_weighing_template">
-    <t t-call="web.html_container">
-      <t t-foreach="docs" t-as="o">
-        <div class="page">
-          <t t-foreach="o.get_mp_move().move_line_ids" t-as="move_line">
-            <table style="width:100% !important; border:1px solid; text-align:center;">
-              <tr style="padding: 10px;">
-                <th>
-                  DETALLE DE PESAJE
-                </th>
-                <th>
-                  <img
-                    t-att-src="'data:image/png;base64,%s' % to_text(res_company.logo)"
-                    style="width:200px !important;"
-                  />
-                </th>
-              </tr>
-            </table>
-            <table style="width:50% !important; border:1px solid;float:left; margin-top:15px">
-              <tr>
-                <th>Producto:</th>
-                <th>
-                  <span t-field="move_line.product_id.display_name"/>
-                </th>
-              </tr>
-              <tr>
-                <th>Productor:</th>
-                <th>
-                  <span t-field="o.partner_id.name"/>
-                </th>
-              </tr>
-              <tr>
-                <th>Fecha Recepción:</th>
-                <th>
-                  <span t-field="o.date_done"/>
-                </th>
-              </tr>
-            </table>
-            <table style="width:100% !important; border:1px solid;float:left;margin-top:15px;text-align:center">
-              <tr>
-                <th>Lote</th>
-                <th>Serie</th>
-                <th>Peso</th>
-              </tr>
-              <t t-foreach="move_line.lot_id.stock_production_lot_serial_ids" t-as="serial">
-                <tr>
-                  <td>
-                    <span t-field="o.name"/>
-                  </td>
-                  <td>
-                    <span t-field="serial.serial_number"/>
-                  </td>
-                  <td>
-                    <span t-field="serial.display_weight"/>
-                  </td>
-                </tr>
-              </t>
-            </table>
-          </t>
-        </div>
-      </t>
-    </t>
-  </template>
-
-  <template id="report_quality_label">
-    <t t-call="web.html_container">
-      <div class="page">
-        <t t-foreach="docs" t-as="o">
-          <t t-if="len(o.get_mp_move().move_line_ids) > 0">
-            <t t-foreach="o.get_mp_move().move_line_ids[0]" t-as="move_line">
-              <table>
-                <tr>
-                  <td colspan="2">
-                    <img
-                      t-att-src="'data:image/png;base64,%s' % to_text(res_company.logo)"
-                      style="width:100px !important;"
-                    />
-                  </td>
-                </tr>
-                <tr>
-                  <td style="text-align: right !important;">PRODUCTOR:</td>
-                  <td>
-                    <span t-field="o.partner_id.short_name"/>
-                  </td>
-                </tr>
-                <tr>
-                  <td style="text-align: right !important;">CSG:</td>
-                  <td>
-                    <span t-field="o.partner_id.sag_code"/>
-                  </td>
-                </tr>
-                <tr>
-                  <td style="text-align: right !important;">N° DE GUÍA:</td>
-                  <td>
-                    <span t-field="o.guide_number"/>
-                  </td>
-                </tr>
-                <tr>
-                  <td style="text-align: right !important;">N° DE BULTOS:</td>
-                  <td>
-                    <span t-field="o.get_canning_move().quantity_done"/>
-                  </td>
-                </tr>
-                <tr>
-                  <td style="text-align: right !important;">PRODUCTO:</td>
-                  <td>
-                    <span t-field="move_line.product_id.short_name"/>
-                  </td>
-                </tr>
-                <tr>
-                  <td style="text-align: right !important;">VARIEDAD:</td>
-                  <td>
-                    <span t-esc="move_line.product_id.get_variety()"/>
-                  </td>
-                </tr>
-                <tr>
-                  <td style="text-align: right !important;">ENVASE:</td>
-                  <td>
-                    <span t-field="o.get_canning_move().product_id.name"/>
-                  </td>
-                </tr>
-                <tr>
-                  <td colspan="2">
-                    <h2 style="text-align: center !important;">
-                      LOTE N°:
-                      <span t-field="o.name"/>
-                    </h2>
-                  </td>
-                </tr>
-                <tr>
-                  <td colspan="2">
-                    <img
-                      t-att-src="'%s/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % (o.get_full_url(), 'Code128',o.name,450, 40)"
-                    />
-                  </td>
-                </tr>
-              </table>
-              <p style="page-break-after:avoid;"></p>
             </t>
-          </t>
         </t>
-      </div>
-    </t>
-  </template>
-  <template id="report_weighing_ticket">
-    <t t-call="web.html_container">
-      <div class="page">
-        <t t-foreach="docs" t-as="stock_picking">
-          <table style="width:100% !important; border:1px solid; text-align:center;">
-            <tr style="padding: 10px;">
-              <th>
-                INFORME TICKET DE PESAJE
-              </th>
-              <th>
-                <img
-                  t-att-src="'data:image/png;base64,%s' % to_text(res_company.logo)"
-                  style="width:200px !important;"
-                />
-              </th>
-            </tr>
-          </table>
-          <br/>
-          <table style="width:100% !important; border:1px solid;">
-            <tr>
-              <th>N° DE INFORME:
-                <span t-field="stock_picking.id"/>
-              </th>
-              <th>FECHA:
-                <t t-if="stock_picking.truck_in_date">
-                  <span t-esc="context_timestamp(stock_picking.date_done).strftime('%d-%m-%Y')"/>
-                </t>
-              </th>
-              <th>HORA:
-                <t t-if="stock_picking.truck_in_date">
-                  <span t-esc="context_timestamp(stock_picking.date_done).strftime('%H:%M')"/>
-                </t>
-              </th>
-              <th>N° GUÍA:
-                <span t-field="stock_picking.guide_number"/>
-              </th>
-            </tr>
-          </table>
-          <br/>
-          <div style="position:relative; width:100%;overflow:hidden">
-            <div style="width:50%;float:left;">
-              <table style="text-align:left; border: 1px solid;width:100%;">
-                <tr>
-                  <th style="border-right:1px solid;">PRODUCTOR:</th>
-                  <td>
-                    <span t-field="stock_picking.partner_id.name"/>
-                  </td>
-                </tr>
-                <tr>
-                  <th style="border-right:1px solid;">DIRECCÍON:</th>
-                  <td>
-                    <span t-field="stock_picking.partner_id.street"/>
-                  </td>
-                </tr>
-                <tr>
-                  <th style="border-right:1px solid;">PROVINCIA:</th>
-                  <td>
-                    <span t-field="stock_picking.partner_id.state_id.name"/>
-                  </td>
-                </tr>
-                <tr>
-                  <th style="border-right:1px solid;">COMUNA:</th>
-                  <td>
-                    <span t-field="stock_picking.partner_id.city"/>
-                  </td>
-                </tr>
-              </table>
-            </div>
-            <div style="width:50%;float:left" cellspacing="0">
-              <table style="text-align:left; border: 1px solid;width:85%;margin-left:15%;">
-                <tr>
-                  <th style="border-right:1px solid;">PESO BRUTO:</th>
-                  <td style="text-align:right !important;">
-                    <span t-field="stock_picking.gross_weight"/>
-                  </td>
-                </tr>
-                <tr>
-                  <th style="border-right:1px solid;">PESO ENVASES:</th>
-                  <td style="text-align:right !important;">
-                    <span t-field="stock_picking.canning_weight"/>
-                  </td>
-                </tr>
-                <tr>
-                  <th style="border-right:1px solid;">PESO TARA:</th>
-                  <td style="text-align:right !important;">
-                    <span t-field="stock_picking.tare_weight"/>
-                  </td>
-                </tr>
-                <tr>
-                  <th style="border-right:1px solid;">KILOS MUESTRA:</th>
-                  <td style="text-align:right !important;">
-                    <span t-field="stock_picking.quality_weight"/>
-                  </td>
-                </tr>
-                <tr>
-                  <th style="border-right:1px solid;">PESO NETO:</th>
-                  <td style="text-align:right !important;">
-                    <span t-field="stock_picking.net_weight"/>
-                  </td>
-                </tr>
-              </table>
-            </div>
-          </div>
+    </template>
 
-          <br/>
-          <div style="width:100%; position:relative;">
-            <table style="border:1px solid;width:50%;">
-              <tr>
-                <th style="border-right: 1px solid;">TIPO DE ENVASE:</th>
-                <td>
-                  <span t-field="stock_picking.get_canning_move().product_id.display_name"/>
-                </td>
-              </tr>
-              <tr>
-                <th style="border-right: 1px solid;">PRODUCTO:</th>
-                <td>
-                  <span t-field="stock_picking.get_mp_move().product_id.display_name"/>
-                </td>
-              </tr>
-            </table>
-          </div>
-
-          <br/>
-          <h2>DETALLE DE TRANSPORTISTA</h2>
-          <br/>
-          <table
-            style="text-align:left; border-left:1px solid; border-right:1px solid; border-top:1px solid;width:50%;">
-            <tr>
-              <th style="border-right:1px solid;border-bottom:1px solid;">CONDUCTOR:</th>
-              <!-- <td style="border-bottom:1px solid;width:50%;">
-                <span t-field="stock_picking.carrier_id"/>
-              </td> -->
-            </tr>
-            <tr>
-              <th style="border-right:1px solid;border-bottom:1px solid;">RUT:</th>
-              <td style="border-bottom:1px solid;">
-                <span t-field="stock_picking.carrier_rut"/>
-              </td>
-            </tr>
-            <tr>
-              <th style="border-right:1px solid;border-bottom:1px solid;">CELULAR:</th>
-              <td style="border-bottom:1px solid;">
-                <span t-field="stock_picking.carrier_cell_phone"/>
-              </td>
-            </tr>
-            <tr>
-              <th style="border-right:1px solid;border-bottom:1px solid;">PATENTE CAMIÓN:</th>
-              <td style="border-bottom:1px solid;">
-                <span t-field="stock_picking.carrier_truck_patent"/>
-              </td>
-            </tr>
-            <tr>
-              <th style="border-right:1px solid;border-bottom:1px solid;">PATENTE CARRO:</th>
-              <td style="border-bottom:1px solid;">
-                <span t-field="stock_picking.carrier_cart_patent"/>
-              </td>
-            </tr>
-          </table>
-          <table style="width: 100%; text-align:center;margin-top:150px;">
-            <tr>
-              <td style="border-top: 1px dashed;">
-                FIRMA TRANSPORTISTA
-              </td>
-              <td style="width: 30px;"></td>
-              <td style="border-top: 1px dashed;">
-                FIRMA ROMANERO
-              </td>
-            </tr>
-          </table>
+    <template id="report_quality_label">
+        <t t-call="web.html_container">
+            <div class="page">
+                <t t-foreach="docs" t-as="o">
+                    <t t-if="len(o.get_mp_move().move_line_ids) > 0">
+                        <t t-foreach="o.get_mp_move().move_line_ids[0]" t-as="move_line">
+                            <table>
+                                <tr>
+                                    <td colspan="2">
+                                        <img
+                                                t-att-src="'data:image/png;base64,%s' % to_text(res_company.logo)"
+                                                style="width:100px !important;"
+                                        />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: right !important;">PRODUCTOR:</td>
+                                    <td>
+                                        <span t-field="o.partner_id.short_name"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: right !important;">CSG:</td>
+                                    <td>
+                                        <span t-field="o.partner_id.sag_code"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: right !important;">N° DE GUÍA:</td>
+                                    <td>
+                                        <span t-field="o.guide_number"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: right !important;">N° DE BULTOS:</td>
+                                    <td>
+                                        <span t-field="o.get_canning_move().quantity_done"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: right !important;">PRODUCTO:</td>
+                                    <td>
+                                        <span t-field="move_line.product_id.short_name"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: right !important;">VARIEDAD:</td>
+                                    <td>
+                                        <span t-esc="move_line.product_id.get_variety()"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: right !important;">ENVASE:</td>
+                                    <td>
+                                        <span t-field="o.get_canning_move().product_id.name"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2">
+                                        <h2 style="text-align: center !important;">
+                                            LOTE N°:
+                                            <span t-field="o.name"/>
+                                        </h2>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2">
+                                        <img
+                                                t-att-src="'%s/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % (o.get_full_url(), 'Code128',o.name,450, 40)"
+                                        />
+                                    </td>
+                                </tr>
+                            </table>
+                            <p style="page-break-after:avoid;"></p>
+                        </t>
+                    </t>
+                </t>
+            </div>
         </t>
-      </div>
-    </t>
-  </template>
+    </template>
+    <template id="report_weighing_ticket">
+        <t t-call="web.html_container">
+            <div class="page">
+                <t t-foreach="docs" t-as="stock_picking">
+                    <table style="width:100% !important; border:1px solid; text-align:center;">
+                        <tr style="padding: 10px;">
+                            <th>
+                                INFORME TICKET DE PESAJE
+                            </th>
+                            <th>
+                                <img
+                                        t-att-src="'data:image/png;base64,%s' % to_text(res_company.logo)"
+                                        style="width:200px !important;"
+                                />
+                            </th>
+                        </tr>
+                    </table>
+                    <br/>
+                    <table style="width:100% !important; border:1px solid;">
+                        <tr>
+                            <th>N° DE INFORME:
+                                <span t-field="stock_picking.id"/>
+                            </th>
+                            <th>FECHA:
+                                <t t-if="stock_picking.truck_in_date">
+                                    <span t-esc="context_timestamp(stock_picking.date_done).strftime('%d-%m-%Y')"/>
+                                </t>
+                            </th>
+                            <th>HORA:
+                                <t t-if="stock_picking.truck_in_date">
+                                    <span t-esc="context_timestamp(stock_picking.date_done).strftime('%H:%M')"/>
+                                </t>
+                            </th>
+                            <th>N° GUÍA:
+                                <span t-field="stock_picking.guide_number"/>
+                            </th>
+                        </tr>
+                    </table>
+                    <br/>
+                    <div style="position:relative; width:100%;overflow:hidden">
+                        <div style="width:50%;float:left;">
+                            <table style="text-align:left; border: 1px solid;width:100%;">
+                                <tr>
+                                    <th style="border-right:1px solid;">PRODUCTOR:</th>
+                                    <td>
+                                        <span t-field="stock_picking.partner_id.name"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th style="border-right:1px solid;">DIRECCÍON:</th>
+                                    <td>
+                                        <span t-field="stock_picking.partner_id.street"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th style="border-right:1px solid;">PROVINCIA:</th>
+                                    <td>
+                                        <span t-field="stock_picking.partner_id.state_id.name"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th style="border-right:1px solid;">COMUNA:</th>
+                                    <td>
+                                        <span t-field="stock_picking.partner_id.city"/>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div style="width:50%;float:left" cellspacing="0">
+                            <table style="text-align:left; border: 1px solid;width:85%;margin-left:15%;">
+                                <tr>
+                                    <th style="border-right:1px solid;">PESO BRUTO:</th>
+                                    <td style="text-align:right !important;">
+                                        <span t-field="stock_picking.gross_weight"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th style="border-right:1px solid;">PESO ENVASES:</th>
+                                    <td style="text-align:right !important;">
+                                        <span t-field="stock_picking.canning_weight"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th style="border-right:1px solid;">PESO TARA:</th>
+                                    <td style="text-align:right !important;">
+                                        <span t-field="stock_picking.tare_weight"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th style="border-right:1px solid;">KILOS MUESTRA:</th>
+                                    <td style="text-align:right !important;">
+                                        <span t-field="stock_picking.quality_weight"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th style="border-right:1px solid;">PESO NETO:</th>
+                                    <td style="text-align:right !important;">
+                                        <span t-field="stock_picking.net_weight"/>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
 
-  <record id="paper_format_10_x_7"
-          model="report.paperformat">
-    <field name="name">Etiqueta 10x7</field>
-    <field name="default" eval="False"/>
-    <field name="format">custom</field>
-    <field name="page_height">71</field>
-    <field name="page_width">100</field>
-    <field name="orientation">Portrait</field>
-    <field name="margin_top">5</field>
-    <field name="margin_bottom">5</field>
-    <field name="margin_left">5</field>
-    <field name="margin_right">5</field>
-    <field name="header_line" eval="False"/>
-    <field name="header_spacing">0</field>
-    <field name="dpi">90</field>
-  </record>
+                    <br/>
+                    <div style="width:100%; position:relative;">
+                        <table style="border:1px solid;width:50%;">
+                            <tr>
+                                <th style="border-right: 1px solid;">TIPO DE ENVASE:</th>
+                                <td>
+                                    <span t-field="stock_picking.get_canning_move().product_id.display_name"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th style="border-right: 1px solid;">PRODUCTO:</th>
+                                <td>
+                                    <span t-field="stock_picking.get_mp_move().product_id.display_name"/>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <br/>
+                    <h2>DETALLE DE TRANSPORTISTA</h2>
+                    <br/>
+                    <table
+                            style="text-align:left; border-left:1px solid; border-right:1px solid; border-top:1px solid;width:50%;">
+                        <tr>
+                            <th style="border-right:1px solid;border-bottom:1px solid;">CONDUCTOR:</th>
+                            <!-- <td style="border-bottom:1px solid;width:50%;">
+                              <span t-field="stock_picking.carrier_id"/>
+                            </td> -->
+                        </tr>
+                        <tr>
+                            <th style="border-right:1px solid;border-bottom:1px solid;">RUT:</th>
+                            <td style="border-bottom:1px solid;">
+                                <span t-field="stock_picking.carrier_rut"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th style="border-right:1px solid;border-bottom:1px solid;">CELULAR:</th>
+                            <td style="border-bottom:1px solid;">
+                                <span t-field="stock_picking.carrier_cell_phone"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th style="border-right:1px solid;border-bottom:1px solid;">PATENTE CAMIÓN:</th>
+                            <td style="border-bottom:1px solid;">
+                                <span t-field="stock_picking.carrier_truck_patent"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th style="border-right:1px solid;border-bottom:1px solid;">PATENTE CARRO:</th>
+                            <td style="border-bottom:1px solid;">
+                                <span t-field="stock_picking.carrier_cart_patent"/>
+                            </td>
+                        </tr>
+                    </table>
+                    <table style="width: 100%; text-align:center;margin-top:150px;">
+                        <tr>
+                            <td style="border-top: 1px dashed;">
+                                FIRMA TRANSPORTISTA
+                            </td>
+                            <td style="width: 30px;"></td>
+                            <td style="border-top: 1px dashed;">
+                                FIRMA ROMANERO
+                            </td>
+                        </tr>
+                    </table>
+                </t>
+            </div>
+        </t>
+    </template>
+
+    <record id="paper_format_10_x_7"
+            model="report.paperformat">
+        <field name="name">Etiqueta 10x7</field>
+        <field name="default" eval="False"/>
+        <field name="format">custom</field>
+        <field name="page_height">71</field>
+        <field name="page_width">100</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">5</field>
+        <field name="margin_bottom">5</field>
+        <field name="margin_left">5</field>
+        <field name="margin_right">5</field>
+        <field name="header_line" eval="False"/>
+        <field name="header_spacing">0</field>
+        <field name="dpi">90</field>
+    </record>
 
 
-  <record id="paper_format_10_x_7_without_margin"
-          model="report.paperformat">
-    <field name="name">Etiqueta 10x7</field>
-    <field name="default" eval="False"/>
-    <field name="format">custom</field>
-    <field name="page_height">71</field>
-    <field name="page_width">100</field>
-    <field name="orientation">Portrait</field>
-    <field name="margin_top">0</field>
-    <field name="margin_bottom">0</field>
-    <field name="margin_left">0</field>
-    <field name="margin_right">0</field>
-    <field name="header_line" eval="False"/>
-    <field name="header_spacing">0</field>
-    <field name="dpi">90</field>
-  </record>
+    <record id="paper_format_10_x_7_without_margin"
+            model="report.paperformat">
+        <field name="name">Etiqueta 10x7</field>
+        <field name="default" eval="False"/>
+        <field name="format">custom</field>
+        <field name="page_height">71</field>
+        <field name="page_width">100</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">0</field>
+        <field name="margin_bottom">0</field>
+        <field name="margin_left">0</field>
+        <field name="margin_right">0</field>
+        <field name="header_line" eval="False"/>
+        <field name="header_spacing">0</field>
+        <field name="dpi">90</field>
+    </record>
 
-  <report id="action_reception_report_weighing_template"
-          string="Detalle De Pesaje"
-          model="stock.picking"
-          report_type="qweb-pdf"
-          name="dimabe_reception.report_weighing_template"
-  />
-
-
-  <report id="action_reception_weighing_ticket_report"
-          string="Ticket De Pesaje"
-          model="stock.picking"
-          report_type="qweb-pdf"
-          name="dimabe_reception.report_weighing_ticket"
-  />
-
-  <report id="action_reception_label_report"
-          string="Etiquetas de Recepción"
-          model="stock.picking"
-          report_type="qweb-pdf"
-          name="dimabe_reception.report_reception_label_template"
-          paperformat="paper_format_10_x_7"
-  />
+    <report id="action_reception_report_weighing_template"
+            string="Detalle De Pesaje"
+            model="stock.picking"
+            report_type="qweb-pdf"
+            name="dimabe_reception.report_weighing_template"
+    />
 
 
-  <report id="action_report_reception_supplies_label_template"
-          string="Etiquetas de insumo"
-          model="stock.picking"
-          report_type="qweb-pdf"
-          name="dimabe_reception.report_reception_supplies_label_template"
-          paperformat="paper_format_10_x_7_without_margin"
-  />
+    <report id="action_reception_weighing_ticket_report"
+            string="Ticket De Pesaje"
+            model="stock.picking"
+            report_type="qweb-pdf"
+            name="dimabe_reception.report_weighing_ticket"
+    />
 
-  <report id="report_reception_standard_label_report"
-          string="Etiquetas PT"
-          model="stock.picking"
-          report_type="qweb-pdf"
-          name="dimabe_reception.report_reception_standard_label_template"
-          paperformat="paper_format_10_x_7"
-  />
+    <report id="action_reception_label_report"
+            string="Etiquetas de Recepción"
+            model="stock.picking"
+            report_type="qweb-pdf"
+            name="dimabe_reception.report_reception_label_template"
+            paperformat="paper_format_10_x_7"
+    />
 
-  <report id="action_reception_quality_label_report"
-          string="Etiqueta para Calidad"
-          model="stock.picking"
-          report_type="qweb-pdf"
-          name="dimabe_reception.report_quality_label"
-          paperformat="paper_format_10_x_7"
-  />
+
+    <report id="action_report_reception_supplies_label_template"
+            string="Etiquetas de insumo"
+            model="stock.picking"
+            report_type="qweb-pdf"
+            name="dimabe_reception.report_reception_supplies_label_template"
+            paperformat="paper_format_10_x_7_without_margin"
+    />
+
+    <report id="report_reception_standard_label_report"
+            string="Etiquetas PT"
+            model="stock.picking"
+            report_type="qweb-pdf"
+            name="dimabe_reception.report_reception_standard_label_template"
+            paperformat="paper_format_10_x_7"
+    />
+
+    <report id="action_reception_quality_label_report"
+            string="Etiqueta para Calidad"
+            model="stock.picking"
+            report_type="qweb-pdf"
+            name="dimabe_reception.report_quality_label"
+            paperformat="paper_format_10_x_7"
+    />
 
 </odoo>

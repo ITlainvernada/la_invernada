@@ -281,6 +281,16 @@ class StockProductionLot(models.Model):
 
     is_drying = fields.Boolean('Esta secando?', compute='compute_is_drying')
 
+    correlative_serial = fields.Char('Correlativo de Serie')
+
+    serial_to_select_ids = fields.Many2many('stock.production.lot.serial', string='Series',
+                                            compute='compute_serial_to_select_ids')
+
+    def compute_serial_to_select_ids(self):
+        for item in self:
+            item.serial_to_select_ids = item.stock_production_lot_serial_ids.filtered(
+                lambda x: not x.reserved_to_stock_picking_id)
+
     @api.multi
     def compute_is_drying(self):
         for item in self:
@@ -947,6 +957,7 @@ class StockProductionLot(models.Model):
             'view_mode': 'form',
             'views': [(self.env.ref('dimabe_manufacturing.available_lot_form_view').id, 'form')],
             'target': 'new',
+            'nodestroy': True,
             'context': self.env.context
         }
 
@@ -992,8 +1003,9 @@ class StockProductionLot(models.Model):
             lambda a: a.lot_id.id == self.id and a.product_id.id == self.product_id.id)
 
         if line:
-            line.write({
-                'product_uom_qty': self.get_reserved_quantity_by_picking(picking_id)
+            test = self.get_reserved_quantity_by_picking(picking.id)
+            line.sudo().write({
+                'product_uom_qty': self.get_reserved_quantity_by_picking(picking.id)
             })
         else:
             line_create = self.env['stock.move.line'].create({
@@ -1016,6 +1028,12 @@ class StockProductionLot(models.Model):
                 'real_dispatch_qty': self.get_reserved_quantity_by_picking(picking.id),
                 'move_line_ids': [(4, line_create.id)] if not line else [(4, line.id)]
             })
+        picking.write({
+            'lot_search_id': None
+        })
+        self.write({
+            'correlative_serial': None
+        })
 
     def add_selection_serial(self, picking_id, location_id):
         pallets = self.stock_production_lot_serial_ids.filtered(
@@ -1256,3 +1274,43 @@ class StockProductionLot(models.Model):
             quant = self.env['stock.quant'].search([('lot_id.id', '=', lot.id), ('location_id.usage', '=', 'internal')])
             if quant:
                 quant.sudo().unlink()
+
+    @api.multi
+    def select_serial(self):
+        for item in self:
+            view = self.env.ref('dimabe_manufacturing.available_lot_form_view_serial_selected')
+            if item.correlative_serial or item.correlative_serial != '':
+                serials = []
+                if ',' in item.correlative_serial:
+                    serials = item.correlative_serial.split(',')
+                else:
+                    serials.append(item.correlative_serial)
+                for serial in serials:
+                    serial_number = f'{item.name}{serial}'
+                    serial_id = self.env['stock.production.lot.serial'].sudo().search(
+                        [('serial_number', '=', serial_number)])
+                    if not serial_id:
+                        raise models.ValidationError(f'El correlativo {serial} no esta presente en el lote')
+                    if serial_id.consumed:
+                        raise models.ValidationError(
+                            f'El correlativo {serial} ya fue utilizada en el despacho {serial_id.reserved_to_stock_picking_id.name}')
+                    if serial_id.reserved_to_stock_picking_id:
+                        raise models.ValidationError(
+                            f'El correlativo {serial} ya se encuentra reservado en el despacho {serial_id.reserved_to_stock_picking_id.name}'
+                        )
+                    if serial_id.to_add:
+                        raise models.ValidationError(f'El correlativo {serial} ya fue seleccionado')
+                    serial_id.write({
+                        'to_add': True
+                    })
+                item.write({
+                    'correlative_serial': None,
+                })
+                return {
+                    'type': 'ir.actions.act_window',
+                    'view_mode': 'form',
+                    'res_model': self._inherit,
+                    'target': 'new',
+                    'views': [(view.id, 'form')],
+                    'res_id': self.id
+                }

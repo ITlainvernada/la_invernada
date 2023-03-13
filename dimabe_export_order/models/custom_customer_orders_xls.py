@@ -15,6 +15,7 @@ class CustomCustomerOrdersXls(models.TransientModel):
 
     @api.multi
     def generate_orders_file(self):
+        raise models.ValidationError('Pasa por nuestro codigo')
         file_name = 'temp.xlsx'
         workbook = xlsxwriter.Workbook(file_name)
         # if not self.for_year or self.for_year == 0:
