@@ -97,6 +97,17 @@ class StockPicking(models.Model):
 
     name_orders = fields.Char('Nombre de pedidos', compute='compute_name_orders')
 
+    show_guide_in_form = fields.Boolean('Mostrar guia de despacho', compute='compute_show_guide_in_form', store=True)
+
+    @api.depends('picking_type_id')
+    def compute_show_guide_in_form(self):
+        for item in self:
+            if item.picking_type_id.show_in_canning_report:
+                if item.picking_type_id.code == 'incoming':
+                    item.show_guide_in_form = True
+                    return
+            item.show_guide_in_form = False
+            return
 
 
     # Compute Methods
