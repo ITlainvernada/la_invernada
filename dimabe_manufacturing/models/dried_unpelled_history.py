@@ -282,10 +282,6 @@ class DriedUnpelledHistory(models.Model):
                 res.origin_location_id = unpelled_dried_id.origin_location_id.id
                 res.dest_location_id = unpelled_dried_id.dest_location_id.id
                 res.canning_id = unpelled_dried_id.canning_id
-
-
-
-        self.set_lot_to_quality_api(res)
         return res
 
     def get_quality_login_token(self):
@@ -304,7 +300,7 @@ class DriedUnpelledHistory(models.Model):
             return token
         return False
 
-    def set_lot_to_quality_api(self, model):
+    def set_lot_to_quality_api(self):
         token = self.get_quality_login_token()
         if token:
             bearer = 'Bearer {}'.format(token)
@@ -314,22 +310,22 @@ class DriedUnpelledHistory(models.Model):
                 "Authorization": bearer
             }
             json_data = {
-                "ProducerCode": model.producer_id.id,
-                "ProducerName": model.producer_id.name,
-                "VarietyName": model.in_product_variety,
-                "LotNumber": model.out_lot_id.name,
-                "DispatchGuideNumber": model.lot_guide_numbers,
-                "ReceptionDate": self.time_to_tz_naive(model.finish_date, pytz.utc,
-                                                       model.timezone("America/Santiago")),
-                "ReceptionKgs": model.total_out_weight,
-                "ContainerType": model.canning_id.display_name,
-                "ContainerWeightAverage": model.total_out_weight / model.out_serial_count,
-                "ContainerWeight": model.canning_id.weight,
-                "Season": model.finish_date.year,
-                "Warehouse": model.sudo().picking_type_id.name,
-                "ContainerQuantity": model.out_serial_count,
-                "ArticleCode": model.out_product_id.default_code,
-                "ArticleDescription": model.out_product_id.name
+                "ProducerCode": self.producer_id.id,
+                "ProducerName": self.producer_id.name,
+                "VarietyName": self.in_product_variety,
+                "LotNumber": self.out_lot_id.name,
+                "DispatchGuideNumber": self.lot_guide_numbers,
+                "ReceptionDate": self.time_to_tz_naive(self.finish_date, pytz.utc,
+                                                       self.timezone("America/Santiago")),
+                "ReceptionKgs": self.total_out_weight,
+                "ContainerType": self.canning_id.display_name,
+                "ContainerWeightAverage":  self.total_out_weight / self.out_serial_count if self.out_serial_count > 0 else 0,
+                "ContainerWeight": self.canning_id.weight,
+                "Season": self.finish_date.year,
+                "Warehouse": self.sudo().picking_type_id.name,
+                "ContainerQuantity": self.out_serial_count,
+                "ArticleCode": self.out_product_id.default_code,
+                "ArticleDescription": self.out_product_id.name
             }
             res = requests.post(url, json=json_data, headers=headers)
 
