@@ -50,3 +50,4 @@ class ResCompany(models.Model):
                 "ArticleDescription": "NUEZ CHANDLER C/CÁSCARA SIN CALIBRAR"
             }
             res = requests.post(url, json=json_data, headers=headers)
+            
