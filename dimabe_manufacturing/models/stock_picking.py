@@ -379,3 +379,23 @@ class StockPicking(models.Model):
                     move.write({
                         'product_uom_qty': move.product_uom_qty + product.product_uom_qty
                     })
+    
+    @api.multi
+    def return_action(self):
+        context = {
+            'default_product_id': self.product_id.id,
+            'default_product_uom_qty': self.quantity_requested,
+            'default_origin': self.name,
+            'default_stock_picking_id': self.id,
+            'default_requested_qty': self.quantity_requested
+        }
+        return {
+            "type": "ir.actions.act_window",
+            "res_model": "mrp.production",
+            "view_type": "form",
+            "view_mode": "form",
+            "views": [(False, "form")],
+            "view_id ref='mrp.mrp_production_form_view'": '',
+            "target": "current",
+            "context": context
+        }
