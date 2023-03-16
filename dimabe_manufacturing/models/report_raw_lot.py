@@ -194,7 +194,10 @@ class ReportRawLot(models.Model):
             else:
                 sheet.write(row, col, '', self.get_format('text', workbook))
             col += 1
-            sheet.write(row, col, r_lot.position, self.get_format('text', workbook))
+            if r_lot.position:
+                sheet.write(row, col, r_lot.position, self.get_format('text', workbook))
+            else:
+                sheet.write(row, col, '', self.get_format('text', workbook))
 
             col = 0
             row += 1
