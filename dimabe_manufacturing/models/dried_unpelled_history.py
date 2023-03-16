@@ -285,53 +285,56 @@ class DriedUnpelledHistory(models.Model):
 
 
 
-        # self.set_lot_to_quality_api(res)
+        self.set_lot_to_quality_api(res)
         return res
 
-    # def get_quality_login_token(self):
-    #     url = 'https://qacalidadapi.lainvernada.com/api/auth/login'
-    #     headers = {
-    #         'Content-Type': 'application/json',
-    #     }
-    #     json_data = {
-    #         "Username": "66.666.666-6",
-    #         "Password": "Dimabe2023$"
-    #     }
-    #     res = requests.post(url, json=json_data, headers=headers)
-    #     if res.status_code == 200:
-    #         jr = json.loads(res.text)
-    #         token = jr['token']
-    #         return token
-    #     return False
-    #
-    # def set_lot_to_quality_api(self, model):
-    #     token = self.get_quality_login_token()
-    #     if token:
-    #         bearer = 'Bearer {}'.format(token)
-    #         url = 'https://qacalidadapi.lainvernada.com/api/LotFromDryers/add'
-    #         headers = {
-    #             "Content-Type": "application/json",
-    #             "Authorization": bearer
-    #         }
-    #         json_data = {
-    #             "ProducerCode": model.producer_id.id,
-    #             "ProducerName": model.producer_id.name,
-    #             "VarietyName": model.in_product_variety,
-    #             "LotNumber": model.out_lot_id.name,
-    #             "DispatchGuideNumber": model.lot_guide_numbers,
-    #             "ReceptionDate": self.time_to_tz_naive(model.finish_date, pytz.utc,
-    #                                                    model.timezone("America/Santiago")),
-    #             "ReceptionKgs": model.total_out_weight,
-    #             "ContainerType": model.canning_id.display_name,
-    #             "ContainerWeightAverage": model.total_out_weight / model.out_serial_count,
-    #             "ContainerWeight": model.canning_id.weight,
-    #             "Season": model.finish_date.year,
-    #             "Warehouse": model.sudo().picking_type_id.name,
-    #             "ContainerQuantity": model.out_serial_count,
-    #             "ArticleCode": model.out_product_id.default_code,
-    #             "ArticleDescription": model.out_product_id.name
-    #         }
-    #         res = requests.post(url, json=json_data, headers=headers)
+    def get_quality_login_token(self):
+        url = 'https://calidadapi.lainvernada.com/api/auth/login'
+        headers = {
+            'Content-Type': 'application/json',
+        }
+        json_data = {
+            "Username": "66.666.666-6",
+            "Password": "Dimabe2023$"
+        }
+        res = requests.post(url, json=json_data, headers=headers)
+        if res.status_code == 200:
+            jr = json.loads(res.text)
+            token = jr['token']
+            return token
+        return False
+
+    def set_lot_to_quality_api(self):
+        token = self.get_quality_login_token()
+        if token:
+            bearer = 'Bearer {}'.format(token)
+            url = 'https://calidadapi.lainvernada.com/api/LotFromDryers/add'
+            headers = {
+                "Content-Type": "application/json",
+                "Authorization": bearer
+            }
+            json_data = {
+                "ProducerCode": self.producer_id.id,
+                "ProducerName": self.producer_id.name,
+                "VarietyName": self.in_product_variety,
+                "LotNumber": self.out_lot_id.name,
+                "DispatchGuideNumber": self.lot_guide_numbers,
+                "ReceptionDate": fields.Datetime.to_string(self.time_to_tz_naive(self.finish_date, pytz.utc,
+                                                       pytz.timezone("America/Santiago"))),
+                "ReceptionKgs": self.total_out_weight,
+                "ContainerType": self.canning_id.display_name,
+                "ContainerWeightAverage":  self.total_out_weight / self.out_serial_count if self.out_serial_count > 0 else 0,
+                "ContainerWeight": self.canning_id.weight,
+                "Season": self.finish_date.year,
+                "Warehouse": self.sudo().picking_type_id.name,
+                "ContainerQuantity": self.out_serial_count,
+                "ArticleCode": self.out_product_id.default_code,
+                "ArticleDescription": self.out_product_id.name
+            }
+            res = requests.post(url, json=json_data, headers=headers)
+
+            if res.status_code != 200:
+                raise models.ValidationError(f'Error {res.status_code}: {res.text} ')
 
 
     @api.multi

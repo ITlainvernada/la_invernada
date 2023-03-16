@@ -256,13 +256,22 @@ class UnpelledDried(models.Model):
 
     @api.model
     def create_history(self):
-        return self.env['dried.unpelled.history'].create({
+        history_id = self.env['dried.unpelled.history'].create({
             'is_old_version': True,
             'unpelled_dried_id': self.id,
             'total_in_weight': sum(self.oven_use_ids.filtered(
                 lambda a: a.state == 'done'
             ).mapped('used_lot_id').mapped('stock_production_lot_serial_ids').mapped('display_weight'))
         })
+
+        self.oven_in_use_ids.filtered(lambda a: a.state == 'done').write({
+            'unpelled_dried_id': None,
+            'history_id': history_id.id
+        })
+
+        history_id.set_lot_to_quality_api()
+        
+        return history_id
 
     @api.model
     def create(self, values_list):
