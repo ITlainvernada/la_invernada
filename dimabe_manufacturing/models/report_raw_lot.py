@@ -194,10 +194,8 @@ class ReportRawLot(models.Model):
             else:
                 sheet.write(row, col, '', self.get_format('text', workbook))
             col += 1
-            if r_lot.position > 0:
-                sheet.write(row, col, r_lot.position, self.get_format('text', workbook))
-            else:
-                sheet.write(row, col, '', self.get_format('text', workbook))
+            sheet.write(row, col, r_lot.position, self.get_format('text', workbook))
+
             col = 0
             row += 1
         sheet.autofit()
@@ -234,3 +232,7 @@ class ReportRawLot(models.Model):
                 'reception_weight': item.reception_weight,
                 'available_series': item.available_series,
             })
+
+    def delete_position(self):
+        for item in self:
+            item.unlink()
