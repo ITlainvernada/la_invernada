@@ -301,6 +301,7 @@
                     </h1>
                 </div>
                 <group>
+                    <field name="_barcode_scanned" widget="barcode_handler"/>
                     <field name="id" tabindex="-1" invisible="1"/>
                     <field name="state" tabindex="-1" invisible="1"/>
                     <field name="component_id" tabindex="-1" style="margin:0 auto;" invisible="1"

@@ -523,6 +523,7 @@ class MrpWorkorder(models.Model):
         self.process_serial(serial_number=self.confirmed_serial)
 
     def process_serial(self, serial_number):
+        origin = self._origin if self._origin else self
         serial_number = serial_number.strip()
         dict_write = {}
         serial = self.env['stock.production.lot.serial'].sudo().search(
@@ -537,56 +538,56 @@ class MrpWorkorder(models.Model):
                 "La serie ya fue consumida en el proceso {}".format(serial.reserved_to_production_id.name))
         dict_write['lot_id'] = serial.stock_production_lot_id.id
         serial.write({
-            'reserved_to_production_id': self.production_id.id,
+            'reserved_to_production_id': origin.production_id.id,
             'consumed': True,
-            'used_in_workorder_id': self.id,
+            'used_in_workorder_id': origin.id,
         })
-        if serial.producer_id not in self.producers_id:
+        if serial.producer_id not in origin.producers_id:
             dict_write['producers_id'] = [(4, serial.producer_id.id)]
         line_new = self.env['stock.move.line']
         line = self.env['stock.move.line']
-        move = self.production_id.move_raw_ids.filtered(lambda x: x.product_id.id == serial.product_id.id)
+        move = origin.production_id.move_raw_ids.filtered(lambda x: x.product_id.id == serial.product_id.id)
         if move.active_move_line_ids:
             line = move.active_move_line_ids.filtered(lambda a: a.lot_id == serial.stock_production_lot_id)
             if not line.lot_produced_id:
                 line.write({
-                    'lot_produced_id': self.final_lot_id.id
+                    'lot_produced_id': origin.final_lot_id.id
                 })
             line.write({
-                'qty_done': sum(serial.display_weight for serial in self.potential_serial_planned_ids.filtered(
+                'qty_done': sum(serial.display_weight for serial in origin.potential_serial_planned_ids.filtered(
                     lambda x: x.stock_production_lot_id.id == serial.stock_production_lot_id.id))
             })
         else:
             line_new = self.env['stock.move.line'].sudo().create({
                 'lot_id': serial.stock_production_lot_id.id,
-                'lot_produced_id': self.final_lot_id.id,
+                'lot_produced_id': origin.final_lot_id.id,
                 'product_id': move.product_id.id,
-                'location_dest_id': self.env['stock.location'].search([('usage', '=', 'production')]).id,
-                'location_id': self.production_id.location_src_id.id,
+                'location_dest_id': origin.env['stock.location'].search([('usage', '=', 'production')]).id,
+                'location_id': origin.production_id.location_src_id.id,
                 'move_id': move.id,
                 'product_uom_id': serial.product_id.uom_id.id,
                 'date': date.today(),
-                'qty_done': sum(self.potential_serial_planned_ids.filtered(
+                'qty_done': sum(origin.potential_serial_planned_ids.filtered(
                     lambda a: a.stock_production_lot_id.id == serial.stock_production_lot_id.id).mapped(
                     'display_weight')),
-                'production_id': self.production_id.id,
-                'workorder_id': self.id,
+                'production_id': origin.production_id.id,
+                'workorder_id': origin.id,
                 'is_raw': True
             })
-        check = self.check_ids.filtered(
+        check = origin.check_ids.filtered(
             lambda a: a.component_id.id == serial.product_id.id and not a.component_is_byproduct)
         check.write({
             'lot_id': serial.stock_production_lot_id.id,
             'move_line_id': line_new.id if line_new.id else line.id,
             'qty_done': sum(
-                self.potential_serial_planned_ids.filtered(lambda a: a.product_id.id == serial.product_id.id).mapped(
+                origin.potential_serial_planned_ids.filtered(lambda a: a.product_id.id == serial.product_id.id).mapped(
                     'display_weight'))
         })
         if check.quality_state != 'pass':
             check.do_pass()
         dict_write['confirmed_serial'] = None
         dict_write['current_quality_check_id'] = check.id
-        dict_write['in_weight'] = sum(serial.display_weight for serial in self.potential_serial_planned_ids)
+        dict_write['in_weight'] = sum(serial.display_weight for serial in origin.potential_serial_planned_ids)
         raw_report_id = self.env['report.raw.lot'].sudo().search([('lot_id', '=', serial.stock_production_lot_id.id)])
         raw_report_id.sudo().write({
             'available_weight': sum(serial.stock_production_lot_id.stock_production_lot_serial_ids.filtered(
@@ -594,9 +595,9 @@ class MrpWorkorder(models.Model):
             'available_series': len(
                 serial.stock_production_lot_id.stock_production_lot_serial_ids.filtered(lambda x: not x.consumed)),
         })
-        if self.start_date:
+        if origin.start_date:
             dict_write['start_date'] = fields.Datetime.now()
-        self.write(dict_write)
+        origin.write(dict_write)
 
     @api.multi
     def validate_to_done(self):
@@ -668,3 +669,18 @@ class MrpWorkorder(models.Model):
         quant.write({
             'quantity': sum(lot.stock_production_lot_serial_ids.mapped('real_weight'))
         })
+
+    def on_barcode_scanned(self, barcode):
+        self.process_serial(barcode)
+        if self._origin:
+            return {
+                'type': 'ir.actions.client',
+                'tag': 'reload',
+                'name': 'Procesar entrada',
+                'res_model': self._name,
+                'view_type': 'form',
+                'view_mode': 'form',
+                'view_id': self.env.ref('dimabe_manufacturing.mrp_workorder_process_view').id,
+                'target': 'current',
+                'nodestroy': False
+            }
