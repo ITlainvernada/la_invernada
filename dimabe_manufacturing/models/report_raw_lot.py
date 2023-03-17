@@ -221,18 +221,19 @@ class ReportRawLot(models.Model):
 
     def generate_new_position(self):
         for item in self:
+            original = self.env['report.raw.lot'].sudo().search([('lot_id', '=', item.lot_id.id)])
             self.env['report.raw.lot'].sudo().create({
                 'lot_id': item.lot_id.id,
                 'producer_id': item.producer_id.id,
                 'product_id': item.product_id.id,
-                'available_weight': item.available_weight,
+                'available_weight': item.available_weight if not original else 0,
                 'product_variety': item.product_variety,
                 'product_caliber': item.product_caliber,
                 'location_id': item.location_id.id,
                 'guide_number': item.guide_number,
                 'lot_harvest': item.lot_harvest,
                 'date': item.date,
-                'reception_weight': item.reception_weight,
+                'reception_weight': item.reception_weight if not original else 0,
                 'available_series': item.available_series,
             })
 
