@@ -403,11 +403,11 @@ class StockProductionLotSerial(models.Model):
                     res.gross_weight = res.display_weight + sum(res.get_possible_canning_id().mapped('weight'))
                 res.stock_production_lot_id.get_and_update(res.product_id.id)
                 res.stock_production_lot_id.update_kg(res.stock_production_lot_id.product_id.id)
-                if len(res.production_id.workorder_ids) > 0:
-                    production.workorder_ids[0].write({
-                        'out_weight': sum(serial.display_weight for serial in
-                                          res.stock_production_lot_id.stock_production_lot_serial_ids)
-                    })
+            if len(res.production_id.workorder_ids) > 0:
+                production.workorder_ids[0].write({
+                    'out_weight': sum(serial.display_weight for serial in
+                                      res.stock_production_lot_id.stock_production_lot_serial_ids)
+                })
         else:
             res = super(StockProductionLotSerial, self).create(values_list)
 
