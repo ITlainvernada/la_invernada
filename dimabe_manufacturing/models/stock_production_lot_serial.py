@@ -404,9 +404,9 @@ class StockProductionLotSerial(models.Model):
                 res.stock_production_lot_id.get_and_update(res.product_id.id)
                 res.stock_production_lot_id.update_kg(res.stock_production_lot_id.product_id.id)
             if len(res.production_id.workorder_ids) > 0:
+                workorder_id = res.production_id.workorder_ids[0]
                 production.workorder_ids[0].write({
-                    'out_weight': production.workorder_ids[0].out_weight + sum(serial.display_weight for serial in
-                                      res.stock_production_lot_id.stock_production_lot_serial_ids)
+                    'out_weight': sum(serial.display_weight for serial in workorder_id.summary_out_serial_ids)
                 })
         else:
             res = super(StockProductionLotSerial, self).create(values_list)
