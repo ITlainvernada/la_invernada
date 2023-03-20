@@ -5,18 +5,34 @@
                 <t t-foreach="docs" t-as="o">
 
                     <table style="text-align:left;">
-                        <tr>
-                            <th style="text-align:center;">
-                                <h1>
-                                    <span style="font-size:55px;">PALLET</span>
-                                </h1>
-                            </th>
-                            <td style="text-align: right !important;">
-                                <h1>
-                                    <span style="font-size:55px;" t-field="o.name"/>
-                                </h1>
-                            </td>
-                        </tr>
+                        <t t-if="'Sin' in o.product_id.get_species()">
+                            <tr>
+                                <th style="text-align:center;">
+                                    <h1>
+                                        <span style="font-size:45px;">PALLET</span>
+                                    </h1>
+                                </th>
+                                <td style="text-align: right !important;">
+                                    <h1>
+                                        <span style="font-size:45px;" t-field="o.name"/>
+                                    </h1>
+                                </td>
+                            </tr>
+                        </t>
+                        <t t-else="">
+                            <tr>
+                                <th style="text-align:center;">
+                                    <h1>
+                                        <span style="font-size:55px;">PALLET</span>
+                                    </h1>
+                                </th>
+                                <td style="text-align: right !important;">
+                                    <h1>
+                                        <span style="font-size:55px;" t-field="o.name"/>
+                                    </h1>
+                                </td>
+                            </tr>
+                        </t>
                         <tr>
                             <td>
                                 <![CDATA[&nbsp;]]>
@@ -88,25 +104,34 @@
             <div class="page">
                 <t t-foreach="docs" t-as="o">
                     <table style="text-align:left;">
-                        <tr>
-                            <th style="text-align:center;">
-                                <t t-if="'Sin' in o.product_id.get_species()">
+                        <t t-if="'Sin' in o.product_id.get_species()">
+                            <tr>
+                                <th style="text-align:center;">
                                     <h1>
-                                        <span style="font-size:50px;">PALLET</span>
+                                        <span style="font-size:45px;">PALLET</span>
                                     </h1>
-                                </t>
-                                <t t-else="">
+                                </th>
+                                <td style="text-align: right !important;">
+                                    <h1>
+                                        <span style="font-size:45px;" t-field="o.name"/>
+                                    </h1>
+                                </td>
+                            </tr>
+                        </t>
+                        <t t-else="">
+                            <tr>
+                                <th style="text-align:center;">
                                     <h1>
                                         <span style="font-size:55px;">PALLET</span>
                                     </h1>
-                                </t>
-                            </th>
-                            <td style="text-align: right !important;">
-                                <h1>
-                                    <span style="font-size:55px;" t-field="o.name"/>
-                                </h1>
-                            </td>
-                        </tr>
+                                </th>
+                                <td style="text-align: right !important;">
+                                    <h1>
+                                        <span style="font-size:55px;" t-field="o.name"/>
+                                    </h1>
+                                </td>
+                            </tr>
+                        </t>
                         <tr>
                             <td>
                                 <![CDATA[&nbsp;]]>
