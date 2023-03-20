@@ -630,12 +630,6 @@ class MrpWorkorder(models.Model):
 
     def open_out_form_view(self):
         for item in self:
-            item.write({
-                'out_weight': sum(item.summary_out_serial_ids.mapped('real_weight')),
-                'pt_out_weight': sum(
-                    item.summary_out_serial_ids.filtered(lambda a: a.product_id.id == self.product_id.id).mapped(
-                        'real_weight'))
-            })
             return {
                 'type': 'ir.actions.act_window',
                 'res_model': 'mrp.workorder',
