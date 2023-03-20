@@ -31,12 +31,13 @@
                         </tr>
                         <tr>
                             <td>Nro Pedido</td>
-                            <td>:<div t-if="o.lot_serial_ids[0].sale_order_id">
+                            <td>:
+                                <t t-if="o.lot_serial_ids[0].sale_order_id">
                                     <span t-esc="o.lot_serial_ids[0].sale_order_id.name.strip()"/>
-                                </div>
-                                <div t-if="o.lot_serial_ids.mapped('production_id.stock_picking_id') and not o.lot_serial_ids[0].sale_order_id">
+                                </t>
+                                <t t-elif="o.lot_serial_ids.mapped('production_id.stock_picking_id') and not o.lot_serial_ids[0].sale_order_id">
                                     <span t-esc="o.lot_serial_ids.mapped('production_id.stock_picking_id')[0].origin.strip()"/>
-                                </div>
+                                </t>
                             </td>
                         </tr>
                         <tr>
