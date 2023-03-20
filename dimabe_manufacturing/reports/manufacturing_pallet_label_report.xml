@@ -32,10 +32,10 @@
                         <tr>
                             <th>Nro Pedido</th>
                             <td>:<div t-if="o.lot_serial_ids[0].sale_order_id">
-                                    <span t-esc="o.lot_serial_ids[0].sale_order_id.name"/>
+                                    <span t-esc="o.lot_serial_ids[0].sale_order_id.name.trim()"/>
                                 </div>
                                 <div t-if="o.lot_serial_ids.mapped('production_id.stock_picking_id') and not o.lot_serial_ids[0].sale_order_id">
-                                    <span t-esc="o.lot_serial_ids.mapped('production_id.stock_picking_id')[0].origin"/>
+                                    <span t-esc="o.lot_serial_ids.mapped('production_id.stock_picking_id')[0].origin.trim()"/>
                                 </div>
                             </td>
                         </tr>
