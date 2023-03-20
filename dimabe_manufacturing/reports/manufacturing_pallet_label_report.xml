@@ -52,6 +52,14 @@
                                 <span t-field="o.total_content_weight"/>
                             </td>
                         </tr>
+                        <t t-if="'Sin' in o.product_id.get_species()">
+                            <tr>
+                                <th>Color</th>
+                                <td>:
+                                    <span t-esc="o.product_id.get_color()"/>
+                                </td>
+                            </tr>
+                        </t>
                         <tr>
                             <td colspan="2" style="text-align:center !important;">
                                 <br/>
