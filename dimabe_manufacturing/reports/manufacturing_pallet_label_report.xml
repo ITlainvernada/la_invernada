@@ -30,7 +30,7 @@
                             </th>
                         </tr>
                         <tr>
-                            <th>Nro Pedido</th>
+                            <td>Nro Pedido</td>
                             <td>:<div t-if="o.lot_serial_ids[0].sale_order_id">
                                     <span t-esc="o.lot_serial_ids[0].sale_order_id.name.strip()"/>
                                 </div>
