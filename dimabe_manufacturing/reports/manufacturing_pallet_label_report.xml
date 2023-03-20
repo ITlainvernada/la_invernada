@@ -30,7 +30,7 @@
                             </th>
                         </tr>
                         <tr>
-                            <td>Nro Pedido</td>
+                            <th>Nro Pedido</th>
                             <td>:
                                 <t t-if="o.lot_serial_ids[0].sale_order_id">
                                     <span t-esc="o.lot_serial_ids[0].sale_order_id.name.strip()"/>
@@ -115,12 +115,12 @@
                         <tr>
                             <th>Nro Pedido</th>
                             <td>:
-                                <div t-if="o.lot_serial_ids[0].sale_order_id">
-                                    <span t-esc="o.lot_serial_ids[0].sale_order_id.name"/>
-                                </div>
-                                <div t-if="o.lot_serial_ids.mapped('production_id.stock_picking_id') and not o.lot_serial_ids[0].sale_order_id">
-                                    <span t-esc="o.lot_serial_ids.mapped('production_id.stock_picking_id')[0].origin"/>
-                                </div>
+                                <t t-if="o.lot_serial_ids[0].sale_order_id">
+                                    <span t-esc="o.lot_serial_ids[0].sale_order_id.name.strip()"/>
+                                </t>
+                                <t t-elif="o.lot_serial_ids.mapped('production_id.stock_picking_id') and not o.lot_serial_ids[0].sale_order_id">
+                                    <span t-esc="o.lot_serial_ids.mapped('production_id.stock_picking_id')[0].origin.strip()"/>
+                                </t>
                             </td>
                         </tr>
                         <tr>
