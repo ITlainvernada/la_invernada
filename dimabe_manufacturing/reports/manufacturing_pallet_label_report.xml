@@ -90,9 +90,16 @@
                     <table style="text-align:left;">
                         <tr>
                             <th style="text-align:center;">
-                                <h1>
-                                    <span style="font-size:55px;">PALLET</span>
-                                </h1>
+                                <t t-if="'Sin' in o.product_id.get_species()">
+                                    <h1>
+                                        <span style="font-size:50px;">PALLET</span>
+                                    </h1>
+                                </t>
+                                <t t-else="">
+                                    <h1>
+                                        <span style="font-size:55px;">PALLET</span>
+                                    </h1>
+                                </t>
                             </th>
                             <td style="text-align: right !important;">
                                 <h1>
