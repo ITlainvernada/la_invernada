@@ -39,3 +39,4 @@ from . import custom_collection_group
 from . import custom_temporary_serial
 from . import report_raw_lot
 from . import report_canning_xlsx
+from . import mrp_bom

@@ -1,7 +1,7 @@
-from odoo import fields, models, api
 from dateutil.relativedelta import relativedelta
+
+from odoo import fields, models, api
 from odoo.addons import decimal_precision as dp
-import math
 
 
 class StockProductionLotSerial(models.Model):
@@ -390,6 +390,11 @@ class StockProductionLotSerial(models.Model):
                 })
                 res.stock_production_lot_id.get_and_update(res.product_id.id)
                 res.stock_production_lot_id.update_kg(res.stock_production_lot_id.product_id.id)
+                if len(production.workorder_ids) > 0:
+                    workorder_id = res.production_id.workorder_ids[0]
+                    production.workorder_ids[0].write({
+                        'out_weight': sum(serial.display_weight for serial in workorder_id.summary_out_serial_ids)
+                    })
             res.label_durability_id = res.stock_production_lot_id.label_durability_id
 
             if res.bom_id:
@@ -403,9 +408,14 @@ class StockProductionLotSerial(models.Model):
                     res.gross_weight = res.display_weight + sum(res.get_possible_canning_id().mapped('weight'))
                 res.stock_production_lot_id.get_and_update(res.product_id.id)
                 res.stock_production_lot_id.update_kg(res.stock_production_lot_id.product_id.id)
+
         else:
             res = super(StockProductionLotSerial, self).create(values_list)
-
+            test_qty = sum(serial.display_weight for serial in res.work_order_id.summary_out_serial_ids)
+            test_lot_ids = res.work_order_id.summary_out_serial_ids.mapped('stock_production_lot_id')
+            res.work_order_id.write({
+                'out_weight': sum(serial.display_weight for serial in res.work_order_id.summary_out_serial_ids)
+            })
         return res
 
     @api.model

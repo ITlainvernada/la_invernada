@@ -441,7 +441,6 @@ class StockProductionLot(models.Model):
             })
             workorder = self.env['mrp.workorder'].sudo().search([('final_lot_id', '=', item.id)], limit=1)
             workorder.write({
-                'out_weight': sum(serial.display_weight for serial in item.stock_production_lot_serial_ids),
                 'pt_out_weight': sum(serial.display_weight for serial in item.stock_production_lot_serial_ids)
             })
             self.update_kg(self.id)

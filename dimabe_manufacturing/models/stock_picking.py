@@ -109,7 +109,6 @@ class StockPicking(models.Model):
             item.show_guide_in_form = False
             return
 
-
     # Compute Methods
 
     @api.depends('lot_search_id', 'sale_search_id')

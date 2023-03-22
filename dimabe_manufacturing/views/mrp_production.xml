@@ -23,13 +23,15 @@
                             group="base.group_system"
                     />
                     <button name="check_duplicate" string="Verificar Duplicados"/>
+                    <button type="object" name="update_stock_move" string="Actualizar lista de materiales"
+                            class="btn btn-primary"/>
                 </xpath>
                 <button name="action_assign" position="replace">
                 </button>
                 <button name="button_unreserve" position="replace">
                 </button>
                 <field name="product_id" position="attributes">
-                    <attribute name="attrs">{'readonly':[('stock_picking_id','!=',False)]}</attribute>
+                    <attribute name="attrs">{'readonly': [('stock_picking_id', '!=', False)]}</attribute>
                 </field>
 
                 <field name="product_id" position="after">
@@ -51,56 +53,6 @@
                     <attribute name="invisible">1</attribute>
                 </field>
                 <xpath expr="//page[3]" position="after">
-                    <page string="Seleccionar Lote"
-                          invisible="1"
-                    >
-                        <div>
-                            <group>
-                                <group>
-                                    <field name="materials" invisible="1"/>
-                                    <field name="client_search_id" attrs="{'invisible':[('state','=','done')]}"
-                                           domain="[('is_company','=',True),('customer','=',True)]"/>
-                                    <field name="product_search_id" attrs="{'invisible':[('state','=','done')]}"
-                                           domain="[('id','in',materials)]"
-                                    />
-                                </group>
-                                <group>
-                                    <button string="Buscar"
-                                            class="oe_highlight"
-                                            type="object"
-                                            name="search_potential_lot_ids"
-                                    />
-                                </group>
-                            </group>
-                        </div>
-                        <div>
-                            <group>
-                                <field name="stock_lots" invisible="1"/>
-                                <field name="potential_lot_ids" readonly="0" string="Lotes Potenciales">
-                                    <tree edit="true" delete="false" create="false">
-                                        <field name="all_serial_consumed"/>
-                                        <field name="stock_production_lot_id" readonly="1" widget="many2onebutton"/>
-                                        <field name="lot_product_id" readonly="1"/>
-                                        <field name="lot_balance" readonly="1" force_save="1"/>
-                                        <field name="is_reserved" invisible="1"/>
-                                        <field name="mrp_production_state" invisible="1"/>
-                                        <button string="Reservar Lote"
-                                                name="reserve_stock_lot"
-                                                type="object"
-                                                attrs="{'invisible':['|',('qty_to_reserve', '>', 0),('mrp_production_state','=','done')]}"
-                                        />
-                                        <button string="Quitar Reserva"
-                                                name="unreserved_stock"
-                                                type="object"
-                                                attrs="{'invisible':['|',('qty_to_reserve', '=', 0),('mrp_production_state', '=', 'done')]}"
-                                                context="{'from_lot':True}"
-                                        />
-                                        <field name="qty_to_reserve"/>
-                                    </tree>
-                                </field>
-                            </group>
-                        </div>
-                    </page>
                     <page string="Códigos Utilizados"
                           attrs="{'invisible':[('state','!=','done')]}"
                     >

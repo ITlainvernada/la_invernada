@@ -2,7 +2,7 @@ from odoo import fields, models, api
 from odoo.addons import decimal_precision as dp
 import datetime
 from ..helpers import date_helper
-
+import pytz
 import json
 import pytz
 import requests
@@ -336,6 +336,9 @@ class DriedUnpelledHistory(models.Model):
             if res.status_code != 200:
                 raise models.ValidationError(f'Error {res.status_code}: {res.text} ')
 
+
+    def time_to_tz_naive(self, t, tz_in, tz_out):
+        return tz_in.localize(t).astimezone(tz_out)
 
     @api.multi
     def adjust_stock(self):

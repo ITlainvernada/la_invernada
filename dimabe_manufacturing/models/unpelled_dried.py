@@ -383,10 +383,7 @@ class UnpelledDried(models.Model):
                 'is_in_use': False,
                 'state': 'free'
             })
-            item.oven_use_ids.filtered(lambda a: a.state == 'done').write({
-                'unpelled_dried_id': None,
-                'history_id': history_id.id,
-            })
+
             process = self.env['unpelled.dried'].search([('state', 'in', ['draft', 'progress']),
                                                          ('out_product_id', '=', item.out_product_id.id),
                                                          ('producer_id', '=', item.producer_id.id),

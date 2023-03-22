@@ -5,18 +5,34 @@
                 <t t-foreach="docs" t-as="o">
 
                     <table style="text-align:left;">
-                        <tr>
-                            <th style="text-align:center;">
-                                <h1>
-                                    <span style="font-size:55px;">PALLET</span>
-                                </h1>
-                            </th>
-                            <td style="text-align: right !important;">
-                                <h1>
-                                    <span style="font-size:55px;" t-field="o.name"/>
-                                </h1>
-                            </td>
-                        </tr>
+                        <t t-if="'Sin' in o.product_id.get_species()">
+                            <tr>
+                                <th style="text-align:center;">
+                                    <h1>
+                                        <span style="font-size:45px;">PALLET</span>
+                                    </h1>
+                                </th>
+                                <td style="text-align: right !important;">
+                                    <h1>
+                                        <span style="font-size:45px;" t-field="o.name"/>
+                                    </h1>
+                                </td>
+                            </tr>
+                        </t>
+                        <t t-else="">
+                            <tr>
+                                <th style="text-align:center;">
+                                    <h1>
+                                        <span style="font-size:55px;">PALLET</span>
+                                    </h1>
+                                </th>
+                                <td style="text-align: right !important;">
+                                    <h1>
+                                        <span style="font-size:55px;" t-field="o.name"/>
+                                    </h1>
+                                </td>
+                            </tr>
+                        </t>
                         <tr>
                             <td>
                                 <![CDATA[&nbsp;]]>
@@ -32,12 +48,14 @@
                         <tr>
                             <th>Nro Pedido</th>
                             <td>:
-                                <div t-if="o.lot_serial_ids[0].sale_order_id">
-                                    <span t-esc="o.lot_serial_ids[0].sale_order_id.name"/>
-                                </div>
-                                <div t-if="o.lot_serial_ids.mapped('production_id.stock_picking_id') and not o.lot_serial_ids[0].sale_order_id">
-                                    <span t-esc="o.lot_serial_ids.mapped('production_id.stock_picking_id')[0].origin"/>
-                                </div>
+                                <t t-if="o.lot_serial_ids[0].sale_order_id">
+                                    <span style="font-size:15px;"
+                                          t-esc="o.lot_serial_ids[0].sale_order_id.name.strip()"/>
+                                </t>
+                                <t t-elif="o.lot_serial_ids.mapped('production_id.stock_picking_id') and not o.lot_serial_ids[0].sale_order_id">
+                                    <span style="font-size:15px;"
+                                          t-esc="o.lot_serial_ids.mapped('production_id.stock_picking_id')[0].origin.strip()"/>
+                                </t>
                             </td>
                         </tr>
                         <tr>
@@ -52,6 +70,14 @@
                                 <span t-field="o.total_content_weight"/>
                             </td>
                         </tr>
+                        <t t-if="'Sin' in o.product_id.get_species()">
+                            <tr>
+                                <th>Color</th>
+                                <td>:
+                                    <span t-esc="o.product_id.get_color()"/>
+                                </td>
+                            </tr>
+                        </t>
                         <tr>
                             <td colspan="2" style="text-align:center !important;">
                                 <br/>
@@ -80,18 +106,34 @@
             <div class="page">
                 <t t-foreach="docs" t-as="o">
                     <table style="text-align:left;">
-                        <tr>
-                            <th style="text-align:center;">
-                                <h1>
-                                    <span style="font-size:55px;">PALLET</span>
-                                </h1>
-                            </th>
-                            <td style="text-align: right !important;">
-                                <h1>
-                                    <span style="font-size:55px;" t-field="o.name"/>
-                                </h1>
-                            </td>
-                        </tr>
+                        <t t-if="'Sin' in o.product_id.get_species()">
+                            <tr>
+                                <th style="text-align:center;">
+                                    <h1>
+                                        <span style="font-size:45px;">PALLET</span>
+                                    </h1>
+                                </th>
+                                <td style="text-align: right !important;">
+                                    <h1>
+                                        <span style="font-size:45px;" t-field="o.name"/>
+                                    </h1>
+                                </td>
+                            </tr>
+                        </t>
+                        <t t-else="">
+                            <tr>
+                                <th style="text-align:center;">
+                                    <h1>
+                                        <span style="font-size:55px;">PALLET</span>
+                                    </h1>
+                                </th>
+                                <td style="text-align: right !important;">
+                                    <h1>
+                                        <span style="font-size:55px;" t-field="o.name"/>
+                                    </h1>
+                                </td>
+                            </tr>
+                        </t>
                         <tr>
                             <td>
                                 <![CDATA[&nbsp;]]>
@@ -107,12 +149,12 @@
                         <tr>
                             <th>Nro Pedido</th>
                             <td>:
-                                <div t-if="o.lot_serial_ids[0].sale_order_id">
-                                    <span t-esc="o.lot_serial_ids[0].sale_order_id.name"/>
-                                </div>
-                                <div t-if="o.lot_serial_ids.mapped('production_id.stock_picking_id') and not o.lot_serial_ids[0].sale_order_id">
-                                    <span t-esc="o.lot_serial_ids.mapped('production_id.stock_picking_id')[0].origin"/>
-                                </div>
+                                <t t-if="o.lot_serial_ids[0].sale_order_id">
+                                    <span t-esc="o.lot_serial_ids[0].sale_order_id.name.strip()"/>
+                                </t>
+                                <t t-elif="o.lot_serial_ids.mapped('production_id.stock_picking_id') and not o.lot_serial_ids[0].sale_order_id">
+                                    <span t-esc="o.lot_serial_ids.mapped('production_id.stock_picking_id')[0].origin.strip()"/>
+                                </t>
                             </td>
                         </tr>
                         <tr>
@@ -127,6 +169,14 @@
                                 <span t-field="o.total_content_weight"/>
                             </td>
                         </tr>
+                        <t t-if="'Sin' in o.product_id.get_species()">
+                            <tr>
+                                <th>Color</th>
+                                <td>:
+                                    <span t-esc="o.product_id.get_color()"/>
+                                </td>
+                            </tr>
+                        </t>
                         <tr>
                             <t t-if="o.packaging_date">
                                 <th colspan="2">
