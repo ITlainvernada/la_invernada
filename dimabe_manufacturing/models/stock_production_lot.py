@@ -292,7 +292,7 @@ class StockProductionLot(models.Model):
 
     def set_counter_in_pallet(self, harvest):
         lot_ids = self.env['stock.production.lot'].search([('product_id.is_standard_weight', '=', True)]).filtered(
-            lambda x: x.lot_harvest == harvest)
+            lambda x: x.harvest == harvest)
         for lot in lot_ids:
             if len(lot.all_pallet_ids) > 0:
                 for pallet in lot.all_pallet_ids:
