@@ -4,6 +4,8 @@ from odoo import fields, models, api
 import xlsxwriter
 from datetime import date
 
+from odoo import fields , models
+
 
 class ReportRawLot(models.Model):
     _name = 'report.raw.lot'
@@ -46,6 +48,10 @@ class ReportRawLot(models.Model):
     packaging_qty = fields.Integer('Cantidad de envases')
 
     position = fields.Char('Posición')
+
+    available_date = fields.Date('Fecha disp.')
+
+    observations = fields.Char('Observaciones')
 
     # TODO Eliminar luego de su implementacion
     def set_raw_lot(self):
