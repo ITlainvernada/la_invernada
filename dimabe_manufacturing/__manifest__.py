@@ -109,6 +109,7 @@
         'views/web_assets.xml',
         'views/report_raw_lot.xml',
         'views/report_canning_xlsx.xml',
+        'views/stock_barcode_inherit.xml',
     ],
     # only loaded in demonstration mode
     'demo': [

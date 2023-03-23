@@ -248,7 +248,8 @@ class UnpelledDried(models.Model):
             'name': name,
             'product_id': self.out_product_id.id,
             'is_dried_lot': True,
-            'producer_id': self.producer_id.id
+            'producer_id': self.producer_id.id,
+            'origin_process': 'SECADO'
         })
         self.write({
             'out_lot_id': out_lot_id.id

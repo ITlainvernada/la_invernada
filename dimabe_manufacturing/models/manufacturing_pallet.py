@@ -124,6 +124,8 @@ class ManufacturingPallet(models.Model):
 
     packaging_date = fields.Datetime('Fecha Envasado')
 
+    counter_pallet_lot = fields.Integer('#')
+
     @api.multi
     def delete_pallet(self):
         for item in self:

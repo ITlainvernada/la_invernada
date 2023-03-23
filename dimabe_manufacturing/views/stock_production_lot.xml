@@ -117,6 +117,7 @@
                     <field name="all_pallet_ids" string="Pallets"
                            attrs="{'invisible': [('is_standard_weight','=',False)]}" readonly="1">
                         <tree>
+                            <field name="counter_pallet_lot"/>
                             <field name="name" readonly="1"/>
                             <field name="total_content_weight" readonly="1"/>
                             <field name="total_content"/>
