@@ -4,7 +4,7 @@ from odoo import fields, models, api
 import xlsxwriter
 from datetime import date
 
-from odoo import fields , models
+from odoo import fields, models
 
 
 class ReportRawLot(models.Model):
@@ -53,6 +53,8 @@ class ReportRawLot(models.Model):
 
     observations = fields.Char('Observaciones')
 
+    origin_process = fields.Char('Proceso de origen')
+
     # TODO Eliminar luego de su implementacion
     def set_raw_lot(self):
         lot_ids = self.env['stock.production.lot'].sudo().search(
@@ -74,7 +76,10 @@ class ReportRawLot(models.Model):
                 'date': lot.show_date,
                 'available_series': len(lot.stock_production_lot_serial_ids.filtered(lambda x: not x.consumed)),
                 'send_to_process': lot.workcenter_id.id,
-                'send_date': lot.delivered_date
+                'send_date': lot.delivered_date,
+                'available_date': lot.ventilation_date,
+                'observations': lot.observations,
+                'origin_process': lot.origin_process,
             })
 
     def get_format(self, type, workbook):
@@ -246,3 +251,9 @@ class ReportRawLot(models.Model):
     def delete_position(self):
         for item in self:
             item.unlink()
+
+    @api.model
+    def create(self, vals_list):
+        res = super(ReportRawLot, self).create(vals_list)
+        res.origin_process = res.lot_id.origin_process
+        return res

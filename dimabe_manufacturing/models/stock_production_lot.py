@@ -290,6 +290,7 @@ class StockProductionLot(models.Model):
 
     origin_process = fields.Char('Proceso de origen')
 
+
     def set_counter_in_pallet(self, harvest):
         lot_ids = self.env['stock.production.lot'].search([('product_id.is_standard_weight', '=', True)]).filtered(
             lambda x: x.harvest == harvest)

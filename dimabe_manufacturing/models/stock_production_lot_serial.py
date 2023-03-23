@@ -177,6 +177,8 @@ class StockProductionLotSerial(models.Model):
 
     printed = fields.Boolean(string='Impresa')
 
+    origin_process = fields.Char(string='Proceso de origen')
+
     @api.multi
     def compute_available_weight(self):
         for item in self:
@@ -408,7 +410,7 @@ class StockProductionLotSerial(models.Model):
                     res.gross_weight = res.display_weight + sum(res.get_possible_canning_id().mapped('weight'))
                 res.stock_production_lot_id.get_and_update(res.product_id.id)
                 res.stock_production_lot_id.update_kg(res.stock_production_lot_id.product_id.id)
-
+                res.origin_process = res.stock_production_lot_id.origin_process
         else:
             res = super(StockProductionLotSerial, self).create(values_list)
             test_qty = sum(serial.display_weight for serial in res.work_order_id.summary_out_serial_ids)
@@ -416,6 +418,7 @@ class StockProductionLotSerial(models.Model):
             res.work_order_id.write({
                 'out_weight': sum(serial.display_weight for serial in res.work_order_id.summary_out_serial_ids)
             })
+            res.origin_process = res.stock_production_lot_id.origin_process
         return res
 
     @api.model
