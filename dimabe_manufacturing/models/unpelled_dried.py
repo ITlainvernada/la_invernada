@@ -264,7 +264,7 @@ class UnpelledDried(models.Model):
             ).mapped('used_lot_id').mapped('stock_production_lot_serial_ids').mapped('display_weight'))
         })
 
-        self.oven_in_use_ids.filtered(lambda a: a.state == 'done').write({
+        self.oven_use_ids.filtered(lambda a: a.state == 'done').write({
             'unpelled_dried_id': None,
             'history_id': history_id.id
         })
