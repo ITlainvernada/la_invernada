@@ -290,6 +290,29 @@ class StockProductionLot(models.Model):
 
     origin_process = fields.Char('Proceso de origen')
 
+    def set_origin_process(self, harvest):
+        lot_ids = self.env['stock.production.lot'].sudo().search([]).filtered(lambda x: x.harvest == harvest)
+        for lot in lot_ids:
+            stock_picking = self.env['stock.picking'].sudo().search([('name', '=', lot.name)])
+            if stock_picking:
+                lot.write({
+                    'origin_process': 'RECEPCIÓN'
+                })
+                continue
+            if not stock_picking:
+                if lot.is_dried_lot:
+                    lot.write({
+                        'origin_process': 'SECADO'
+                    })
+                    continue
+                if lot.is_prd_lot:
+                    if len(lot.stock_production_lot_serial_ids.mapped('production_id')) > 0:
+                        production_id = lot.stock_production_lot_serial_ids.mapped('production_id')
+                        if production_id:
+                            lot.write({
+                                'origin_process': production_id[0].routing_id.name
+                            })
+                        continue
 
     def set_counter_in_pallet(self, harvest):
         lot_ids = self.env['stock.production.lot'].search([('product_id.is_standard_weight', '=', True)]).filtered(
