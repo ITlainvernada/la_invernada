@@ -298,10 +298,16 @@ class StockProductionLot(models.Model):
                 lot.write({
                     'origin_process': 'RECEPCIÓN'
                 })
+                lot.stock_production_lot_serial_ids.write({
+                    'origin_process': 'RECEPCIÓN'
+                })
                 continue
             if not stock_picking:
                 if lot.is_dried_lot:
                     lot.write({
+                        'origin_process': 'SECADO'
+                    })
+                    lot.stock_production_lot_serial_ids.write({
                         'origin_process': 'SECADO'
                     })
                     continue
@@ -310,6 +316,9 @@ class StockProductionLot(models.Model):
                         production_id = lot.stock_production_lot_serial_ids.mapped('production_id')
                         if production_id:
                             lot.write({
+                                'origin_process': production_id[0].routing_id.name
+                            })
+                            lot.stock_production_lot_serial_ids.write({
                                 'origin_process': production_id[0].routing_id.name
                             })
                         continue
