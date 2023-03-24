@@ -283,7 +283,6 @@ class DriedUnpelledHistory(models.Model):
                 res.dest_location_id = unpelled_dried_id.dest_location_id.id
                 res.canning_id = unpelled_dried_id.canning_id
 
-
         return res
 
     def get_quality_login_token(self):
