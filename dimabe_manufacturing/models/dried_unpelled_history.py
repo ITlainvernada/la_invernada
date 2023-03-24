@@ -284,8 +284,6 @@ class DriedUnpelledHistory(models.Model):
                 res.canning_id = unpelled_dried_id.canning_id
 
 
-
-        self.set_lot_to_quality_api(res)
         return res
 
     def get_quality_login_token(self):
