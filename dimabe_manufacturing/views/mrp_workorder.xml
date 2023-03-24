@@ -301,7 +301,7 @@
                     </h1>
                 </div>
                 <group>
-                    <field name="_barcode_scanned" widget="barcode_handler"/>
+                    <field name="_barcode_scanned" invisible="1" widget="barcode_handler"/>
                     <field name="id" tabindex="-1" invisible="1"/>
                     <field name="state" tabindex="-1" invisible="1"/>
                     <field name="component_id" tabindex="-1" style="margin:0 auto;" invisible="1"
@@ -317,7 +317,7 @@
                         <field name="product_id" tabindex="-1" invisible="1"/>
                     </group>
                     <group>
-                        <field name="confirmed_serial"  attrs="{'readonly': [('state','=','done')]}"
+                        <field name="confirmed_serial" class="o_barcode_manager" widget="barcode_manager" attrs="{'readonly': [('state','=','done')]}"
                               default_focus="1" string="Serie:"/>
                         <br/>
                         <div tabindex="0">

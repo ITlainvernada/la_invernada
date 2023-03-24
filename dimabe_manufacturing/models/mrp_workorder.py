@@ -670,7 +670,4 @@ class MrpWorkorder(models.Model):
         })
 
     def on_barcode_scanned(self, barcode):
-        self._origin.write({
-            'confirmed_serial': barcode
-        })
-        return self._origin.confirmed_keyboard()
+        self.confirmed_serial = barcode

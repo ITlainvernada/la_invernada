@@ -272,7 +272,7 @@ class UnpelledDried(models.Model):
 
         history_id.set_lot_to_quality_api()
 
-        return  history_id
+        return history_id
 
     @api.model
     def create(self, values_list):
