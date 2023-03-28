@@ -177,8 +177,6 @@ class StockProductionLotSerial(models.Model):
 
     printed = fields.Boolean(string='Impresa')
 
-    origin_process = fields.Char(string='Proceso de origen')
-
     @api.multi
     def compute_available_weight(self):
         for item in self:
@@ -351,6 +349,11 @@ class StockProductionLotSerial(models.Model):
                     'out_weight': sum(lot.stock_production_lot_serial_ids.mapped('display_weight'))
                 })
             res = super(StockProductionLotSerial, self).create(values_list)
+            report_id = self.env['report.raw.lot'].sudo().search([('lot_id.id', '=', res.stock_production_lot_id.id)])
+            if report_id:
+                report_id.manage_report()
+            if not report_id and res.stock_production_lot_id.is_dried_lot:
+                report_id.manage_report(res.stock_production_lot_id.id)
             if res.display_weight == 0 and res.gross_weight == 0:
                 raise models.ValidationError('debe agregar un peso a la serie')
 
@@ -410,7 +413,7 @@ class StockProductionLotSerial(models.Model):
                     res.gross_weight = res.display_weight + sum(res.get_possible_canning_id().mapped('weight'))
                 res.stock_production_lot_id.get_and_update(res.product_id.id)
                 res.stock_production_lot_id.update_kg(res.stock_production_lot_id.product_id.id)
-                res.origin_process = res.stock_production_lot_id.origin_process
+
         else:
             res = super(StockProductionLotSerial, self).create(values_list)
             test_qty = sum(serial.display_weight for serial in res.work_order_id.summary_out_serial_ids)
@@ -418,7 +421,6 @@ class StockProductionLotSerial(models.Model):
             res.work_order_id.write({
                 'out_weight': sum(serial.display_weight for serial in res.work_order_id.summary_out_serial_ids)
             })
-            res.origin_process = res.stock_production_lot_id.origin_process
         return res
 
     @api.model

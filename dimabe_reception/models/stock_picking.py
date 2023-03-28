@@ -169,6 +169,8 @@ class StockPicking(models.Model):
 
     display_net_weight = fields.Float('Kilos Netos a mostrar', compute='compute_display_net_weight')
 
+
+
     @api.depends('partner_id')
     def compute_sag_code(self):
         for item in self:
@@ -373,8 +375,7 @@ class StockPicking(models.Model):
                             'name': stock_picking.name,
                             'product_id': move_line.product_id.id,
                             'standard_weight': stock_picking.net_weight,
-                            'producer_id': stock_picking.partner_id.id,
-                            'origin_process': 'RECEPCIÓN'
+                            'producer_id': stock_picking.partner_id.id
                         })
                         if lot:
                             move_line.update({
@@ -428,7 +429,9 @@ class StockPicking(models.Model):
         if self.picking_type_code == 'incoming' and not self.is_return:
             for stock_picking in self:
                 message = ''
-                if stock_picking.is_mp_reception or stock_picking.is_pt_reception:
+                if stock_picking.is_mp_reception or stock_picking.is_pt_reception or stock_picking.picking_type_id :
+                    if stock_picking.guide_number == 0:
+                        message = 'Debe ingresar el numero de guia de la recepción \n'
                     if not stock_picking.gross_weight:
                         message = 'Debe agregar kg brutos \n'
                     if stock_picking.gross_weight < stock_picking.weight_guide:
@@ -469,19 +472,21 @@ class StockPicking(models.Model):
                     lot.lot_id.write({
                         'available_kg': lot.qty_done
                     })
-                    self.env['report.raw.lot'].sudo().create({
-                        'lot_id': lot.lot_id.id,
-                        'producer_id': lot.lot_id.producer_id.id,
-                        'product_id': lot.lot_id.product_id.id,
-                        'available_weight': lot.qty_done,
-                        'product_variety': lot.lot_id.product_id.get_variety(),
-                        'product_caliber': lot.lot_id.product_id.get_calibers(),
-                        'location_id': lot.location_dest_id.id,
-                        'guide_number': lot.picking_id.guide_number,
-                        'lot_harvest': self.harvest,
-                        'reception_weight': lot.lot_id.reception_weight,
-                        'available_series': len(lot.lot_id.stock_production_lot_serial_ids),
-                    })
+                    if not self.picking_type_id.require_dried:
+                        self.env['report.raw.lot'].sudo().create({
+                            'lot_id': lot.lot_id.id,
+                            'producer_id': lot.lot_id.producer_id.id,
+                            'product_id': lot.lot_id.product_id.id,
+                            'available_weight': lot.qty_done,
+                            'product_variety': lot.lot_id.product_id.get_variety(),
+                            'product_caliber': lot.lot_id.product_id.get_calibers(),
+                            'location_id': lot.location_dest_id.id,
+                            'guide_number': lot.picking_id.guide_number,
+                            'lot_harvest': self.harvest,
+                            'date': datetime.now(),
+                            'reception_weight': lot.lot_id.reception_weight,
+                            'available_series': len(lot.lot_id.stock_production_lot_serial_ids),
+                        })
                 if not m_move:
                     m_move = self.get_pt_move()
                 if not m_move:
@@ -490,19 +495,6 @@ class StockPicking(models.Model):
                     lot = self.env['stock.move.line'].search([('move_id.id', '=', m_move.id)], limit=1)
                     lot.lot_id.write({
                         'available_kg': lot.qty_done
-                    })
-                    self.env['report.raw.lot'].sudo().create({
-                        'lot_id': lot.lot_id.id,
-                        'producer_id': lot.lot_id.producer_id.id,
-                        'product_id': lot.lot_id.product_id.id,
-                        'available_weight': lot.qty_done,
-                        'product_variety': lot.lot_id.product_id.get_variety(),
-                        'product_caliber': lot.lot_id.product_id.get_calibers(),
-                        'location_id': lot.location_dest_id.id,
-                        'guide_number': lot.picking_id.guide_number,
-                        'lot_harvest': lot.lot_id.harvest,
-                        'reception_weight': lot.lot_id.reception_weight,
-                        'available_series': len(lot.lot_id.stock_production_lot_serial_ids),
                     })
             return res
         # Se usaran datos de modulo de dimabe_manufacturing
