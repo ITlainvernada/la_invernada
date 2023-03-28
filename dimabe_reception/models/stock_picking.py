@@ -429,9 +429,7 @@ class StockPicking(models.Model):
         if self.picking_type_code == 'incoming' and not self.is_return:
             for stock_picking in self:
                 message = ''
-                if stock_picking.is_mp_reception or stock_picking.is_pt_reception or stock_picking.picking_type_id :
-                    if stock_picking.guide_number == 0:
-                        message = 'Debe ingresar el numero de guia de la recepción \n'
+                if stock_picking.is_mp_reception or stock_picking.is_pt_reception:
                     if not stock_picking.gross_weight:
                         message = 'Debe agregar kg brutos \n'
                     if stock_picking.gross_weight < stock_picking.weight_guide:
