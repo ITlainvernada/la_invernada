@@ -7,6 +7,7 @@ import json
 import pytz
 import requests
 
+
 class DriedUnpelledHistory(models.Model):
     _name = 'dried.unpelled.history'
     _description = 'Historial de lotes terminados'
@@ -208,8 +209,10 @@ class DriedUnpelledHistory(models.Model):
                 total_active_seconds = round(
                     sum(oven.active_seconds for oven in item.oven_use_ids) / len(item.oven_use_ids))
                 item.active_time = date_helper.int_to_time(total_active_seconds)
-                oven_use_ids_to_finish_date = self.env['oven.use'].sudo().search([('history_id', '=', item.id)], order='finish_date')
-                oven_use_ids_to_init_date = self.env['oven.use'].sudo().search([('history_id','=',item.id)],order='init_date')
+                oven_use_ids_to_finish_date = self.env['oven.use'].sudo().search([('history_id', '=', item.id)],
+                                                                                 order='finish_date')
+                oven_use_ids_to_init_date = self.env['oven.use'].sudo().search([('history_id', '=', item.id)],
+                                                                               order='init_date')
                 item.init_date = oven_use_ids_to_init_date[0].init_date
                 item.finish_date = oven_use_ids_to_finish_date[-1].finish_date
 
@@ -282,7 +285,6 @@ class DriedUnpelledHistory(models.Model):
                 res.origin_location_id = unpelled_dried_id.origin_location_id.id
                 res.dest_location_id = unpelled_dried_id.dest_location_id.id
                 res.canning_id = unpelled_dried_id.canning_id
-
         return res
 
     def get_quality_login_token(self):
@@ -317,10 +319,10 @@ class DriedUnpelledHistory(models.Model):
                 "LotNumber": self.out_lot_id.name,
                 "DispatchGuideNumber": self.lot_guide_numbers,
                 "ReceptionDate": fields.Datetime.to_string(self.time_to_tz_naive(self.finish_date, pytz.utc,
-                                                       pytz.timezone("America/Santiago"))),
+                                                                                 pytz.timezone("America/Santiago"))),
                 "ReceptionKgs": self.total_out_weight,
                 "ContainerType": self.canning_id.display_name,
-                "ContainerWeightAverage":  self.total_out_weight / self.out_serial_count if self.out_serial_count > 0 else 0,
+                "ContainerWeightAverage": self.total_out_weight / self.out_serial_count if self.out_serial_count > 0 else 0,
                 "ContainerWeight": self.canning_id.weight,
                 "Season": self.finish_date.year,
                 "Warehouse": self.sudo().picking_type_id.name,
@@ -328,11 +330,10 @@ class DriedUnpelledHistory(models.Model):
                 "ArticleCode": self.out_product_id.default_code,
                 "ArticleDescription": self.out_product_id.name
             }
-            res = requests.post(url, json=json_data, headers=headers)
-
-            if res.status_code != 200:
-                raise models.ValidationError(f'Error {res.status_code}: {res.text} ')
-
+            # res = requests.post(url, json=json_data, headers=headers)
+            #
+            # if res.status_code != 200:
+            #     raise models.ValidationError(f'Error {res.status_code}: {res.text} ')
 
     def time_to_tz_naive(self, t, tz_in, tz_out):
         return tz_in.localize(t).astimezone(tz_out)

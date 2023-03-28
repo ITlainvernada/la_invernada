@@ -144,14 +144,13 @@ class UnpelledDried(models.Model):
 
     locked = fields.Boolean('Bloqueado')
 
-    show_new_process = fields.Boolean('Mostrar nuevo proceso',compute='compute_show_btn_new_process')
+    show_new_process = fields.Boolean('Mostrar nuevo proceso', compute='compute_show_btn_new_process')
 
     @api.depends('oven_use_ids')
     @api.multi
     def compute_show_btn_new_process(self):
         for item in self:
             item.show_new_process = len(self.oven_use_ids) > 0
-
 
     @api.multi
     def compute_can_done(self):
@@ -268,9 +267,13 @@ class UnpelledDried(models.Model):
             'unpelled_dried_id': None,
             'history_id': history_id.id
         })
+        report_id = self.env['report.raw.lot'].sudo().search([('id', '=', history_id.out_lot_id.id)])
+        if report_id:
+            report_id.manage_report()
+        if not report_id:
+            report_id.manage_report(history_id.out_lot_id.id)
+        # history_id.set_lot_to_quality_api()
 
-        history_id.set_lot_to_quality_api()
-        
         return history_id
 
     @api.model
