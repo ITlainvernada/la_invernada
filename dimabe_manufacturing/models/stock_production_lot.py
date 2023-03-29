@@ -286,56 +286,6 @@ class StockProductionLot(models.Model):
     serial_to_select_ids = fields.Many2many('stock.production.lot.serial', string='Series',
                                             compute='compute_serial_to_select_ids')
 
-    counter_pallet = fields.Integer('Contador de pallet', default=0)
-
-    origin_process = fields.Char('Proceso de origen')
-
-    def set_origin_process(self, harvest):
-        lot_ids = self.env['stock.production.lot'].sudo().search([]).filtered(lambda x: x.harvest == harvest)
-        for lot in lot_ids:
-            stock_picking = self.env['stock.picking'].sudo().search([('name', '=', lot.name)])
-            if stock_picking:
-                lot.write({
-                    'origin_process': 'RECEPCIÓN'
-                })
-                lot.stock_production_lot_serial_ids.write({
-                    'origin_process': 'RECEPCIÓN'
-                })
-                continue
-            if not stock_picking:
-                if lot.is_dried_lot:
-                    lot.write({
-                        'origin_process': 'SECADO'
-                    })
-                    lot.stock_production_lot_serial_ids.write({
-                        'origin_process': 'SECADO'
-                    })
-                    continue
-                if lot.is_prd_lot:
-                    if len(lot.stock_production_lot_serial_ids.mapped('production_id')) > 0:
-                        production_id = lot.stock_production_lot_serial_ids.mapped('production_id')
-                        if production_id:
-                            lot.write({
-                                'origin_process': production_id[0].routing_id.name
-                            })
-                            lot.stock_production_lot_serial_ids.write({
-                                'origin_process': production_id[0].routing_id.name
-                            })
-                        continue
-
-    def set_counter_in_pallet(self, harvest):
-        lot_ids = self.env['stock.production.lot'].search([('product_id.is_standard_weight', '=', True)]).filtered(
-            lambda x: x.harvest == harvest)
-        for lot in lot_ids:
-            if len(lot.all_pallet_ids) > 0:
-                for pallet in lot.all_pallet_ids:
-                    pallet.write({
-                        'counter_pallet_lot': lot.counter_pallet + 1
-                    })
-                    lot.write({
-                        'counter_pallet': lot.counter_pallet + 1
-                    })
-
     def compute_serial_to_select_ids(self):
         for item in self:
             item.serial_to_select_ids = item.stock_production_lot_serial_ids.filtered(
@@ -478,14 +428,10 @@ class StockProductionLot(models.Model):
                 raise models.ValidationError(
                     f"Series insuficientes para completar el pallet \n "
                     f"Cantidad de Series Disponible {len(item.temporary_serial_ids)}")
-            item.write({
-                'counter_pallet': item.counter_pallet + 1
-            })
             pallet_id = self.env['manufacturing.pallet'].create({
                 'producer_id': item.producer_id.id,
                 'lot_id': item.id,
                 'sale_order_id': item.sale_order_id.id if item.sale_order_id else None,
-                'counter_pallet_lot': item.counter_pallet
             })
             temporary_ids = self.env['custom.temporary.serial'].search([('lot_id', '=', item.id)],
                                                                        limit=item.qty_standard_serial)
@@ -888,11 +834,10 @@ class StockProductionLot(models.Model):
     @api.multi
     def add_to_packing_list(self):
         picking_id = int(self.env.context['stock_picking_id'])
-        self.pallet_ids.filtered(lambda a: not a.reserved_to_stock_picking_id and not a.consumed).write({
+        self.pallet_ids.filtered(lambda a: not a.reserved_to_stock_picking_id).write({
             'add_picking': True
         })
-        self.stock_production_lot_serial_ids.filtered(
-            lambda a: not a.reserved_to_stock_picking_id and not a.consumed).write({
+        self.stock_production_lot_serial_ids.filtered(lambda a: not a.reserved_to_stock_picking_id).write({
             'to_add': True
         })
         picking = self.env['stock.picking'].search([('id', '=', picking_id)])

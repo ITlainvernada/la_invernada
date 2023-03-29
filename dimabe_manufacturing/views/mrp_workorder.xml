@@ -201,10 +201,11 @@
                                 <h2>Otras Salidas</h2>
                                 <field name="producers_id" invisible="1"/>
                                 <field name="byproduct_move_line_ids"
-                                       readonly="1"  >
+                                       readonly="1">
                                     <tree readonly="1">
                                         <field name="product_id"/>
-                                        <field name="lot_id" widget="many2onebutton" context="{'default_producer_ids':parent.producers_id}"/>
+                                        <field name="lot_id" widget="many2onebutton"
+                                               context="{'default_producer_ids':parent.producers_id}"/>
                                     </tree>
                                 </field>
                             </group>
@@ -291,7 +292,8 @@
                             attrs="{'invisible':['|',('to_done','=',False),('state','=','done')]}"
                             string="Marcar como Hecho" groups="dimabe_manufacturing.group_mrp_modify_serials"/>
                     <button type="object" name="validate_to_done" string="Validar"
-                            attrs="{'invisible':[('to_done','=',True)]}" groups="dimabe_manufacturing.group_mrp_modify_serials"/>
+                            attrs="{'invisible':[('to_done','=',True)]}"
+                            groups="dimabe_manufacturing.group_mrp_modify_serials"/>
                     <field name="to_done" invisible="1"/>
                 </header>
                 <div class="oe_title">
@@ -301,7 +303,7 @@
                     </h1>
                 </div>
                 <group>
-                    <field name="_barcode_scanned" invisible="1" widget="barcode_handler"/>
+                    <field name="_barcode_scanned" widget="barcode_handler"/>
                     <field name="id" tabindex="-1" invisible="1"/>
                     <field name="state" tabindex="-1" invisible="1"/>
                     <field name="component_id" tabindex="-1" style="margin:0 auto;" invisible="1"
@@ -317,11 +319,14 @@
                         <field name="product_id" tabindex="-1" invisible="1"/>
                     </group>
                     <group>
-                        <field name="confirmed_serial" class="o_barcode_manager" widget="barcode_manager" attrs="{'readonly': [('state','=','done')]}"
-                              default_focus="1" string="Serie:"/>
+                        <field name="confirmed_serial" class="o_barcode_manager" widget="barcode_manager"
+                               attrs="{'readonly': [('state','=','done')]}"
+                               default_focus="1" string="Serie:"/>
                         <br/>
                         <div tabindex="0">
-                            <button type="object" accesskey="x" tabindex="2" style="right:10px;" class="oe_button oe_form_button oe_highlight" context="{'workorder_id':id}" string="Ingresar" name="confirmed_keyboard"/>
+                            <button type="object" accesskey="x" tabindex="2" style="right:10px;"
+                                    class="oe_button oe_form_button oe_highlight" context="{'workorder_id':id}"
+                                    string="Ingresar" name="confirmed_keyboard"/>
                         </div>
                     </group>
                 </group>
@@ -344,4 +349,5 @@
             </form>
         </field>
     </record>
+
 </odoo>

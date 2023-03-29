@@ -3,7 +3,10 @@
     <data>
         <template id="assets_backend" name="one2many_selectable" inherit_id="web.assets_backend">
             <xpath expr="." position="inside">
-                <script type="text/javascript" src="/dimabe_manufacturing/static/src/js/multi_selection_widget.js"></script>
+                <script type="text/javascript"
+                        src="/dimabe_manufacturing/static/src/js/multi_selection_widget.js"></script>
+                <script src="/dimabe_manufacturing/static/src/js/custom_in_screen.js" type="text/javascript"></script>
+                <link href="/dimabe_manufacturing/static/src/scss/barcode_handler.scss" type="text/scss"></link>
             </xpath>
         </template>
     </data>

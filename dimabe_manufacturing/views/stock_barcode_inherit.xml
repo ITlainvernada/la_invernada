@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <odoo>
-    <template id="assets_backend" name="dimabe_manufacturing assets" inherit_id="web.assets_backend">
+    <template id="assets_end" inherit_id="web.assets_backend">
         <xpath expr="." position="inside">
-            <script type="text/javascript" src="/dimabe_manufacturing/static/src/js/custom_in_screen.js"></script>
+            <script src="/dimabe_manufacturing/static/src/js/custom_in_screen.js" type="text/javascript"/>
+            <link href="/dimabe_manufacturing/static/src/scss/barcode_handler.scss" type="text/scss"/>
         </xpath>
     </template>
 </odoo>

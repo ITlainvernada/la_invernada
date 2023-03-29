@@ -378,7 +378,7 @@ class StockPicking(models.Model):
                     move.write({
                         'product_uom_qty': move.product_uom_qty + product.product_uom_qty
                     })
-
+    
     @api.multi
     def return_action(self):
         context = {

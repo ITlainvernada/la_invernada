@@ -422,13 +422,13 @@ class MrpWorkorder(models.Model):
         res = super(MrpWorkorder, self).create(values_list)
 
         name = self.env['ir.sequence'].next_by_code('mrp.workorder')
+
         final_lot = self.env['stock.production.lot'].create({
             'name': name,
             'product_id': res.product_id.id,
             'is_prd_lot': True,
             'can_add_serial': True,
-            'label_durability_id': res.production_id.label_durability_id.id,
-            'origin_process': res.production_id.routing_id.name,
+            'label_durability_id': res.production_id.label_durability_id.id
         })
         res.final_lot_id = final_lot.id
         return res
@@ -443,8 +443,7 @@ class MrpWorkorder(models.Model):
                     lot_tmp = self.env['stock.production.lot'].create({
                         'name': self.env['ir.sequence'].next_by_code('mrp.workorder'),
                         'product_id': check.component_id.id,
-                        'is_prd_lot': True,
-                        'origin_process': self.production_id.routing_id.name
+                        'is_prd_lot': True
                     })
                     check.lot_id = lot_tmp.id
                     check.qty_done = self.component_remaining_qty
@@ -466,8 +465,7 @@ class MrpWorkorder(models.Model):
                     lot_tmp = self.env['stock.production.lot'].create({
                         'name': self.env['ir.sequence'].next_by_code('mrp.workorder'),
                         'product_id': check.component_id.id,
-                        'is_prd_lot': True,
-                        'origin_process': self.production_id.routing_id.name,
+                        'is_prd_lot': True
                     })
                     check.lot_id = lot_tmp.id
                     check.qty_done = self.component_remaining_qty
@@ -599,10 +597,6 @@ class MrpWorkorder(models.Model):
         if self.start_date:
             dict_write['start_date'] = fields.Datetime.now()
         self.write(dict_write)
-        return {
-            'type': 'ir.actions.client',
-            'tag': 'reload',
-        }
 
     @api.multi
     def validate_to_done(self):
@@ -671,3 +665,23 @@ class MrpWorkorder(models.Model):
 
     def on_barcode_scanned(self, barcode):
         self.confirmed_serial = barcode
+
+    def process_serial_by_barcode(self, serial_number):
+        self.process_serial(serial_number)
+        self.confirmed_serial = None
+        self.write({
+            'confirmed_serial': None
+        })
+        return {
+            'name': "Procesar Entrada",
+            'view_type': 'form',
+            'view_mode': 'form',
+            'res_model': 'mrp.workorder',
+            'view_id': False,
+            'type': 'ir.actions.act_window',
+            'views': [
+                [self.env.ref('dimabe_manufacturing.mrp_workorder_process_view').id, 'form']],
+            'res_id': self.id,
+            'target': 'fullscreen',
+        }
+

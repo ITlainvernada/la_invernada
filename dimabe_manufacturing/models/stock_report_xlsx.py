@@ -116,6 +116,7 @@ class StockReportXlsx(models.TransientModel):
         }
         return action
 
+
     def generate_excel_serial_report(self, list_condition, type_product):
         file_name = 'C:\\Users\\fabia\\Documents\\test.xlsx'
         workbook = xlsxwriter.Workbook(file_name)
@@ -135,7 +136,7 @@ class StockReportXlsx(models.TransientModel):
                   (9.56, 'Fecha de Produccion'),
                   (10, 'Cliente o Calidad'), (22.89,
                                               'Enviado a proceso'), (9.56, 'Fecha de Envio'),
-                  (13.78, 'Ubicacion Fisica'), (10, 'Proceso de origen'), (10.89, 'Observacion')]
+                  (13.78, 'Ubicacion Fisica'), (10.89, 'Observacion')]
         for title in titles:
             sheet.set_column(col, col, title[0])
             sheet.write(row, col, title[1], text_format)
@@ -185,9 +186,6 @@ class StockReportXlsx(models.TransientModel):
             if serial.physical_location:
                 sheet.write(row, col, serial.physical_location, text_format)
             col += 1
-            if serial.origin_process:
-                sheet.write(row, col, serial.origin_process, text_format)
-            col += 1
             if serial.observations:
                 sheet.write(row, col, serial.observations)
             row += 1
@@ -216,7 +214,7 @@ class StockReportXlsx(models.TransientModel):
                   (8, 'Kilos Disponible'), (16, 'Estado de Despacho'), (9,
                                                                         'Cliente'), (10, 'Pais Destino'),
                   (10, 'Fecha Despacho'),
-                  (11, 'Ubicacion Fisica'), (12, 'Proceso de origen'), (13, 'Observaciones')]
+                  (11, 'Ubicacion Fisica'), (12, 'Observaciones')]
         for title in titles:
             sheet.write(row, col, title[1], text_format)
             col += 1
@@ -264,9 +262,6 @@ class StockReportXlsx(models.TransientModel):
             col += 1
             if lot.physical_location:
                 sheet.write(row, col, lot.physical_location, text_format)
-            col += 1
-            if lot.origin_process:
-                sheet.write(row, col, lot.origin_process, text_format)
             col += 1
             if lot.observations:
                 sheet.write(row, col, lot.observations)

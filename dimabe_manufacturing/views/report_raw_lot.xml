@@ -25,7 +25,7 @@
                     <field name="packaging_qty"/>
                     <field name="position"/>
                     <button type="object" name="generate_new_position" string="Nueva posición"/>
-                    <button type="object" name="delete_position" groups="stock.group_stock_manager" string="Eliminar posición"/>
+                    <button type="object" name="delete_position" string="Eliminar posición" groups="stock.group_stock_manager"/>
                 </tree>
             </field>
         </record>
