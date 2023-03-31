@@ -240,3 +240,43 @@ class ReportRawLot(models.Model):
     def delete_position(self):
         for item in self:
             item.unlink()
+
+    def manage_report(self, lot_id=None):
+        if lot_id:
+            lot = self.env['stock.production.lot'].sudo().search([('id', '=', lot_id)])
+            self.env[self._name].sudo().create({
+                'lot_id': lot.id,
+                'producer_id': lot.producer_id.id,
+                'product_id': lot.product_id.id,
+                'available_weight': sum(serial.display_weight for serial in
+                                        lot.stock_production_lot_serial_ids.filtered(lambda x: not x.consumed)),
+                'product_variety': lot.product_id.get_variety(),
+                'product_caliber': lot.product_id.get_calibers(),
+                'location_id': lot.location_id.id,
+                'guide_number': lot.show_guide_number,
+                'lot_harvest': lot.harvest,
+                'reception_weight': lot.reception_weight,
+                'date': lot.show_date,
+                'available_series': len(lot.stock_production_lot_serial_ids.filtered(lambda x: not x.consumed)),
+                'send_to_process': lot.workcenter_id.id,
+                'send_date': lot.delivered_date
+            })
+        else:
+            lot = self.lot_id
+            self.sudo().write({
+                'lot_id': lot.id,
+                'producer_id': lot.producer_id.id,
+                'product_id': lot.product_id.id,
+                'available_weight': sum(serial.display_weight for serial in
+                                        lot.stock_production_lot_serial_ids.filtered(lambda x: not x.consumed)),
+                'product_variety': lot.product_id.get_variety(),
+                'product_caliber': lot.product_id.get_calibers(),
+                'location_id': lot.location_id.id,
+                'guide_number': lot.show_guide_number,
+                'lot_harvest': lot.harvest,
+                'reception_weight': lot.reception_weight,
+                'date': lot.show_date,
+                'available_series': len(lot.stock_production_lot_serial_ids.filtered(lambda x: not x.consumed)),
+                'send_to_process': lot.workcenter_id.id,
+                'send_date': lot.delivered_date
+            })
