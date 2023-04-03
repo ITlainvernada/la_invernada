@@ -661,12 +661,12 @@ class StockProductionLot(models.Model):
                     [('out_lot_id', '=', item.id)])
                 item.show_guide_number = dried.lot_guide_numbers
 
-    @api.depends('stock_production_lot_serial_ids')
+    @api.depends('stock_production_lot_serial_ids', 'available_kg')
     @api.multi
     def _compute_lot_harvest(self):
         for item in self:
             if item.stock_production_lot_serial_ids:
-                item.harvest = item.stock_production_lot_serial_ids[0].harvest
+                item.harvest = max(item.stock_production_lot_serial_ids.mapped('serial_harvest'))
 
     @api.multi
     def _compute_lot_location(self):
@@ -1282,6 +1282,11 @@ class StockProductionLot(models.Model):
                 serials = []
                 if ',' in item.correlative_serial:
                     serials = item.correlative_serial.split(',')
+                if '-' in item.correlative_serial:
+                    list_serial = [int(serial) for serial in item.correlative_serial.split('-')]
+                    for serial in list(range(min(list_serial), max(list_serial) + 1)):
+                        zeros = '00' if serial <= 9 else '' if serial > 999 else '0'
+                        serials.append(f'{zeros}{serial}')
                 else:
                     serials.append(item.correlative_serial)
                 for serial in serials:

@@ -1,3 +1,5 @@
+import datetime
+
 from dateutil.relativedelta import relativedelta
 
 from odoo import fields, models, api
@@ -6,6 +8,11 @@ from odoo.addons import decimal_precision as dp
 
 class StockProductionLotSerial(models.Model):
     _inherit = 'stock.production.lot.serial'
+
+    @api.model
+    def default_harvest(self):
+        print(self)
+        return 0
 
     # _sql_constraints = [
     #     ('serial_uniq', 'UNIQUE(serial_number)', 'la serie ya se encuentra en el sistema.')
@@ -176,6 +183,9 @@ class StockProductionLotSerial(models.Model):
     to_print = fields.Boolean(string='Imprimir')
 
     printed = fields.Boolean(string='Impresa')
+
+    serial_harvest = fields.Integer('Cosecha',
+                                    default=datetime.datetime.now().year)
 
     @api.multi
     def compute_available_weight(self):

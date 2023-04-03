@@ -127,6 +127,7 @@
                                 <field name="label_percent"/>
                                 <field name="serial_number" readonly="1"/>
                                 <field name="gross_weight"/>
+                                <field name="serial_harvest"/>
                                 <button name="print_serial_label"
                                         type="object" string="Imprimir"
                                         context="{'producer_id': parent.producer_id}"
