@@ -9,7 +9,6 @@ class ResPartner(models.Model):
     region_address_id = fields.Many2one(
         'region.address',
         'Región',
-        ''
     )
 
     city_address = fields.Char(
