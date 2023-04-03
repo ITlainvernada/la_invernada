@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+  <data>
+    <record model="ir.ui.view" id="purchase_order_form">
+      <field name="name">Solicitudes de Presupuesto</field>
+      <field name="model">purchase.order</field>
+      <field name="inherit_id" ref="purchase.purchase_order_form"/>
+      <field name="arch" type="xml">
+        <xpath expr="//page[@name='purchase_delivery_invoice']" position="after">
+          <page string="HES" id="hes_page"
+            attrs="{'invisible':[('has_service','==',False)]}">
+            <group name="hes_page" position="inside">
+              <group>
+                <field name="hes_number"/>
+                <field name="has_service" invisible="1"/>
+              </group>
+              <group>
+                <button type="object"
+                        string="Enviar HES por correo"
+                        name="send_hes"
+                        class="oe_highlight"
+                        attrs="{'invisible':[('hes_number','==',0)]}"
+                />
+                <field name="hes_sent_count"/>
+              </group>
+            </group>
+          </page>
+        </xpath>
+        <xpath expr="/form/header/button[@name='action_view_invoice']"
+               position="before"
+        >
+          <button type="object"
+                  string="Validar"
+                  name="generate_hes"
+                  class="oe_highlight"
+          />
+        </xpath>
+      </field>
+    </record>
+  </data>
+</odoo>

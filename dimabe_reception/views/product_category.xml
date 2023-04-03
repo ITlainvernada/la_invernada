@@ -1,0 +1,15 @@
+<odoo>
+    <data>
+        <record id="product_category_form_inherit" model="ir.ui.view">
+            <field name="name">formulario categoría de productos</field>
+            <field name="model">product.category</field>
+            <field name="inherit_id" ref="product.product_category_form_view" />
+            <field name="arch" type="xml">
+                <field name="parent_id" position="after">
+                    <field name="with_suffix" widget="boolean_toggle" />
+                    <field name="warehouse_ids" />
+                </field>
+            </field>
+        </record>
+    </data>
+</odoo>

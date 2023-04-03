@@ -1,0 +1,14 @@
+<odoo>
+    <data>
+        <record model="ir.ui.view" id="account_payment_invoice_form_inherit">
+            <field name="name">Registrar Pago</field>
+            <field name="model">account.payment</field>
+            <field name="inherit_id" ref="account.view_account_payment_invoice_form" />
+            <field name="arch" type="xml">
+                <field name="payment_date" position="after">
+                    <field name="optional_usd" />
+                </field>
+            </field>
+        </record>
+    </data>
+</odoo>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="hes_mail_template" model="mail.template">
+        <field name="name">Hes Email Template</field>
+        <field name="model_id" ref="dimabe_reception_check.model_purchase_order"/>
+        <field name="email_from">info@lainvernada.com</field>
+        <field name="email_to">ptoro@lainvernda.com;fahumada@lainvernada.com</field>
+        <field name="subject">Hes de Presupuesto ${object.name}</field>
+        <field name="body_html">
+            <![CDATA[
+                <p>Estimado,<br/><br/>
+                se informa a usted que el número HES correspondiente a la PO ${object.name} es:
+                <strong>${object.hes_number}</strong>
+                <br/>
+                </p>
+                Atte,<br/>
+                ${(object.company_id.name)}
+            ]]>
+        </field>
+    </record>
+</odoo>

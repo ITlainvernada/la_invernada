@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="custom_parameter_tree" model="ir.ui.view">
+            <field name="name">Tramos</field>
+            <field name="model">custom.data</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                    <field name="value"/>
+                    <field name="comment" invisible="1"/>
+                </tree>
+            </field>
+        </record>
+        <record id="custom_data_form" model="ir.ui.view">
+            <field name="name">custom_data.form</field>
+            <field name="model">custom.data</field>
+            <field name="arch" type="xml">
+                <form string="">
+                    <header>
+                    </header>
+                    <sheet>
+                        <group>
+                            <field name="name"/>
+                            <field name="value"/>
+                            <field name="comment"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="custom_parameter_action" model="ir.actions.act_window">
+            <field name="name">Tramos</field>
+            <field name="res_model">custom.data</field>
+            <field name="view_type">form</field>
+            <field name='view_id' ref="custom_parameter_tree"/>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('comment','like','Tramo')]</field>
+        </record>
+        <menuitem
+            id="custom_parameter_menu"
+            string="Tramos"
+            parent="hr_payroll.menu_hr_payroll_configuration"
+            action="dimabe_rrhh.custom_parameter_action"
+            sequence="10" />
+    </data>
+</odoo>

@@ -1,0 +1,6 @@
+<odoo>
+    <record id="record_of_config" model="reception.alert.config">
+        <field name="hr_alert">18</field>
+        <field name="kg_diff_alert">70</field>
+    </record>
+</odoo>

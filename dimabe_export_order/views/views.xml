@@ -1,0 +1,104 @@
+<odoo>
+  <data>
+
+    <menuitem id="menu_sale_export" name="Exportación" parent="sale.sale_menu_root"  />
+
+    <menuitem id="menu_custom_port"
+              name="Puertos"
+              parent="menu_sale_export"
+              action="action_custom_port_views"
+    />
+    <menuitem id="menu_custom_shipping_company"
+              name="Navieras"
+              parent="menu_sale_export"
+              action="action_custom_shipping_company_views"
+    />
+    <menuitem id="menu_custom_ship"
+              name="Naves"
+              parent="menu_sale_export"
+              action="action_custom_ship_views"
+    />
+    <menuitem id="menu_custom_container_type"
+              name="Tipos de contenedor"
+              parent="menu_sale_export"
+              action="action_custom_container_type_views"
+    />
+
+    <menuitem id="menu_custom_shipment"
+              name="Embarques"
+              parent="menu_sale_export"
+              action="action_custom_shipment_view"
+    />
+
+    <menuitem id="menu_custom_client_identifier"
+              name="Tipo Identificador"
+              parent="contacts.res_partner_menu_config"
+              action="custom_client_identifier_action_view"
+    />
+
+<!--
+    <menuitem id="menu_custom_contract"
+              name="Contratos"
+              parent="menu_sale_export"
+              action="custom_contract_action_view"
+    />
+
+-->
+    <!-- explicit list view definition -->
+    <!--
+    <record model="ir.ui.view" id="dimabe_export_order.list">
+      <field name="name">dimabe_export_order list</field>
+      <field name="model">dimabe_export_order.dimabe_export_order</field>
+      <field name="arch" type="xml">
+        <tree>
+          <field name="name"/>
+          <field name="value"/>
+          <field name="value2"/>
+        </tree>
+      </field>
+    </record>
+    -->
+
+    <!-- actions opening views on models -->
+    <!--
+    <record model="ir.actions.act_window" id="dimabe_export_order.action_window">
+      <field name="name">dimabe_export_order window</field>
+      <field name="res_model">dimabe_export_order.dimabe_export_order</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+    -->
+
+    <!-- server action to the one above -->
+    <!--
+    <record model="ir.actions.server" id="dimabe_export_order.action_server">
+      <field name="name">dimabe_export_order server</field>
+      <field name="model_id" ref="model_export_order_dimabe_export_order_dimabe"/>
+      <field name="state">code</field>
+      <field name="code">
+        action = {
+          "type": "ir.actions.act_window",
+          "view_mode": "tree,form",
+          "res_model": self._name,
+        }
+      </field>
+    </record>
+    -->
+
+    <!-- Top menu item -->
+    <!--
+    <menuitem name="dimabe_export_order" id="dimabe_export_order.menu_root"/>
+    -->
+    <!-- menu categories -->
+    <!--
+    <menuitem name="Menu 1" id="dimabe_export_order.menu_1" parent="dimabe_export_order.menu_root"/>
+    <menuitem name="Menu 2" id="dimabe_export_order.menu_2" parent="dimabe_export_order.menu_root"/>
+    -->
+    <!-- actions -->
+    <!--
+    <menuitem name="List" id="dimabe_export_order.menu_1_list" parent="dimabe_export_order.menu_1"
+              action="dimabe_export_order.action_window"/>
+    <menuitem name="Server to list" id="dimabe_export_order" parent="dimabe_export_order.menu_2"
+              action="dimabe_export_order.action_server"/>
+    -->
+  </data>
+</odoo>

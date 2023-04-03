@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+<h1>Configuraciones:</h1>
+<ul>
+    <li>
+        crear accion planificada con el siguiente código:
+
+        <pre>
+            <code>
+                stock_picking_list = env['stock.picking'].search(['|', ('hr_alert_notification_count', '=', None), ('kg_diff_alert_notification_count', '=', None)])
+
+                for stock_picking in stock_picking_list:
+                  stock_picking.notify_alerts()
+           </code>
+        </pre>
+
+    </li>
+    <li>
+        en la vista stock.view_picking_form agregar a la pestaña <strong>Operations</strong>
+        el <strong>name='operations'</strong>
+    </li>
+</ul>
+</body>
+</html>

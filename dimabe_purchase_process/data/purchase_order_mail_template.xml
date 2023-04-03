@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+  <record id="po_confirmed_mail_template" model="mail.template">
+    <field name="name">PO confirmada</field>
+    <field name="model_id" ref="dimabe_purchase_process.model_purchase_order"/>
+    <field name="email_from">info@lainvernada.com</field>
+    <field name="email_to">
+      ${object.get_email_to('dimabe_purchase_process.group_purchase_approval_user')}
+    </field>
+    <field name="subject">Nueva PO aprobada</field>
+    <field name="body_html">
+      <![CDATA[
+          <p>Estimados,<br/><br/>
+          Se ha aprobado una nueva Orden de compra ${object.name}, favor validar y gestionar con proveedor.
+          <br/>
+          </p>
+          Atte,<br/>
+          ${(object.company_id.name)}
+      ]]>
+    </field>
+  </record>
+</odoo>

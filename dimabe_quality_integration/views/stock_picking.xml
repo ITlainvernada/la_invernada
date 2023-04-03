@@ -1,0 +1,28 @@
+<odoo>
+  <data>
+    <record id="stock_picking_form_inherit" model="ir.ui.view">
+      <field name="name">Formulario Transferencias</field>
+      <field name="model">stock.picking</field>
+      <field name="inherit_id" ref="stock.view_picking_form" />
+      <field name="arch" type="xml">
+        <xpath expr="//page[@name='note']" position="after">
+          <page string="Calidad" name="page_quality">
+            <group>
+              <group>
+                <field name="stock_move_line_lot_ids">
+                  <tree>
+                    <field name="reference" />
+                    <field name="product_id" />
+                    <field name="lot_quality_analysis_id"
+                           widget="many2onebutton"
+                    />
+                  </tree>
+                </field>
+              </group>
+            </group>
+          </page>
+        </xpath>
+      </field>
+    </record>
+  </data>
+</odoo>

@@ -1,0 +1,60 @@
+<odoo>
+  <data>
+    <!-- explicit list view definition -->
+    <!--
+    <record model="ir.ui.view" id="dimabe_quality_integration.list">
+      <field name="name">dimabe_quality_integration list</field>
+      <field name="model">dimabe_quality_integration.dimabe_quality_integration</field>
+      <field name="arch" type="xml">
+        <tree>
+          <field name="name"/>
+          <field name="value"/>
+          <field name="value2"/>
+        </tree>
+      </field>
+    </record>
+    -->
+
+    <!-- actions opening views on models -->
+    <!--
+    <record model="ir.actions.act_window" id="dimabe_quality_integration.action_window">
+      <field name="name">dimabe_quality_integration window</field>
+      <field name="res_model">dimabe_quality_integration.dimabe_quality_integration</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+    -->
+
+    <!-- server action to the one above -->
+    <!--
+    <record model="ir.actions.server" id="dimabe_quality_integration.action_server">
+      <field name="name">dimabe_quality_integration server</field>
+      <field name="model_id" ref="model_dimabe_quality_integration_dimabe_quality_integration"/>
+      <field name="state">code</field>
+      <field name="code">
+        action = {
+          "type": "ir.actions.act_window",
+          "view_mode": "tree,form",
+          "res_model": self._name,
+        }
+      </field>
+    </record>
+    -->
+
+    <!-- Top menu item -->
+    <!--
+    <menuitem name="dimabe_quality_integration" id="dimabe_quality_integration.menu_root"/>
+    -->
+    <!-- menu categories -->
+    <!--
+    <menuitem name="Menu 1" id="dimabe_quality_integration.menu_1" parent="dimabe_quality_integration.menu_root"/>
+    <menuitem name="Menu 2" id="dimabe_quality_integration.menu_2" parent="dimabe_quality_integration.menu_root"/>
+    -->
+    <!-- actions -->
+    <!--
+    <menuitem name="List" id="dimabe_quality_integration.menu_1_list" parent="dimabe_quality_integration.menu_1"
+              action="dimabe_quality_integration.action_window"/>
+    <menuitem name="Server to list" id="dimabe_quality_integration" parent="dimabe_quality_integration.menu_2"
+              action="dimabe_quality_integration.action_server"/>
+    -->
+  </data>
+</odoo>

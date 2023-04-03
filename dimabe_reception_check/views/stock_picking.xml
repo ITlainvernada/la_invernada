@@ -1,0 +1,81 @@
+<odoo>
+    <data>
+        <record id="view_picking_form" model="ir.ui.view">
+            <field name="name">Check List Recepción</field>
+            <field name="model">stock.picking</field>
+            <field name="inherit_id" ref="stock.view_picking_form"/>
+            <field name="arch" type="xml">
+                <field name="origin" position="after">
+                    <field name="picking_type_code" invisible="1"/>
+                    <field name="has_mp_field" invisible="1" />
+                </field>
+                <xpath expr="//page[@name='extra']" position="before">
+                    <page string="Check List" id="check_list"
+                          attrs="{'invisible':['|', ('has_mp_field', '=', True), ('picking_type_code', '=', 'outgoing')]}"
+                    >
+                        <group name="check_list" position="inside">
+                            <field name="check_list_responses"/>
+                        </group>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+
+        <!-- explicit list view definition -->
+        <!--
+        <record model="ir.ui.view" id="reception_check.list">
+          <field name="name">reception_check list</field>
+          <field name="model">reception_check.reception_check</field>
+          <field name="arch" type="xml">
+            <tree>
+              <field name="name"/>
+              <field name="value"/>
+              <field name="value2"/>
+            </tree>
+          </field>
+        </record>
+        -->
+
+        <!-- actions opening views on models -->
+        <!--
+        <record model="ir.actions.act_window" id="reception_check.action_window">
+          <field name="name">reception_check window</field>
+          <field name="res_model">reception_check.reception_check</field>
+          <field name="view_mode">tree,form</field>
+        </record>
+        -->
+
+        <!-- server action to the one above -->
+        <!--
+        <record model="ir.actions.server" id="reception_check.action_server">
+          <field name="name">reception_check server</field>
+          <field name="model_id" ref="model_reception_check_reception_check"/>
+          <field name="state">code</field>
+          <field name="code">
+            action = {
+              "type": "ir.actions.act_window",
+              "view_mode": "tree,form",
+              "res_model": self._name,
+            }
+          </field>
+        </record>
+        -->
+
+        <!-- Top menu item -->
+        <!--
+        <menuitem name="reception_check" id="reception_check.menu_root"/>
+        -->
+        <!-- menu categories -->
+        <!--
+        <menuitem name="Menu 1" id="reception_check.menu_1" parent="reception_check.menu_root"/>
+        <menuitem name="Menu 2" id="reception_check.menu_2" parent="reception_check.menu_root"/>
+        -->
+        <!-- actions -->
+        <!--
+        <menuitem name="List" id="reception_check.menu_1_list" parent="reception_check.menu_1"
+                  action="reception_check.action_window"/>
+        <menuitem name="Server to list" id="reception_check" parent="reception_check.menu_2"
+                  action="reception_check.action_server"/>
+        -->
+    </data>
+</odoo>

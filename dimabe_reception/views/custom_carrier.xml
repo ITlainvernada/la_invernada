@@ -1,0 +1,9 @@
+<odoo>
+    <data>
+        <record id="dimabe_reception.custom_carrier_act_window" model="ir.actions.act_window">
+            <field name="name">reception window</field>
+            <field name="res_model">custom.carrier</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+    </data>
+</odoo>

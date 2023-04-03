@@ -1,0 +1,14 @@
+<odoo>
+  <data>
+    <record id="caliber_analysis_list_view" model="ir.ui.view">
+      <field name="name">Lista de Análisis de Calibre</field>
+      <field name="model">caliber.analysis</field>
+      <field name="arch" type="xml">
+        <tree create="false" edit="false" delete="false">
+          <field name="name" />
+          <field name="percent" />
+        </tree>
+      </field>
+    </record>
+  </data>
+</odoo>

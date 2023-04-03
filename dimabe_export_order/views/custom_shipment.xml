@@ -1,0 +1,67 @@
+<odoo>
+    <data>
+        <record model="ir.actions.act_window" id="action_custom_shipment_view">
+            <field name="name">Embarques</field>
+            <field name="res_model">custom.shipment</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+        <record model="ir.ui.view" id="custom_shipment_form_view">
+            <field name="name">Formulario Embarque</field>
+            <field name="model">custom.shipment</field>
+            <field name="arch" type="xml">
+                <form>
+                    <field name="name" />
+                    <group>
+                        <group>
+                            <field name="shipping_company"/>
+                            <field name="ship"/>
+                            <field name="ship_number"/>
+                            <field name="type_transport"/>
+                        </group>
+                        <group>
+                            <field name="departure_port"/>
+                            <field name="arrival_port"/>
+                            <field name="required_loading_date" autocomplete="off"/>
+                            <field name="required_loading_week" />
+                        </group>
+                    </group>
+                    <group>
+                        <group>
+                            <field name="etd" autocomplete="off"/>
+                            <field name="etd_month"/>
+                            <field name="etd_week"/>
+                            <field name="eta" autocomplete="off" />
+                        </group>
+                        <group>
+                            <field name="departure_date" autocomplete="off" />
+                            <field name="arrival_date" autocomplete="off" />
+                        </group>
+                    </group>
+                </form>
+            </field>
+
+        </record>
+        <record model="ir.ui.view" id="list_custom_shipment_view">
+            <field name="name">Lista de Embarques</field>
+            <field name="model">custom.shipment</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="id"/>
+                    <field name="shipping_company"/>
+                    <field name="ship"/>
+                    <field name="ship_number"/>
+                    <field name="type_transport"/>
+                    <field name="departure_port"/>
+                    <field name="arrival_port"/>
+                    <field name="required_loading_date"/>
+                    <field name="etd"/>
+                    <field name="etd_month"/>
+                    <field name="etd_week"/>
+                    <field name="eta"/>
+                    <field name="departure_date"/>
+                    <field name="arrival_date"/>
+                </tree>
+            </field>
+        </record>
+    </data>
+</odoo>

@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_reception_check_check_list_item,reception_check.check_list_item,model_check_list_item,,1,1,1,1
+access_reception_check_check_list_response,reception_check.check_list_response,model_check_list_response,,1,1,1,1

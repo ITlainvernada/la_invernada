@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<odoo>
+    <template id="balance_sheet_clp">
+        <t t-call="web.html_container">
+            <div class="page" style="margin:0 auto;">
+                <h1>Hola</h1>
+            </div>
+        </t>
+    </template>
+<!--    <record model="ir.actions.server" id="action_upd_printed_invoices">-->
+<!--        <field name="name">Invoice Upd 'printed' Server Action</field>-->
+<!--        <field name="model_id" ref="dimabe_billing_rut.model_account_financial_html_report"/>-->
+<!--        <field name="type">ir.actions.server</field>-->
+<!--        <field name="state">code</field>-->
+<!--        <field name="code">model.test()</field>-->
+<!--    </record>-->
+
+<!--    <menuitem id="test_item" action="action_upd_printed_invoices" parent="account.menu_finance_reports" name="Test"/>-->
+
+    <report id="action_inform" model="account.financial.html.report"
+            report_type="qweb-html"
+            name="dimabe_billing_rut.balance_sheet_clp" string="Balance de Situacion en CLP"/>
+</odoo>

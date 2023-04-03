@@ -1,0 +1,45 @@
+<odoo>
+    <data>
+        <record id="reception_alert_config_view" model="ir.actions.act_window">
+            <field name="name">Configuración de Alertas en Recepción</field>
+            <field name="res_model">reception.alert.config</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <record id="reception_alert_config_list_view" model="ir.ui.view">
+            <field name="name">Configuración de alertas</field>
+            <field name="model">reception.alert.config</field>
+            <field name="arch" type="xml">
+                <tree create="false" delete="false">
+                    <field name="hr_alert" />
+                    <field name="kg_diff_alert" />
+                </tree>
+            </field>
+        </record>
+
+        <record id="reception_alert_config_form_view" model="ir.ui.view">
+            <field name="name">Formulario configuración de alertas recepción</field>
+            <field name="model">reception.alert.config</field>
+            <field name="arch" type="xml">
+                <form create="false" copy="false" delete="false" >
+                    <group>
+                        <group>
+                            <field name="hr_alert" />
+                            <field  name="notify_elapsed_time_to"/>
+                        </group>
+                        <group>
+                            <field name="kg_diff_alert" />
+                            <field  name="notify_diff_kg"/>
+                        </group>
+                    </group>
+                </form>
+            </field>
+        </record>
+
+        <menuitem name="Configuración de Alertas"
+                  id="dimabe_reception.reception_alert_config_menu"
+                  parent="stock.menu_stock_config_settings"
+                  action="reception_alert_config_view"
+        />
+    </data>
+</odoo>

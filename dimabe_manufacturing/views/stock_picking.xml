@@ -1,0 +1,142 @@
+<odoo>
+    <record id="view_picking_form_inherit" model="ir.ui.view">
+        <field name="name">Formulario Despacho</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_form"/>
+        <field name="arch" type="xml">
+            <button name="action_assign" position="replace"/>
+            <button name="do_unreserve" position="replace"/>
+            <xpath expr="//notebook[1]//page[1]" position="after">
+                <page string="Lineas de Despacho" name="dispatch_line_ids"
+                      attrs="{'invisible':[('is_multiple_dispatch','=',False)]}">
+                    <field name="dispatch_line_ids"
+                           attrs="{'invisible':[('picking_type_code','!=','outgoing')],'read_only':[('state','=','done')]}">
+                        <tree editable="bottom" edit="true" delete="true" create="false">
+                            <field name="sale_id"/>
+                            <field name="dispatch_id"/>
+                            <field name="product_id"/>
+                            <field name="required_sale_qty"/>
+                            <field name="real_dispatch_qty"
+                                   attrs="{'column_invisible':[('parent.dispatch_line_ids','=',None)]}"/>
+                        </tree>
+                    </field>
+                </page>
+            </xpath>
+            <xpath expr="//field[@name='origin']" position="after">
+                <field name="is_multiple_dispatch" attrs="{'invisible':[('picking_type_code','!=','outgoing')]}"/>
+                <field name="sale_order_ids"
+                       attrs="{'invisible':[('is_multiple_dispatch','=',False)]}" />
+                <field name="dispatch_id" domain="[('sale_id','=',sale_order_ids),('state','!=','done')]" attrs="{'invisible':[('is_multiple_dispatch','=',False)]}" />
+                <button name="add_orders_to_dispatch" type="object" string="Agregar"
+                        attrs="{'invisible':[('is_multiple_dispatch','=',False)]}"/>
+            </xpath>
+            <page name="note" position="after">
+                <page name="packing_list" string="Reservados"
+                      attrs="{'invisible':['|',('state','=','cancel'),('picking_type_code', '!=', 'outgoing')]}"
+                >
+                    <field name="id" invisible="1"/>
+                    <field name="state" invisible="1"/>
+                    <notebook>
+                        <page string="Lotes Reservados">
+                            <group>
+                                <field name="packing_list_lot_ids">
+                                    <tree>
+                                        <field name="name"/>
+                                        <field name="product_id"/>
+                                        <button string="Quitar Reserva"
+                                                type="object"
+                                                name="unreserved"
+                                                context="{'stock_picking_id':parent.id}"
+                                                attrs="{'invisible':[('parent.state','=','done')]}"
+                                        />
+                                    </tree>
+                                </field>
+                            </group>
+                        </page>
+                        <page string="Pallets Reservados">
+                            <group>
+                                <field name="assigned_pallet_ids" context="{'picking_id':parent.id}">
+                                    <tree editable="bottom" edit="true" delete="false" create="false">
+                                        <field name="remove_picking"/>
+                                        <field name="name" readonly="1"/>
+                                        <field name="lot_id" readonly="1"/>
+                                        <field name="product_id" readonly="1"/>
+                                        <field name="total_reserved_serial" readonly="1"/>
+                                        <field name="total_reserved_weight" readonly="1"/>
+                                        <field name="state" readonly="1"/>
+                                        <button string="Quitar Reserva"
+                                                name="remove_from_picking"
+                                                type="object"
+                                                context="{'stock_picking_id': parent.id}"
+                                                attrs="{'invisible':[('parent.state','=','done')]}"
+                                        />
+                                    </tree>
+                                </field>
+                            </group>
+                            <group>
+                                <button name="remove_reserved_pallet" type="object" string="Quitar seleccion"/>
+                            </group>
+                        </page>
+                        <page string="Series Reservadas">
+                            <group>
+                                <field name="packing_list_ids">
+                                    <tree editable="bottom" edit="true" delete="false" create="false">
+                                        <field name="to_delete" attrs="{'invisible':[('consumed','=',True)]}"/>
+                                        <field name="stock_production_lot_id" readonly="1"/>
+                                        <field name="stock_product_id" readonly="1"/>
+                                        <field name="serial_number" readonly="1"/>
+                                        <field name="display_weight" readonly="1"/>
+                                        <field name="consumed" invisible="1"/>
+                                    </tree>
+                                </field>
+                            </group>
+                            <group>
+                                <button name="remove_reserved_serial" type="object" string="Quitar seleccion" attrs="{'invisible':[('state','=','done')]}"/>
+                            </group>
+                        </page>
+                        <page string="Lotes Disponibles">
+                            <group>
+                                <field name="product_ids" invisible="1"/>
+                                <field name="lot_search_id" domain="[('id','in',potential_lot_ids)]" options="{'no_create': True}"/>
+                                <field name="sale_search_id"/>
+                                <field name="potential_lot_ids"
+                                       groups="mrp.group_mrp_manager"
+                                       attrs="{'invisible':[('state','=','done')]}"
+                                       readonly="0"
+                                       context="{'available': True}"
+                                >
+                                    <tree editable="bottom" edit="true" delete="false" create="false">
+                                        <field name="name" readonly="1"/>
+                                        <field name="product_id" readonly="1"/>
+                                        <field name="available_total_serial" readonly="1"/>
+                                        <button string="Agregar Reserva" type="object" name="add_to_packing_list"
+                                                context="{'stock_picking_id':parent.id}"/>
+                                        <button string="Ver Series"
+                                                context="{'stock_picking_id': parent.id}"
+                                                type="object"
+                                                name="show_available_serial"
+                                        />
+                                    </tree>
+                                </field>
+                            </group>
+                        </page>
+                    </notebook>
+                </page>
+            </page>
+        </field>
+    </record>
+
+    <record id="view_picking_form_inherit_reception_dimabe" model="ir.ui.view">
+        <field name="name">Formulario de picking</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="dimabe_reception.reception_stock_picking_form_inherit"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='guide_number']" position="after">
+                <field name="show_guide_in_form" invisible="1"/>
+            </xpath>
+            <xpath expr="//field[@name='guide_number']" position="attributes">
+                <attribute name="attrs">{'invisible':[('show_guide_in_form','=',False)], 'readonly': [('state', '=', 'done')]}</attribute>
+            </xpath>
+        </field>
+    </record>
+</odoo>

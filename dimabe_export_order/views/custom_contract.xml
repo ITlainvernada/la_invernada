@@ -1,0 +1,9 @@
+<odoo>
+    <data>
+        <record id="custom_contract_action_view" model="ir.actions.act_window">
+            <field name="name">Contrato</field>
+            <field name="res_model">custom.contract</field>
+            <field name="mode_type">tree,form</field>
+        </record>
+    </data>
+</odoo>

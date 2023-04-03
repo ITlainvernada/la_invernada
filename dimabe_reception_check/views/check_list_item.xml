@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+    <record id="check_list_action" model="ir.actions.act_window">
+        <field name="name">Lista de Revisión Recepción</field>
+        <field name="res_model">check.list.item</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!--
+        <menuitem name="Check List Recepción" id="check_list_base_menu"/>
+    -->
+
+    <menuitem name="Check List"
+              id="check_list_menu"
+              parent="stock.menu_stock_warehouse_mgmt"
+              action="check_list_action"
+    />
+
+    <!--
+    <record id="check_list_view_form" model="ir.ui.view">
+        <field name="name">Item de cheklist recepción</field>
+        <field name="model">check.list.item</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <field name="name" />
+                </group>
+                <group></group>
+            </form>
+        </field>
+    </record>
+    -->
+
+    <record id="check_list_view_tree" model="ir.ui.view">
+        <field name="name">Check List Tree</field>
+        <field name="model">check.list.item</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="position"/>
+                <field name="write_date"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="check_list_view_search" model="ir.ui.view">
+        <field name="name">Check List Search</field>
+        <field name="model">check.list.item</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name" />
+                <field name="position" />
+            </search>
+        </field>
+    </record>
+
+    <record id="check_list_item_view_form" model="ir.ui.view">
+        <field name="name">Check List Form</field>
+        <field name="model">check.list.item</field>
+        <field name="arch" type="xml">
+            <form>
+                <group string="Item de check list">
+                    <group>
+                        <field name="name"/>
+                    </group>
+                    <group>
+                        <field name="position"/>
+                    </group>
+                </group>
+            </form>
+        </field>
+    </record>
+</odoo>
+
+
+
+

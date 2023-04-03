@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+      <record id="check_list_response_view_tree" model="ir.ui.view">
+        <field name="name">Check List Tree</field>
+        <field name="model">check.list.response</field>
+        <field name="arch" type="xml">
+            <tree delete="false" create="false" editable="bottom">
+                <field name="item"/>
+                <field name="response"/>
+                <field name="documents"/>
+                <field name="observation"/>
+            </tree>
+        </field>
+    </record>
+</odoo>

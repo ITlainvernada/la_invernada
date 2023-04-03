@@ -1,0 +1,9 @@
+<odoo>
+    <data>
+        <record id="custom_client_identifier_action_view" model="ir.actions.act_window">
+            <field name="name">Identificador de Cliente</field>
+            <field name="res_model">custom.client.identifier</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+    </data>
+</odoo>

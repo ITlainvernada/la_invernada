@@ -1,0 +1,98 @@
+<odoo>
+    <data>
+        <record id="mrp_production_form_view_inherit" model="ir.ui.view">
+            <field name="name">formulario producción</field>
+            <field name="model">mrp.production</field>
+            <field name="inherit_id" ref="mrp.mrp_production_form_view"/>
+            <field name="arch" type="xml">
+                <field name="date_planned_start" position="before">
+                    <field name="stock_picking_id" readonly="1" attrs="{'invisible':[('stock_picking_id','=',False)]}"/>
+                </field>
+                <field name="routing_id" position="after">
+                    <field name="pt_balance"/>
+                </field>
+                <xpath expr="//header" postition="after">
+                    <button name="calculate_done" type="object"
+                            string="Calcular Realizado"
+                            attrs="{'invisible':[('state', '!=', 'progress')]}"
+                    />
+                    <button name="fix_reserved" type="object"
+                            string="Limpiar Reservas"
+                            confirm="¡Atencion! ¿Se seguro de realizar esta limpieza en los movimientos de stock?"
+                            attrs="{'invisible':[('state','=','done')]}"
+                            group="base.group_system"
+                    />
+                    <button name="check_duplicate" string="Verificar Duplicados"/>
+                    <button type="object" name="update_stock_move" string="Actualizar lista de materiales"
+                            class="btn btn-primary"/>
+                </xpath>
+                <button name="action_assign" position="replace">
+                </button>
+                <button name="button_unreserve" position="replace">
+                </button>
+                <field name="product_id" position="attributes">
+                    <attribute name="attrs">{'readonly': [('stock_picking_id', '!=', False)]}</attribute>
+                </field>
+
+                <field name="product_id" position="after">
+                    <field name="requested_qty" readonly="1"/>
+                    <field name="stock_picking_id" invisible="1"/>
+                </field>
+                <field name="company_id" position="after">
+                    <field name="required_date_moving_to_production"/>
+                    <field name="unevenness_percent"/>
+                    <field name="observation"/>
+                    <field name="label_durability_id" required="1"/>
+                </field>
+
+                <field name="bom_id" position="replace"/>
+                <field name="product_tmpl_id" position="after">
+                    <field name="bom_id" domain="[('product_id','=',product_id)]" required="True"/>
+                </field>
+                <field name="origin" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </field>
+                <xpath expr="//page[3]" position="after">
+                    <page string="Códigos Utilizados"
+                          attrs="{'invisible':[('state','!=','done')]}"
+                    >
+                        <field name="consumed_material_ids">
+                            <tree>
+                                <field name="stock_production_lot_id"/>
+                                <field name="serial_number"/>
+                                <field name="display_weight"/>
+                            </tree>
+                        </field>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="mrp_production_tree_view" model="ir.ui.view">
+            <field name="name">Listado de OP</field>
+            <field name="model">mrp.production</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="routing_id" string="Centro de Producción"/>
+                    <field name="name" string="Orden de Fabricación"/>
+                    <field name="date_planned_start_wo"/>
+                    <field name="client_id"/>
+                    <field name="destiny_country_id"/>
+                    <field name="stock_picking_id" string="Numero de Despacho"/>
+                    <field name="sale_order_id" string="Pedido de Venta"/>
+                    <field name="product_id"/>
+                    <field name="product_qty"/>
+                    <field name="pt_balance"/>
+                    <field name="charging_mode"/>
+                    <field name="client_label"/>
+                    <field name="unevenness_percent"/>
+                    <field name="etd"/>
+                    <field name="label_durability_id"/>
+                    <field name="observation"/>
+                    <field name="positioning_state"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+    </data>
+</odoo>

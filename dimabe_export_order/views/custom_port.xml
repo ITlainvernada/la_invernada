@@ -1,0 +1,98 @@
+<odoo>
+  <data>
+    <!-- explicit list view definition -->
+    
+    <record model="ir.ui.view" id="view_custom_port_tree">
+      <field name="name">view.custom.port.tree</field>
+      <field name="model">custom.port</field>
+      <field name="arch" type="xml">
+        <tree>
+          <field name="name"/>
+          <field name="code"/>
+          <field name="country_id"/>
+        </tree>
+      </field>
+    </record>
+
+
+    <record id="view_custom_port_form" model="ir.ui.view">
+      <field name="name">view.custom.port.form</field>
+      <field name="model">custom.port</field>
+      <field name="arch" type="xml">
+        <form name="Custom Port Form">
+          <sheet>
+            <div class="oe_title">
+              <label for="name" class="oe_edit_only" />
+              <h1>
+                <field name="name" placeholder="Nombre del puerto" />
+              </h1>
+            </div>
+            <group>
+                <field name="code" placeholder="Código Aduana" />
+                <field name="country_id" placeholder="Seleccione el país asociado al puerto"/>
+            </group>
+          </sheet>
+        </form>
+      </field>
+    </record>
+
+
+    <record id="action_custom_port_views" model="ir.actions.act_window">
+      <field name="name">Puertos de aduana</field>
+      <field name="type">ir.actions.act_window</field>
+      <field name="res_model">custom.port</field>
+      <field name="view_mode">tree,form</field>
+      <field name="help" type="html">
+        <p class="oe_view_nocontent_create">
+          Puerto de aduanas
+        </p>
+        <p>
+          Click aquí para agregar puerto
+        </p>
+      </field>
+    </record>
+ 
+
+    <!-- actions opening views on models -->
+    <!--
+    <record model="ir.actions.act_window" id="dimabe_export_order.action_window">
+      <field name="name">dimabe_export_order window</field>
+      <field name="res_model">dimabe_export_order.dimabe_export_order</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+    -->
+
+    <!-- server action to the one above -->
+    <!--
+    <record model="ir.actions.server" id="dimabe_export_order.action_server">
+      <field name="name">dimabe_export_order server</field>
+      <field name="model_id" ref="model_export_order_dimabe_export_order_dimabe"/>
+      <field name="state">code</field>
+      <field name="code">
+        action = {
+          "type": "ir.actions.act_window",
+          "view_mode": "tree,form",
+          "res_model": self._name,
+        }
+      </field>
+    </record>
+    -->
+
+    <!-- Top menu item -->
+    <!--
+    <menuitem name="dimabe_export_order" id="dimabe_export_order.menu_root"/>
+    -->
+    <!-- menu categories -->
+    <!--
+    <menuitem name="Menu 1" id="dimabe_export_order.menu_1" parent="dimabe_export_order.menu_root"/>
+    <menuitem name="Menu 2" id="dimabe_export_order.menu_2" parent="dimabe_export_order.menu_root"/>
+    -->
+    <!-- actions -->
+    <!--
+    <menuitem name="List" id="dimabe_export_order.menu_1_list" parent="dimabe_export_order.menu_1"
+              action="dimabe_export_order.action_window"/>
+    <menuitem name="Server to list" id="dimabe_export_order" parent="dimabe_export_order.menu_2"
+              action="dimabe_export_order.action_server"/>
+    -->
+  </data>
+</odoo>

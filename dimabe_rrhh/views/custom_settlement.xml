@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="seq_custom_settlement" model="ir.sequence">
+        <field name="name">custom.settlement</field>
+        <field name="code">custom.settlement</field>
+        <field name="prefix">800</field>
+        <field name="padding">5</field>
+        <field name="company_id" eval="False"/>
+    </record>
+    <record id="custom_settlement_action" model="ir.actions.act_window">
+        <field name="name">Finiquito</field>
+        <field name="res_model">custom.settlement</field>
+        <field name="view_mode">tree,graph,form,pivot</field>
+    </record>
+    <record id="custom_settlement_tree" model="ir.ui.view">
+        <field name="name">Requistro de Finiquitos</field>
+        <field name="model">custom.settlement</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="contract_id" widget="many2onebutton"/>
+                <field name="fired_id"/>
+                <field name="date_start_contract"/>
+                <field name="date_of_notification"/>
+                <field name="date_settlement"/>
+                <field name="period_of_service"/>
+            </tree>
+        </field>
+    </record>
+    <record id="custom_settlement_form" model="ir.ui.view">
+        <field name="name">Formulario de Finiquito</field>
+        <field name="model">custom.settlement</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button type="object" name="test" invisible="1" string="Test" class="oe_highlight"/>
+                    <button type="object" name="button_done" string="Realizar" class="oe_highlight"/>
+                    <button type="object" name="calculate_settlement" string="Calcular Finiquito" class="oe_highlight"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1 class="d-none d-md-block">
+                            <group>
+                                <field name="employee_id" />
+                                <field name="company_id" invisible="1"/>
+                                <field name="current_user" invisible="1"/>
+                            </group>
+                        </h1>
+                    </div>
+                    <separator/>
+                    <div class="oe_inline">
+                        <h3 class="d-none d-md-block">
+                            <group>
+                                <field name="contract_id"/>
+                            </group>
+                        </h3>
+                    </div>
+                    <group>
+                        <field name="fired_id"/>
+                    </group>
+                    <group>
+                        <group string="Años de Servicio">
+                            <field name="date_start_contract"/>
+                            <field name="date_of_notification"/>
+                            <field name="date_settlement"/>
+                            <field name="period_of_service"/>
+                        </group>
+                        <group string="Vacaciones">
+                            <field name="vacation_days"/>
+                            <field name="day_takes"/>
+                            <field name="non_working_days"/>
+                            <field name="days_pending"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Contrato">
+                            <field name="type_contract"/>
+                            <field name="wage"/>
+                            <field name="reward_selection"/>
+                            <field name="reward_value" attrs="{'readonly':[('reward_selection','!=','Edit')]}"/>
+                            <field name="snack_bonus"/>
+                            <field name="mobilization_bonus"/>
+                        </group>
+                        <group string="Remuneraciones">
+                            <field name="pending_remuneration_payment"/>
+                            <field name="compensation_warning"/>
+                            <field name="article_causal" invisible="1"/>
+                            <field name="compensation_years" attrs="{'invisible': [('article_causal','!=','161')]}"/>
+                            <field name="compensation_vacations"
+                                   attrs="{'invisible': [('article_causal','!=','161')]}"/>
+                        </group>
+                    </group>
+                    <group>
+                        <h2>
+                            Total:
+                            <field name="settlement"/>
+                        </h2>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <menuitem name="Finiquito"
+              id="custom_settlement_item"
+              parent="hr_payroll.menu_hr_payroll_root"
+              action="custom_settlement_action"
+    />
+</odoo>
