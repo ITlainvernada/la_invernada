@@ -189,6 +189,34 @@ class StockProductionLotSerial(models.Model):
     serial_harvest = fields.Integer('Cosecha',
                                     default=datetime.datetime.now().year)
 
+    def set_origin_process(self, harvest):
+        serial_ids = self.env['stock.production.lot.serial'].sudo().search([('serial_harvest', '=', harvest)])
+        for serial in serial_ids:
+            history_id = self.env['dried.unpelled.history'].sudo().search(
+                [('out_lot_id', '=', serial.stock_production_lot_id.id)])
+            if history_id:
+                serial.sudo().write({
+                    'origin_process': 'SECADO'
+                })
+                serial.stock_production_lot_id.sudo().write({
+                    'origin_process': 'SECADO'
+                })
+                continue
+            if serial.production_id:
+                serial.sudo().write({
+                    'origin_process': serial.routing_id.name
+                })
+                serial.stock_production_lot_id.sudo().write({
+                    'origin_process': serial.routing_id.name
+                })
+            stock_picking_id = self.env['stock.picking'].sudo().search([('name','=', serial.stock_production_lot_id.name)])
+            if stock_picking_id:
+                serial.sudo().write({
+                    'origin_process': 'RECEPCIÓN'
+                })
+                serial.stock_production_lot_id.sudo().write({
+                    'origin_process': 'RECEPCIÓN'
+                })
     @api.multi
     def compute_available_weight(self):
         for item in self:

@@ -20,6 +20,7 @@
                     <field name="serial_not_consumed" string="Series Disponible" readonly="1"/>
                     <field name="show_date" string="Fecha" readonly="1"/>
                     <field name="workcenter_id"/>
+                    <field name="origin_process"/>
                     <field name="delivered_date"/>
                     <field name="physical_location"/>
                     <field name="ventilation_date"/>
