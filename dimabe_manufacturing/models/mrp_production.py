@@ -151,6 +151,11 @@ class MrpProduction(models.Model):
         for item in self:
             if len(item.workorder_ids) > 0:
                 for work_order in item.workorder_ids:
+                    if work_order.final_lot_id:
+                        if work_order.final_lot_id.harvest == 0:
+                            work_order.write({
+                                'harvest': fields.Date.today().year,
+                            })
                     for check in work_order.check_ids:
                         if not check.component_is_byproduct:
                             check.qty_done = 0
@@ -160,7 +165,8 @@ class MrpProduction(models.Model):
                                 lot_tmp = self.env['stock.production.lot'].create({
                                     'name': self.env['ir.sequence'].next_by_code('mrp.workorder'),
                                     'product_id': check.component_id.id,
-                                    'is_prd_lot': True
+                                    'is_prd_lot': True,
+                                    'origin_process': item.routing_id.name,
                                 })
                                 check.lot_id = lot_tmp.id
                                 check.qty_done = work_order.component_remaining_qty

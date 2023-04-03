@@ -4,6 +4,8 @@ from odoo import fields, models, api
 import xlsxwriter
 from datetime import date
 
+from odoo import fields, models
+
 
 class ReportRawLot(models.Model):
     _name = 'report.raw.lot'
@@ -47,6 +49,12 @@ class ReportRawLot(models.Model):
 
     position = fields.Char('Posición')
 
+    available_date = fields.Date('Fecha disp.')
+
+    observations = fields.Char('Observaciones')
+
+    origin_process = fields.Char('Proceso de origen')
+
     # TODO Eliminar luego de su implementacion
     def set_raw_lot(self):
         lot_ids = self.env['stock.production.lot'].sudo().search(
@@ -68,7 +76,10 @@ class ReportRawLot(models.Model):
                 'date': lot.show_date,
                 'available_series': len(lot.stock_production_lot_serial_ids.filtered(lambda x: not x.consumed)),
                 'send_to_process': lot.workcenter_id.id,
-                'send_date': lot.delivered_date
+                'send_date': lot.delivered_date,
+                'available_date': lot.ventilation_date,
+                'observations': lot.observations,
+                'origin_process': lot.origin_process,
             })
 
     def get_format(self, type, workbook):
@@ -241,42 +252,8 @@ class ReportRawLot(models.Model):
         for item in self:
             item.unlink()
 
-    def manage_report(self, lot_id=None):
-        if lot_id:
-            lot = self.env['stock.production.lot'].sudo().search([('id', '=', lot_id)])
-            self.env[self._name].sudo().create({
-                'lot_id': lot.id,
-                'producer_id': lot.producer_id.id,
-                'product_id': lot.product_id.id,
-                'available_weight': sum(serial.display_weight for serial in
-                                        lot.stock_production_lot_serial_ids.filtered(lambda x: not x.consumed)),
-                'product_variety': lot.product_id.get_variety(),
-                'product_caliber': lot.product_id.get_calibers(),
-                'location_id': lot.location_id.id,
-                'guide_number': lot.show_guide_number,
-                'lot_harvest': lot.harvest,
-                'reception_weight': lot.reception_weight,
-                'date': lot.show_date,
-                'available_series': len(lot.stock_production_lot_serial_ids.filtered(lambda x: not x.consumed)),
-                'send_to_process': lot.workcenter_id.id,
-                'send_date': lot.delivered_date
-            })
-        else:
-            lot = self.lot_id
-            self.sudo().write({
-                'lot_id': lot.id,
-                'producer_id': lot.producer_id.id,
-                'product_id': lot.product_id.id,
-                'available_weight': sum(serial.display_weight for serial in
-                                        lot.stock_production_lot_serial_ids.filtered(lambda x: not x.consumed)),
-                'product_variety': lot.product_id.get_variety(),
-                'product_caliber': lot.product_id.get_calibers(),
-                'location_id': lot.location_id.id,
-                'guide_number': lot.show_guide_number,
-                'lot_harvest': lot.harvest,
-                'reception_weight': lot.reception_weight,
-                'date': lot.show_date,
-                'available_series': len(lot.stock_production_lot_serial_ids.filtered(lambda x: not x.consumed)),
-                'send_to_process': lot.workcenter_id.id,
-                'send_date': lot.delivered_date
-            })
+    @api.model
+    def create(self, vals_list):
+        res = super(ReportRawLot, self).create(vals_list)
+        res.origin_process = res.lot_id.origin_process
+        return res

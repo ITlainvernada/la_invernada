@@ -428,7 +428,8 @@ class MrpWorkorder(models.Model):
             'product_id': res.product_id.id,
             'is_prd_lot': True,
             'can_add_serial': True,
-            'label_durability_id': res.production_id.label_durability_id.id
+            'label_durability_id': res.production_id.label_durability_id.id,
+            'origin_process': res.production_id.routing_id.name,
         })
         res.final_lot_id = final_lot.id
         return res
@@ -465,7 +466,8 @@ class MrpWorkorder(models.Model):
                     lot_tmp = self.env['stock.production.lot'].create({
                         'name': self.env['ir.sequence'].next_by_code('mrp.workorder'),
                         'product_id': check.component_id.id,
-                        'is_prd_lot': True
+                        'is_prd_lot': True,
+                        'origin_process': self.production_id.routing_id.name
                     })
                     check.lot_id = lot_tmp.id
                     check.qty_done = self.component_remaining_qty
@@ -489,7 +491,6 @@ class MrpWorkorder(models.Model):
             'res_model': 'mrp.workorder',
             'view_id': False,
             'type': 'ir.actions.act_window',
-            'context': {'form_view_initial_mode': 'edit', 'force_detailed_view': 'true'},
             'views': [
                 [self.env.ref('dimabe_manufacturing.mrp_workorder_process_view').id, 'form']],
             'res_id': self.id,
@@ -522,7 +523,7 @@ class MrpWorkorder(models.Model):
     def confirmed_keyboard(self):
         self.process_serial(serial_number=self.confirmed_serial)
 
-    def process_serial(self, serial_number):
+    def process_serial(self, serial_number, from_scanner=False):
         serial_number = serial_number.strip()
         dict_write = {}
         serial = self.env['stock.production.lot.serial'].sudo().search(
@@ -533,6 +534,8 @@ class MrpWorkorder(models.Model):
             raise models.ValidationError(
                 "La serie ingresada no es compatible con la lista de material de la produccion")
         if serial.consumed:
+            if serial.reserved_to_production_id.id == self.production_id.id:
+                return
             raise models.ValidationError(
                 "La serie ya fue consumida en el proceso {}".format(serial.reserved_to_production_id.name))
         dict_write['lot_id'] = serial.stock_production_lot_id.id
@@ -663,15 +666,9 @@ class MrpWorkorder(models.Model):
             'quantity': sum(lot.stock_production_lot_serial_ids.mapped('real_weight'))
         })
 
-    def on_barcode_scanned(self, barcode):
-        self.confirmed_serial = barcode
 
     def process_serial_by_barcode(self, serial_number):
         self.process_serial(serial_number)
-        self.confirmed_serial = None
-        self.write({
-            'confirmed_serial': None
-        })
         return {
             'name': "Procesar Entrada",
             'view_type': 'form',
@@ -684,4 +681,11 @@ class MrpWorkorder(models.Model):
             'res_id': self.id,
             'target': 'fullscreen',
         }
+
+    def get_consumed_serial(self, barcode):
+        for item in self:
+            if barcode in self.potential_serial_planned_ids.mapped('serial_number'):
+                return False
+            return True
+
 

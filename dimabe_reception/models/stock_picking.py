@@ -375,7 +375,8 @@ class StockPicking(models.Model):
                             'name': stock_picking.name,
                             'product_id': move_line.product_id.id,
                             'standard_weight': stock_picking.net_weight,
-                            'producer_id': stock_picking.partner_id.id
+                            'producer_id': stock_picking.partner_id.id,
+                            'origin_process': 'RECEPCIÓN'
                         })
                         if lot:
                             move_line.update({
