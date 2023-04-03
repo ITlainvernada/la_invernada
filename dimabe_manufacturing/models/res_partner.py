@@ -9,27 +9,32 @@ class ResPartner(models.Model):
     region_address_id = fields.Many2one(
         'region.address',
         'Región',
+        track_visibility='always'
     )
 
     city_address = fields.Char(
         'Comuna',
-        compute='_compute_city_address'
+        compute='_compute_city_address',
+    track_visibility = 'always'
     )
 
     state_id_address = fields.Many2one(
         'res.country.state',
         'Provincia',
+        track_visibility='always',
         compute='_compute_state_id_address'
     )
 
     region_address_id_address = fields.Many2one(
         'region.address',
         'Región',
+        track_visibility='always',
         compute='_compute_region_address_id_address'
     )
 
     is_warehouse_notify = fields.Boolean(
-        'Notificar Movimiento de Materia'
+        'Notificar Movimiento de Materia',
+        track_visibility='always'
     )
 
     @api.multi
