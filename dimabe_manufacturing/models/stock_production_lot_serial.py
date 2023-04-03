@@ -204,10 +204,10 @@ class StockProductionLotSerial(models.Model):
                 continue
             if serial.production_id:
                 serial.sudo().write({
-                    'origin_process': serial.routing_id.name
+                    'origin_process': serial.production_id.routing_id.name
                 })
                 serial.stock_production_lot_id.sudo().write({
-                    'origin_process': serial.routing_id.name
+                    'origin_process': serial.production_id.routing_id.name
                 })
             stock_picking_id = self.env['stock.picking'].sudo().search([('name','=', serial.stock_production_lot_id.name)])
             if stock_picking_id:
