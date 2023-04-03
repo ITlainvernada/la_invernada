@@ -309,10 +309,36 @@
                         <h1>
                             <field name="display_name" readonly="1"/>
                         </h1>
+                        <h3>
+                            <group>
+                                <field name="in_weight" readonly="1"/>
+                            </group>
+                        </h3>
                     </div>
+                    <field name="_barcode_scanned" widget="barcode_handler" invisible="1"/>
                     <notebook>
                         <page string="Series consumidas">
-
+                            <group>
+                                <field name="confirmed_serial"/>
+                                <button type="object" accesskey="x"
+                                        class="oe_button oe_form_button oe_highlight"
+                                        string="Ingresar"
+                                        name="confirmed_keyboard"/>
+                            </group>
+                            <field name="potential_serial_planned_ids">
+                                <tree editable="bottom" delete="false" create="false" limit="15">
+                                    <field name="stock_production_lot_id" readonly="1"/>
+                                    <field name="product_id" readonly="1"/>
+                                    <field name="producer_id" readonly="1"/>
+                                    <field name="product_variety" readonly="1"/>
+                                    <field name="display_weight" readonly="1"/>
+                                    <button type="object" string="Quitar Serie" name="remove_serial"
+                                            context="{'workorder_id': parent.id}"
+                                            class="btn btn-danger"
+                                            groups="dimabe_manufacturing.group_mrp_modify_serials"
+                                    />
+                                </tree>
+                            </field>
                         </page>
                     </notebook>
                 </sheet>
