@@ -1,3 +1,5 @@
+import datetime
+
 from dateutil.relativedelta import relativedelta
 
 from odoo import fields, models, api
@@ -6,6 +8,11 @@ from odoo.addons import decimal_precision as dp
 
 class StockProductionLotSerial(models.Model):
     _inherit = 'stock.production.lot.serial'
+
+    @api.model
+    def default_harvest(self):
+        print(self)
+        return 0
 
     # _sql_constraints = [
     #     ('serial_uniq', 'UNIQUE(serial_number)', 'la serie ya se encuentra en el sistema.')
@@ -179,6 +186,9 @@ class StockProductionLotSerial(models.Model):
 
     origin_process = fields.Char(string='Proceso de origen')
 
+    serial_harvest = fields.Integer('Cosecha',
+                                    default=datetime.datetime.now().year)
+
     @api.multi
     def compute_available_weight(self):
         for item in self:
@@ -351,6 +361,11 @@ class StockProductionLotSerial(models.Model):
                     'out_weight': sum(lot.stock_production_lot_serial_ids.mapped('display_weight'))
                 })
             res = super(StockProductionLotSerial, self).create(values_list)
+            report_id = self.env['report.raw.lot'].sudo().search([('lot_id.id', '=', res.stock_production_lot_id.id)])
+            if report_id:
+                report_id.manage_report()
+            if not report_id and res.stock_production_lot_id.is_dried_lot:
+                report_id.manage_report(res.stock_production_lot_id.id)
             if res.display_weight == 0 and res.gross_weight == 0:
                 raise models.ValidationError('debe agregar un peso a la serie')
 
@@ -413,8 +428,6 @@ class StockProductionLotSerial(models.Model):
                 res.origin_process = res.stock_production_lot_id.origin_process
         else:
             res = super(StockProductionLotSerial, self).create(values_list)
-            test_qty = sum(serial.display_weight for serial in res.work_order_id.summary_out_serial_ids)
-            test_lot_ids = res.work_order_id.summary_out_serial_ids.mapped('stock_production_lot_id')
             res.work_order_id.write({
                 'out_weight': sum(serial.display_weight for serial in res.work_order_id.summary_out_serial_ids)
             })

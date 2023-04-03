@@ -511,10 +511,6 @@ class StockPicking(models.Model):
                         'reserved_to_stock_picking_id': None
                     })
         elif self.picking_type_code == 'outgoing':
-            # if all(s.consumed for s in self.packing_list_ids):
-            #     self.packing_list_ids.with_context(without_update=True).write({
-            #         'consumed': False
-            #     })
             if self.is_multiple_dispatch:
                 view = self.env.ref('dimabe_manufacturing.view_principal_order')
                 wiz = self.env['confirm.principal.order'].create({
@@ -538,19 +534,6 @@ class StockPicking(models.Model):
                 'consumed': True
             })
 
-            if self.is_return:
-                line_id = self.move_line_ids_without_package.filtered(lambda x: x.lot_id)
-                if line_id:
-                    lot = line_id.lot_id
-                    if lot.id not in self.packing_list_ids.mapped('stock_production_lot_id').ids:
-                        for serial in lot.stock_production_lot_serial_ids:
-                            serial.sudo().write({
-                                'consumed': True
-                            })
-                    # lot_id.stock_production_lot_serial_ids.unlink()
-                    # quant_id = self.env['stock.quant'].sudo().search([('lot_id.id','=',lot_id.id)])
-                    # quant_id.sudo().unlink()
-                    # lot_id.sudo().unlink()
         res = super(StockPicking, self).button_validate()
         return res
 
@@ -569,13 +552,6 @@ class StockPicking(models.Model):
                 lot.update_stock_quant(self.location_id.id)
 
         return res
-
-    def clean_reserved(self):
-        for lot in self.move_line_ids_without_package.mapped('lot_id'):
-            if lot not in self.packing_list_lot_ids:
-                query = f"DELETE FROM stock_move_line where lot_id = {lot.id} and picking_id = {self.id}"
-                cr = self._cr
-                cr.execute(query)
 
     @api.multi
     def action_done(self):

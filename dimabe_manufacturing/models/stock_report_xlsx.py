@@ -278,3 +278,90 @@ class StockReportXlsx(models.TransientModel):
             file_base64 = base64.b64encode(file.read())
         report_name = f'Informe de Existencia de {type_product} {date.today().strftime("%d/%m/%Y")}.xlsx'
         return {'file_name': report_name, 'base64': file_base64}
+
+    def generate_excel_raw_report(self, list_condition, type_product):
+        file_name = 'C:\\Users\\fabia\\Documents\\test.xlsx'
+        workbook = xlsxwriter.Workbook(file_name)
+        text_format = workbook.add_format({
+            'text_wrap': True
+        })
+        number_format = workbook.add_format({'num_format': '#,##0.00'})
+        date_format = workbook.add_format({'num_format': 'dd/mmmm/yyyy'})
+        sheet = workbook.add_worksheet('Informe de Materia Prima Servicio')
+        row = 0
+        col = 0
+        titles = [(1, 'Productor:'), (2, 'Lote:'), (3, 'Kilos Disponible:'), (4, 'Variedad:'), (5, 'Calibre:'),
+                  (6, 'Ubicacion Sistema:'), (7, 'Producto:'), (8,
+                                                                'N° Guia:'), (9, 'Año Cosecha:'),
+                  (10, 'Kilos Recepcionados:'), (11,
+                                                 'Fecha Creacion:'), (12, 'Series Disponible:'),
+                  (13, 'Enviado a Proceso de:'), (14,
+                                                  'Fecha de Envio:'), (15, 'Ubicacion Fisica:'),
+                  (16, 'Fecha de Ventilacion:'), (17, 'Observaciones'),
+                  (18, 'Lugar de Almacenamiento:')]
+        for title in titles:
+            sheet.write(row, col, title[1], text_format)
+            col += 1
+        row += 1
+        col = 0
+
+        lots = self.env['stock.production.lot'].sudo().search(
+            list_condition).filtered(lambda x: not x.is_drying)
+        for lot in lots:
+            if lot.producer_id:
+                sheet.write(row, col, lot.producer_id.display_name)
+            else:
+                sheet.write(row, col, "Sin Definir")
+            col += 1
+            sheet.write(row, col, lot.name)
+            col += 1
+            sheet.write_number(row, col, float(
+                sum(lot.stock_production_lot_serial_ids.filtered(lambda a: not a.consumed).mapped('display_weight'))),
+                               number_format)
+            col += 1
+            sheet.write(row, col, lot.product_id.get_variety())
+            col += 1
+            sheet.write(row, col, lot.product_id.get_calibers())
+            col += 1
+            if lot.location_id:
+                sheet.write(row, col, lot.location_id.display_name)
+            col += 1
+            sheet.write(row, col, lot.product_id.display_name)
+            col += 1
+            sheet.write(row, col, lot.show_guide_number)
+            col += 1
+            sheet.write(row, col, lot.harvest)
+            col += 1
+            sheet.write(row, col, lot.reception_weight, number_format)
+            col += 1
+            sheet.write_datetime(row, col, lot.create_date, date_format)
+            col += 1
+            sheet.write(row, col, len(
+                lot.stock_production_lot_serial_ids.filtered(lambda a: not a.consumed)))
+            col += 1
+            if lot.workcenter_id:
+                sheet.write(row, col, lot.workcenter_id.display_name)
+            col += 1
+            if lot.delivered_date:
+                sheet.write(row, col, lot.delivered_date.strftime("%d-%m-%Y"))
+            col += 1
+            if lot.physical_location:
+                sheet.write(row, col, lot.physical_location, text_format)
+            col += 1
+            if lot.ventilation_date:
+                sheet.write(
+                    row, col, lot.ventilation_date.strftime("%d-%m-%Y"))
+            col += 1
+            if lot.observations:
+                sheet.write(row, col, lot.observations)
+            col += 1
+            if lot.store_place:
+                sheet.write(row, col, lot.store_place)
+            row += 1
+            col = 0
+        workbook.close()
+        with open(file_name, "rb") as file:
+            file_base64 = base64.b64encode(file.read())
+        report_name = f'Informe de Existencia {type_product} {date.today().strftime("%d/%m/%Y")}.xlsx'
+
+        return {'file_name': report_name, 'base64': file_base64}

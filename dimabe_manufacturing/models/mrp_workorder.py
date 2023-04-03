@@ -523,7 +523,7 @@ class MrpWorkorder(models.Model):
     def confirmed_keyboard(self):
         self.process_serial(serial_number=self.confirmed_serial)
 
-    def process_serial(self, serial_number, from_scanner=False):
+    def process_serial(self, serial_number):
         serial_number = serial_number.strip()
         dict_write = {}
         serial = self.env['stock.production.lot.serial'].sudo().search(
