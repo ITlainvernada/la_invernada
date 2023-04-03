@@ -4,15 +4,15 @@ from odoo import models, fields, api
 class ResPartner(models.Model):
     _inherit = 'res.partner'
 
-    sag_code = fields.Char('CSG', tracking='always')
+    sag_code = fields.Char('CSG', tracking='onchange')
 
     is_sag_active = fields.Boolean(
         'SAG Activo',
         default=False,
-        tracking='always',
+        tracking='onchange',
     )
 
-    name = fields.Char(tracking='always')
+    name = fields.Char(tracking='onchange')
 
     short_name = fields.Char(
         'Nombre Corto',
