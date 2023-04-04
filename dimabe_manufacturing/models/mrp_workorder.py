@@ -1,6 +1,7 @@
+from datetime import date
+
 from odoo import fields, models, api
 from odoo.addons import decimal_precision as dp
-from datetime import date, datetime
 
 
 class MrpWorkorder(models.Model):
@@ -530,7 +531,7 @@ class MrpWorkorder(models.Model):
             [('serial_number', '=', serial_number), ('stock_production_lot_id', '!=', False)])
         if not serial:
             raise models.ValidationError("La serie ingresada no existe")
-        if serial.product_id not in self.material_product_ids:
+        if serial.product_id not in self.production_id.bom_id.bom_line_ids.mapped('product_id'):
             raise models.ValidationError(
                 "La serie ingresada no es compatible con la lista de material de la produccion")
         if serial.consumed:
