@@ -699,15 +699,19 @@ class StockProductionLot(models.Model):
             else:
                 location_id = self.env['stock.picking'].search([('name', '=', item.name)])
                 item.location_id = location_id.location_dest_id
+                return
             if item.stock_picking_id:
                 item.location_id = item.stock_picking_id.location_dest_id
+                return
             if item.is_dried_lot:
                 location_id_dried = self.env['dried.unpelled.history'].search(
                     [('out_lot_id', '=', item.id)]).dest_location_id
                 item.location_id = location_id_dried
+                return
             if item.is_prd_lot:
                 if item.stock_production_lot_serial_ids.mapped('production_id').state == 'done':
                     item.location_id = item.stock_production_lot_serial_ids.mapped('production_id').location_dest_id
+                    return
 
     @api.multi
     def _compute_serial_not_consumed(self):

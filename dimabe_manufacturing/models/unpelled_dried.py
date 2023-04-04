@@ -267,12 +267,13 @@ class UnpelledDried(models.Model):
             'unpelled_dried_id': None,
             'history_id': history_id.id
         })
-        report_id = self.env['report.raw.lot'].sudo().search([('id', '=', history_id.out_lot_id.id)])
-        if report_id:
-            report_id.manage_report()
-        if not report_id:
-            report_id.manage_report(history_id.out_lot_id.id)
-        # history_id.set_lot_to_quality_api()
+        if '(S)' not in self.out_product_id:
+            report_id = self.env['report.raw.lot'].sudo().search([('id', '=', history_id.out_lot_id.id)])
+            if report_id:
+                report_id.manage_report()
+            else:
+                report_id.manage_report(history_id.out_lot_id.id)
+        history_id.set_lot_to_quality_api()
 
         return history_id
 

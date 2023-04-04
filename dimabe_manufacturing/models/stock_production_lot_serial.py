@@ -392,7 +392,7 @@ class StockProductionLotSerial(models.Model):
             report_id = self.env['report.raw.lot'].sudo().search([('lot_id.id', '=', res.stock_production_lot_id.id)])
             if report_id:
                 report_id.manage_report()
-            if not report_id and res.stock_production_lot_id.is_dried_lot:
+            elif not report_id and res.stock_production_lot_id.is_dried_lot:
                 report_id.manage_report(res.stock_production_lot_id.id)
             if res.display_weight == 0 and res.gross_weight == 0:
                 raise models.ValidationError('debe agregar un peso a la serie')
