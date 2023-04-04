@@ -459,7 +459,10 @@ class StockProductionLotSerial(models.Model):
             res.work_order_id.write({
                 'out_weight': sum(serial.display_weight for serial in res.work_order_id.summary_out_serial_ids)
             })
-            res.origin_process = res.stock_production_lot_id.origin_process
+            if res.stock_production_lot_id.origin_process:
+                res.origin_process = res.stock_production_lot_id.origin_process
+            elif res.production_id:
+                res.origin_process = res.production_id.routing_id.name
         return res
 
     @api.model
