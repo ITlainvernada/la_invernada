@@ -29,45 +29,45 @@
                             <td style="border-right:solid 1px;border-bottom:solid 1px;">
                                 <div>GROWER/PRODUCTOR:</div>
                                 <div>
-                                    <span t-field="lot_serial_id.producer_id.name" />
+                                    <span t-field="lot_serial_id.producer_id.name"/>
                                 </div>
                                 <div>
                                     CSG:
-                                    <span t-field="lot_serial_id.producer_id.sag_code" />
+                                    <span t-field="lot_serial_id.producer_id.sag_code"/>
                                 </div>
                                 <div>
                                     PROVINCE/PROVINCIA:
-                                    <span t-esc="lot_serial_id.producer_id.state_id_address.name" />
+                                    <span t-esc="lot_serial_id.producer_id.state_id_address.name"/>
                                 </div>
                                 <div>
                                     TOWNSHIP/COMUNA:
-                                    <span t-esc="lot_serial_id.producer_id.city_address" />
+                                    <span t-esc="lot_serial_id.producer_id.city_address"/>
                                 </div>
                                 <div>
                                     REGIÓN:
-                                    <span t-esc="lot_serial_id.producer_id.region_address_id_address.name" />
+                                    <span t-esc="lot_serial_id.producer_id.region_address_id_address.name"/>
                                 </div>
                             </td>
                             <td style="border-bottom:solid 1px;">
                                 <div>PACKED BY/EMBALADO POR</div>
                                 <div>
-                                    <span t-esc="res_company.name" />
+                                    <span t-esc="res_company.name"/>
                                 </div>
                                 <div>
                                     CSP:
-                                    <span t-esc="res_company.sag_code" />
+                                    <span t-esc="res_company.sag_code"/>
                                 </div>
                                 <div>
                                     PROVINCE/PROVINCIA:
-                                    <span t-esc="res_company.state_id.name" />
+                                    <span t-esc="res_company.state_id.name"/>
                                 </div>
                                 <div>
                                     TOWNSHIP/COMUNA:
-                                    <span t-esc="res_company.city" />
+                                    <span t-esc="res_company.city"/>
                                 </div>
                                 <div>
                                     REGIÓN:
-                                    <span t-esc="res_company.region_address_id.name" />
+                                    <span t-esc="res_company.region_address_id.name"/>
                                 </div>
                             </td>
                         </tr>
