@@ -1,8 +1,9 @@
 import base64
+from datetime import date
+
+import xlsxwriter
 
 from odoo import fields, models, api
-import xlsxwriter
-from datetime import date
 
 
 class ReportRawLot(models.Model):
@@ -51,6 +52,8 @@ class ReportRawLot(models.Model):
 
     observations = fields.Char('Observaciones')
 
+    storage_warehouse = fields.Char('Bod de Almacenamiento')
+
     origin_process = fields.Char('Proceso de origen')
 
     # TODO Eliminar luego de su implementacion
@@ -73,7 +76,7 @@ class ReportRawLot(models.Model):
                 'reception_weight': lot.reception_weight,
                 'date': lot.show_date,
                 'available_series': len(lot.stock_production_lot_serial_ids.filtered(lambda x: not x.consumed)),
-                'send_to_process': lot.workcenter_id.id,
+                'send_to_process_id': lot.workcenter_id.id,
                 'send_date': lot.delivered_date,
                 'available_date': lot.ventilation_date,
                 'observations': lot.observations,
@@ -146,7 +149,8 @@ class ReportRawLot(models.Model):
                   (6, 'Ubicación sistema'), (7, 'Producto'), (8, 'N° Guía'), (9, 'Año cosecha'),
                   (10, 'Kilos recepcionados'), (11, 'Fecha de creación'), (12, 'Series disponibles'),
                   (13, 'Enviado a proceso de'), (14, 'Fecha de envio'), (15, 'Bodega'), (16, 'Calle'),
-                  (17, 'Cantidad de envases'), (18, 'Posición')]
+                  (17, 'Cantidad de envases'), (18, 'Fecha disp.'), (19, 'Observaciones'), (20, 'Bod. Almacenamiento'),
+                  (21, 'Posición')]
         for title in titles:
             sheet.write(row, col, title[1], self.get_format('header', workbook))
             col += 1
@@ -230,7 +234,7 @@ class ReportRawLot(models.Model):
 
     def generate_new_position(self):
         for item in self:
-            original = self.env['report.raw.lot'].sudo().search([('lot_id', '=', item.lot_id.id)])
+            original = self.env['report.raw.lot'].sudo().search([('lot_id', '=', item.lot_id.id)], limit=1)
             self.env['report.raw.lot'].sudo().create({
                 'lot_id': item.lot_id.id,
                 'producer_id': item.producer_id.id,
@@ -243,7 +247,7 @@ class ReportRawLot(models.Model):
                 'lot_harvest': item.lot_harvest,
                 'date': item.date,
                 'reception_weight': item.reception_weight if not original else 0,
-                'available_series': item.available_series,
+                'available_series': item.available_series if not original else 0,
             })
 
     def delete_position(self):
@@ -273,7 +277,7 @@ class ReportRawLot(models.Model):
                 'reception_weight': lot.reception_weight,
                 'date': lot.show_date,
                 'available_series': len(lot.stock_production_lot_serial_ids.filtered(lambda x: not x.consumed)),
-                'send_to_process': lot.workcenter_id.id,
+                'send_to_process_id': lot.workcenter_id.id,
                 'send_date': lot.delivered_date
             })
         else:
@@ -283,15 +287,37 @@ class ReportRawLot(models.Model):
                 'producer_id': lot.producer_id.id,
                 'product_id': lot.product_id.id,
                 'available_weight': sum(serial.display_weight for serial in
-                                        lot.stock_production_lot_serial_ids.filtered(lambda x: not x.consumed)),
+                                        lot.stock_production_lot_serial_ids.filtered(
+                                            lambda x: not x.consumed)) if not self.position else 0,
                 'product_variety': lot.product_id.get_variety(),
                 'product_caliber': lot.product_id.get_calibers(),
                 'location_id': lot.location_id.id,
                 'guide_number': lot.show_guide_number,
                 'lot_harvest': lot.harvest,
-                'reception_weight': lot.reception_weight,
+                'reception_weight': lot.reception_weight if not self.position else 0,
                 'date': lot.show_date,
-                'available_series': len(lot.stock_production_lot_serial_ids.filtered(lambda x: not x.consumed)),
-                'send_to_process': lot.workcenter_id.id,
+                'available_series': len(
+                    lot.stock_production_lot_serial_ids.filtered(lambda x: not x.consumed)) if not self.position else 0,
+                'send_to_process_id': lot.workcenter_id.id,
                 'send_date': lot.delivered_date
             })
+
+    def delete_duplicate(self, harvest):
+        lot_ids = self.env['stock.production.lot'].sudo().search(
+            [('product_id.default_code', 'ilike', 'MP'), ('product_id.default_code', 'not ilike', 'MPS'),
+             ('product_id.name', 'not ilike', 'Verde'), ('stock_production_lot_serial_ids', '!=', False),
+             ('harvest', '=', harvest)])
+        for lot in lot_ids:
+            lot.sudo().write({
+                'available_kg': sum(serial.display_weight for serial in
+                                    lot.stock_production_lot_serial_ids.filtered(lambda x: not x.consumed))
+            })
+            try:
+                raw_ids = self.env['report.raw.lot'].sudo().search([('lot_id.id', '=', lot.id)])
+                if len(raw_ids.filtered(lambda x: not x.position)) > 1:
+                    raw_ids[1:].unlink()
+                for raw in raw_ids:
+                    raw.manage_report()
+            except Exception as e:
+                continue
+

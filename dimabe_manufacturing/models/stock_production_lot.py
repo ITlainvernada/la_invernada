@@ -694,7 +694,7 @@ class StockProductionLot(models.Model):
     def _compute_lot_location(self):
         for item in self:
             stock_quant = item.get_stock_quant()
-            if len(stock_quant) < 1:
+            if len(stock_quant) > 0:
                 item.location_id = stock_quant.location_id
             else:
                 location_id = self.env['stock.picking'].search([('name', '=', item.name)])
