@@ -524,19 +524,26 @@ class MrpWorkorder(models.Model):
     def confirmed_keyboard(self):
         self.process_serial(serial_number=self.confirmed_serial)
 
-    def process_serial(self, serial_number):
+    def process_serial(self, serial_number, from_barcode=False):
         serial_number = serial_number.strip()
         dict_write = {}
         serial = self.env['stock.production.lot.serial'].sudo().search(
             [('serial_number', '=', serial_number), ('stock_production_lot_id', '!=', False)])
         if not serial:
+            if from_barcode:
+                return {'ok': False, 'message': 'La serie ingresada no existe'}
             raise models.ValidationError("La serie ingresada no existe")
         if serial.product_id not in self.production_id.bom_id.bom_line_ids.mapped('product_id'):
+            if from_barcode:
+                return {'ok': False,
+                        'message': 'La serie ingresada no es compatible con la lista de material de la produccion'}
             raise models.ValidationError(
                 "La serie ingresada no es compatible con la lista de material de la produccion")
         if serial.consumed:
-            if serial.reserved_to_production_id.id == self.production_id.id:
-                return
+            if from_barcode:
+                if serial.reserved_to_production_id.id == self.production_id.id:
+                    return {'ok': False, "message": "La serie ya fue consumida en el proceso {}".format(
+                        serial.reserved_to_production_id.name)}
             raise models.ValidationError(
                 "La serie ya fue consumida en el proceso {}".format(serial.reserved_to_production_id.name))
         dict_write['lot_id'] = serial.stock_production_lot_id.id
@@ -601,6 +608,8 @@ class MrpWorkorder(models.Model):
         if self.start_date:
             dict_write['start_date'] = fields.Datetime.now()
         self.write(dict_write)
+        if from_barcode:
+            return {'ok': True, 'message': "Serie consumida existosamente"}
 
     @api.multi
     def validate_to_done(self):
@@ -667,26 +676,28 @@ class MrpWorkorder(models.Model):
             'quantity': sum(lot.stock_production_lot_serial_ids.mapped('real_weight'))
         })
 
-
-    def process_serial_by_barcode(self, serial_number):
-        self.process_serial(serial_number)
-        return {
-            'name': "Procesar Entrada",
-            'view_type': 'form',
-            'view_mode': 'form',
-            'res_model': 'mrp.workorder',
-            'view_id': False,
-            'type': 'ir.actions.act_window',
-            'views': [
-                [self.env.ref('dimabe_manufacturing.mrp_workorder_process_view').id, 'form']],
-            'res_id': self.id,
-            'target': 'fullscreen',
-        }
+    @api.model
+    def process_serial_by_barcode(self, serial_number, workorder_id):
+        workorder_id = self.env['mrp.workorder'].sudo().search([('id', '=', workorder_id)])
+        res = workorder_id.process_serial(serial_number, from_barcode=True)
+        if res['ok']:
+            return {
+                'name': "Procesar Entrada",
+                'view_type': 'form',
+                'view_mode': 'form',
+                'res_model': 'mrp.workorder',
+                'view_id': False,
+                'type': 'ir.actions.act_window',
+                'views': [
+                    [self.env.ref('dimabe_manufacturing.mrp_workorder_process_view').id, 'form']],
+                'res_id': workorder_id.id,
+                'target': 'fullscreen',
+            }
+        else:
+            return res
 
     def get_consumed_serial(self, barcode):
         for item in self:
             if barcode in self.potential_serial_planned_ids.mapped('serial_number'):
                 return False
             return True
-
-
