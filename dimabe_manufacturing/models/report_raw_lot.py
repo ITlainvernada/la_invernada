@@ -282,22 +282,24 @@ class ReportRawLot(models.Model):
             })
         else:
             lot = self.lot_id
+            original = self.env['report.raw.lot'].sudo().search([('lot_id.id', '=', lot.id)], limit=1,
+                                                                order='create_date asc')
             self.sudo().write({
                 'lot_id': lot.id,
                 'producer_id': lot.producer_id.id,
                 'product_id': lot.product_id.id,
                 'available_weight': sum(serial.display_weight for serial in
                                         lot.stock_production_lot_serial_ids.filtered(
-                                            lambda x: not x.consumed)) if not self.position else 0,
+                                            lambda x: not x.consumed)) if original and original.id != self.id else 0,
                 'product_variety': lot.product_id.get_variety(),
                 'product_caliber': lot.product_id.get_calibers(),
                 'location_id': lot.location_id.id,
                 'guide_number': lot.show_guide_number,
                 'lot_harvest': lot.harvest,
-                'reception_weight': lot.reception_weight if not self.position else 0,
+                'reception_weight': lot.reception_weight if original and original.id != self.id else 0,
                 'date': lot.show_date,
                 'available_series': len(
-                    lot.stock_production_lot_serial_ids.filtered(lambda x: not x.consumed)) if not self.position else 0,
+                    lot.stock_production_lot_serial_ids.filtered(lambda x: not x.consumed)) if original.id and original != self.id else 0,
                 'send_to_process_id': lot.workcenter_id.id,
                 'send_date': lot.delivered_date
             })
