@@ -1,9 +1,10 @@
+import json
+from datetime import datetime, date
+
+import requests
+
 from odoo import models, api, fields
 from odoo.addons import decimal_precision as dp
-from datetime import datetime, date
-import requests
-import json
-import base64
 
 
 class StockPicking(models.Model):
@@ -325,9 +326,14 @@ class StockPicking(models.Model):
 
     def _get_data_from_weigh(self):
         try:
-            res = requests.request('POST', 'http://201.217.253.174:8899/romana/index.py')
-            json_data = json.loads(res.text.strip())
-            return json_data['value']
+            weighbridge_communication_address = self.env['ir.config_parameter'].sudo().get_param(
+                'dimabe_reception.weighbridge_communication_address')
+            if weighbridge_communication_address and weighbridge_communication_address != '':
+                res = requests.request('POST', weighbridge_communication_address)
+                json_data = json.loads(res.text.strip())
+                return json_data['value']
+            else:
+                raise models.ValidationError('La direccion de equipo de romana no se encuentra definida, por favor comunicarse con el administrador')
         except Exception as e:
             if 'HTTPConnectionPool' in str(e):
                 raise models.ValidationError(
