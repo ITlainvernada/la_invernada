@@ -1,7 +1,9 @@
+from datetime import date, datetime
+
+from dateutil.relativedelta import relativedelta
+
 from odoo import fields, models, api
 from odoo.addons import decimal_precision as dp
-from datetime import date, datetime
-from dateutil.relativedelta import relativedelta
 from ..utils import serial_utils
 
 
@@ -706,6 +708,10 @@ class StockProductionLot(models.Model):
             if item.is_dried_lot:
                 location_id_dried = self.env['dried.unpelled.history'].search(
                     [('out_lot_id', '=', item.id)]).dest_location_id
+                if not location_id_dried:
+                    location_id_dried = self.env['unpelled.dried'].sudo().search(
+                        [('out_lot_id', '=', item.id)]
+                    ).dest_location_id
                 item.location_id = location_id_dried
                 return
             if item.is_prd_lot:

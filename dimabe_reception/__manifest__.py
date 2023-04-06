@@ -49,6 +49,7 @@
         'views/product_category.xml',
         'views/transport.xml',
         'views/delete_picking_lot.xml',
+        'views/res_config.xml'
     ],
     # only loaded in demonstration mode
     'demo': [

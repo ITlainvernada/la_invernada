@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+        <record id="res_config_settings_view_form_ProjectName" model="ir.ui.view">
+            <field name="name">res.config.settings.view.form.inherit.ProjectName</field>
+            <field name="model">res.config.settings</field>
+            <field name="priority" eval="25"/>
+            <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//div[hasclass('settings')]" position="inside">
+                    <div class="app_settings_block" data-string="ProjectName" string="Comunicacion con romana"
+                         data-key="Recepcion" groups="base.group_erp_manager">
+                        <h2>Comunicacion con romana</h2>
+                        <div class="row mt16 o_settings_container" name="ProjectName_setting_container">
+                            <div class="col-xs-12 col-md-6 o_setting_box">
+                                <div>
+                                    <label for="weighbridge_communication_address"/>
+                                    <div class="text-muted">
+                                        Direccion de equipo de romana
+                                    </div>
+                                    <div>
+                                        <field name="weighbridge_communication_address"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </xpath>
+            </field>
+        </record>
+
+
+    </data>
+</odoo>
