@@ -145,8 +145,9 @@ class ReportRawLot(models.Model):
         row = col = 0
         titles = ['Productor', 'Lote', 'Kilos disponible', 'Variedad', 'Calibre', 'Ubicacion del sistema', 'Producto',
                   'N° Guia', 'Año de cosecha', 'Kilos recepcionados', 'Fecha de creación', 'Series disponibles',
-                  'Enviado a proceso de ', 'Fecha de envio', 'Bodega', 'Calle', 'Cantidad de envases', 'Fecha disp.',
-                  'Observaciones', 'Bod.Almacenamiento', 'Posición']
+                  'Enviado a proceso de ', 'Fecha de envio', 'Bodega', 'Calle', 'Cantidad de envases', 'Posición',
+                  'Fecha disp.',
+                  'Observaciones', 'Bod.Almacenamiento']
         for title in titles:
             sheet.write(row, col, title, self.get_format('header', workbook))
             col += 1
@@ -203,6 +204,11 @@ class ReportRawLot(models.Model):
             else:
                 sheet.write(row, col, '', self.get_format('text', workbook))
             col += 1
+            if r_lot.position:
+                sheet.write(row, col, r_lot.position, self.get_format('text', workbook))
+            else:
+                sheet.write(row, col, '', self.get_format('text', workbook))
+            col += 1
             if r_lot.available_date:
                 sheet.write(row, col, r_lot.available_date, self.get_format('datetime', workbook))
             else:
@@ -215,11 +221,6 @@ class ReportRawLot(models.Model):
             col += 1
             if r_lot.storage_warehouse:
                 sheet.write(row, col, r_lot.storage_warehouse, self.get_format('datetime', workbook))
-            else:
-                sheet.write(row, col, '', self.get_format('text', workbook))
-            col += 1
-            if r_lot.position:
-                sheet.write(row, col, r_lot.position, self.get_format('text', workbook))
             else:
                 sheet.write(row, col, '', self.get_format('text', workbook))
 

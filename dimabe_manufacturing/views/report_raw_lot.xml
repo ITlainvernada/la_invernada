@@ -24,10 +24,10 @@
                     <field name="warehouse"/>
                     <field name="street"/>
                     <field name="packaging_qty" string="Cant. Env."/>
+                    <field name="position"/>
                     <field name="available_date"/>
                     <field name="observations"/>
                     <field name="storage_warehouse"/>
-                    <field name="position"/>
                     <button type="object" name="generate_new_position" string="Nueva ubicación"/>
                     <button type="object" name="delete_position" string="Eliminar posición"
                             groups="stock.group_stock_manager"/>
