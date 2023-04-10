@@ -52,7 +52,7 @@ class ReportRawLot(models.Model):
 
     observations = fields.Char('Observaciones')
 
-    storage_warehouse = fields.Char('Bod de Almacenamiento')
+    storage_warehouse = fields.Char('Bod. Alm.')
 
     origin_process = fields.Char('Proceso de origen')
 
@@ -85,6 +85,7 @@ class ReportRawLot(models.Model):
 
     def get_format(self, type, workbook):
         format_excel = workbook.add_format()
+        format_excel.set_text_wrap()
         if type == "header":
             format_excel.set_border(1)
             format_excel.set_bold()
@@ -140,19 +141,14 @@ class ReportRawLot(models.Model):
     def export_to_xlsx(self, harvest):
         file_name = 'C:\\Users\\fabia\\Documents\\test.xlsx'
         workbook = xlsxwriter.Workbook(file_name)
-        text_format = workbook.add_format({
-            'text_wrap': True
-        })
         sheet = workbook.add_worksheet('Informe de materia prima')
         row = col = 0
-        titles = [(1, 'Productor'), (2, 'Lote'), (3, 'Kilos disponible'), (4, 'Variedad'), (5, 'Calibre'),
-                  (6, 'Ubicación sistema'), (7, 'Producto'), (8, 'N° Guía'), (9, 'Año cosecha'),
-                  (10, 'Kilos recepcionados'), (11, 'Fecha de creación'), (12, 'Series disponibles'),
-                  (13, 'Enviado a proceso de'), (14, 'Fecha de envio'), (15, 'Bodega'), (16, 'Calle'),
-                  (17, 'Cantidad de envases'), (18, 'Fecha disp.'), (19, 'Observaciones'), (20, 'Bod. Almacenamiento'),
-                  (21, 'Posición')]
+        titles = ['Productor', 'Lote', 'Kilos disponible', 'Variedad', 'Calibre', 'Ubicacion del sistema', 'Producto',
+                  'N° Guia', 'Año de cosecha', 'Kilos recepcionados', 'Fecha de creación', 'Series disponibles',
+                  'Enviado a proceso de ', 'Fecha de envio', 'Bodega', 'Calle', 'Cantidad de envases', 'Fecha disp.',
+                  'Observaciones', 'Bod.Almacenamiento', 'Posición']
         for title in titles:
-            sheet.write(row, col, title[1], self.get_format('header', workbook))
+            sheet.write(row, col, title, self.get_format('header', workbook))
             col += 1
         row += 1
         col = 0
@@ -207,6 +203,21 @@ class ReportRawLot(models.Model):
             else:
                 sheet.write(row, col, '', self.get_format('text', workbook))
             col += 1
+            if r_lot.available_date:
+                sheet.write(row, col, r_lot.available_date, self.get_format('datetime', workbook))
+            else:
+                sheet.write(row, col, '', self.get_format('text', workbook))
+            col += 1
+            if r_lot.observations:
+                sheet.write(row, col, r_lot.observations, self.get_format('datetime', workbook))
+            else:
+                sheet.write(row, col, '', self.get_format('text', workbook))
+            col += 1
+            if r_lot.storage_warehouse:
+                sheet.write(row, col, r_lot.storage_warehouse, self.get_format('datetime', workbook))
+            else:
+                sheet.write(row, col, '', self.get_format('text', workbook))
+            col += 1
             if r_lot.position:
                 sheet.write(row, col, r_lot.position, self.get_format('text', workbook))
             else:
@@ -252,6 +263,7 @@ class ReportRawLot(models.Model):
 
     def delete_position(self):
         for item in self:
+            report_ids = self.env['report.raw.lot'].sudo()
             item.unlink()
 
     @api.model
@@ -290,16 +302,17 @@ class ReportRawLot(models.Model):
                 'product_id': lot.product_id.id,
                 'available_weight': sum(serial.display_weight for serial in
                                         lot.stock_production_lot_serial_ids.filtered(
-                                            lambda x: not x.consumed)) if original and original.id != self.id else 0,
+                                            lambda x: not x.consumed)) if original and original.id == self.id else 0,
                 'product_variety': lot.product_id.get_variety(),
                 'product_caliber': lot.product_id.get_calibers(),
                 'location_id': lot.location_id.id,
                 'guide_number': lot.show_guide_number,
                 'lot_harvest': lot.harvest,
-                'reception_weight': lot.reception_weight if original and original.id != self.id else 0,
+                'reception_weight': lot.reception_weight if original and original.id == self.id else 0,
                 'date': lot.show_date,
                 'available_series': len(
-                    lot.stock_production_lot_serial_ids.filtered(lambda x: not x.consumed)) if original.id and original != self.id else 0,
+                    lot.stock_production_lot_serial_ids.filtered(
+                        lambda x: not x.consumed)) if original.id and original.id == self.id else 0,
                 'send_to_process_id': lot.workcenter_id.id,
                 'send_date': lot.delivered_date
             })

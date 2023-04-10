@@ -8,15 +8,15 @@
                 <tree editable="bottom" create="false" delete="false">
                     <field name="producer_id" readonly="1"/>
                     <field name="lot_id" widget="many2one" readonly="1"/>
-                    <field name="available_weight" sum="Kgs disponibles" string="Kgs disponibles" readonly="1"/>
+                    <field name="available_weight" sum="Kgs disp." string="Kgs disponibles" readonly="1"/>
                     <field name="product_variety" readonly="1"/>
                     <field name="product_caliber" readonly="1"/>
                     <field name="location_id" string="Bod." readonly="1"/>
                     <field name="product_id" readonly="1"/>
-                    <field name="guide_number" readonly="1"/>
+                    <field name="guide_number" string="N° Guia" readonly="1"/>
                     <field name="lot_harvest" readonly="1"/>
-                    <field name="reception_weight" sum="Kilos recepcionados" readonly="1"/>
-                    <field name="available_series" readonly="1"/>
+                    <field name="reception_weight" sum="Kgs recep." string="Kgs recep." readonly="1"/>
+                    <field name="available_series" string="Series Disp." readonly="1"/>
                     <field name="date"/>
                     <field name="send_to_process_id"/>
                     <field name="origin_process" readonly="1"/>
