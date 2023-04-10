@@ -350,7 +350,7 @@ class StockPicking(models.Model):
 
     @api.multi
     def action_confirm(self):
-        if self.picking_type_id.show_in_canning_report:
+        if self.picking_type_code == 'incoming' and self.picking_type_id.show_in_canning_report:
             if self.guide_number == 0:
                 raise models.ValidationError('Debe ingresar numero de guía')
         if self.picking_type_code == 'incoming' and not self.is_return:
