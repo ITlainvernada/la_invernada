@@ -378,7 +378,6 @@ class StockPicking(models.Model):
                                 'date': date.today(),
                             })
                 if m_move and m_move.move_line_ids and m_move.picking_id.picking_type_code == 'incoming':
-
                     for move_line in m_move.move_line_ids:
                         lot = self.env['stock.production.lot'].create({
                             'name': stock_picking.name,
@@ -439,9 +438,6 @@ class StockPicking(models.Model):
         if self.picking_type_code == 'incoming' and not self.is_return:
             for stock_picking in self:
                 message = ''
-                if stock_picking.picking_type_id.show_in_canning_report:
-                    if stock_picking.guide_number > 0:
-                        message += 'Debe agregar el numero de guía \n'
                 if stock_picking.is_mp_reception or stock_picking.is_pt_reception:
                     if not stock_picking.gross_weight:
                         message = 'Debe agregar kg brutos \n'
