@@ -1,11 +1,12 @@
 
 import base64
-from datetime import date
-import string
-import xlsxwriter
-from odoo import fields, models, api
-from collections import Counter
 import logging
+from datetime import date
+
+import xlsxwriter
+
+from odoo import fields, models, api
+
 _logger = logging.getLogger('TEST report =======')
 
 class AccountInvoiceXlsx(models.Model):
@@ -786,3 +787,212 @@ class AccountInvoiceXlsx(models.Model):
             'text_total': merge_format_total_text
         }
 
+
+class AccountInvoiceXlsxMblz(models.Model):
+    _inherit = 'account.invoice.xlsx_mblz'
+
+    @api.multi
+    def generate_honorarios_book(self):
+        file_name = 'honorarios.xlsx'
+        workbook = xlsxwriter.Workbook(file_name, {'in_memory': True, 'strings_to_numbers': True})
+        formats = self.set_formats(workbook)
+        count_invoice = 0
+        srow = 0
+        for item in self:
+            array_worksheet = []
+            companies = self.env['res.company'].search([('id', '=', self.env.user.company_id.id)])
+            company_name = ''
+            begin = 0
+            end = 0
+
+            for com in companies:
+                worksheet = workbook.add_worksheet(com.display_name)
+                array_worksheet.append({
+                    'company_object': com, 'worksheet': worksheet
+                })
+            for wk in array_worksheet:
+                sheet = wk['worksheet']
+                region = self.env['region.address'].search([('id', '=', 1)])
+                titles = ['Cod.SII', 'Folio', 'Fecha', 'RUT', 'Nombre', '#', 'NETO', 'IMPTO (11.5%)']
+                invoices_get_tax = self.env['account.invoice'].sudo().search(
+                    [('document_class_id', '!=', None), ('company_id', '=', self.company_get_id.id),
+                     ('date', '>=', self.from_date), ('date', '<=', self.to_date)])
+                taxes_title = list(
+                    dict.fromkeys(invoices_get_tax.mapped('tax_line_ids').mapped('tax_id').mapped('name')))
+
+                titles.append('Total')
+                sheet.merge_range(0, 0, 0, 2, self.company_get_id.display_name, formats['title'])
+                sheet.merge_range(1, 0, 1, 2, self.company_get_id.document_number, formats['title'])
+                sheet.merge_range(2, 0, 2, 2,
+                                  f'{self.company_get_id.city},Region {self.company_get_id.region_address_id.name}',
+                                  formats['title'])
+                sheet.merge_range(4, 3, 4, 6, 'Libro de Honorarios', formats['title'])
+                sheet.merge_range(5, 3, 5, 6, 'Libro de Honorarios Ordenado por fecha', formats['title'])
+                sheet.write(6, 8, 'Fecha', formats['title'])
+                sheet.write(6, 9, date.today().strftime('%Y-%m-%d'), formats['title'])
+                sheet.merge_range(6, 3, 6, 6, f'Desde {self.from_date} Hasta {self.to_date}', formats['title'])
+                sheet.merge_range(7, 3, 7, 6, 'Moneda : Peso Chileno', formats['title'])
+                row = 10
+                col = 0
+
+                for title in titles:
+                    sheet.write(row, col, title, formats['title'])
+                    col += 1
+                row += 2
+                col = 0
+                sheet.merge_range(row, col, row, 5, 'Boleta de Honorarios Electrónica. (BHO)',
+                                  formats['title'])
+                row += 1
+                domain_invoices = [('date', '>=', self.from_date),
+                                   ('type', 'in', ('in_invoice', 'in_refund')),
+                                   ('date', '<=', self.to_date),  # TODO (71)
+                                   ('journal_id.employee_fee', '=', True),
+                                   ('company_id.id', '=', self.company_get_id.id)]
+                # cambio en Order
+                invoices = self.env['account.invoice'].sudo().search(domain_invoices,
+                                                                     order='date asc, number asc')  # facturas electronicas
+                begin = row
+                row += 1
+                data_invoice = self.set_data_for_excel(sheet, row, invoices, taxes_title, titles, formats, exempt=False,
+                                                       employee_fee=True)
+                # OKKKKK
+                invoice_total = data_invoice.get('total').get('total')
+                invoice_net = data_invoice.get('total').get('net')
+                invoice_tax = data_invoice.get('total').get('reten')
+                sheet = data_invoice['sheet']
+                row = data_invoice['row']
+                count_invoice += data_invoice['count_invoice']
+
+                net_total = invoice_net
+                tax_total = invoice_tax
+                total_total = invoice_total
+                net_tax_total = net_total
+                sheet.write(row + 3, col + 4, 'Total General', formats['title'])
+                sheet.write(row + 3, col + 5, count_invoice, formats['total'])  # SUMA DOCUMENTOS
+                # sheet.write(row + 3, col + 7, exempt_total, formats['total'])
+                # sheet.write(row + 3, col + 8, net_tax_total, formats['total'])
+                sheet.write(row + 3, col + 6, net_total, formats['total'])
+                sheet.write(row + 3, col + 7, tax_total, formats['total'])
+                # sheet.write(row + 3, col + 11, 0, formats['total']) #TODO totoales iva no recuperable
+                sheet.write(row + 3, col + 8, total_total, formats['total'])
+        worksheet.autofit()
+        workbook.close()
+        with open(file_name, "rb") as file:
+            file_base64 = base64.b64encode(file.read())
+        file_name = 'Libro de Honorarios {} {}.xlsx'.format(company_name, date.today().strftime("%d/%m/%Y"))
+        attachment_id = self.env['ir.attachment'].sudo().create({
+            'name': file_name,
+            'datas_fname': file_name,
+            'datas': file_base64
+        })
+
+        action = {
+            'type': 'ir.actions.act_url',
+            'url': '/web/content/{}?download=true'.format(attachment_id.id, ),
+            'target': 'current',
+        }
+        return action
+
+    def set_data_for_excel(self, sheet, row, invoices, taxes_title, titles, formats, exempt, employee_fee=False):
+        for inv in invoices:
+            col = 0
+            data = self.set_data_invoice(sheet, col, row, inv, invoices, taxes_title, titles, formats)
+            sheet = data['sheet']
+            row = data['row']
+            col = data['col']
+            if inv.id == invoices[-1].id:
+                row += 2
+            else:
+                row += 1
+        sheet.merge_range(row, 0, row, 4, 'Totales:', formats['text_total'])
+        col = 5
+        count_invoice = len(invoices)
+        sheet.write(row, col, count_invoice, formats['total'])  ## Cantidad Total de Documentos
+        col += 1
+        exempt_sum = 0
+        if employee_fee:
+            sheet.write(row, col, sum(invoices.mapped('amount_untaxed')), formats['total'])  ## Total neto
+            col += 1
+            tax = sum(invoices.mapped('amount_retencion'))
+            sheet.write(row, col, tax, formats['total'])  ## Total imptos
+            col += 1
+            sheet.write(row, col, abs(sum(invoices.mapped('amount_total'))), formats['total'])
+
+            # sheet.write(row, col, sum(
+            #     invoices.mapped('tax_line_ids').filtered(lambda a: 'IVA' in a.tax_id.name).mapped('amount')),
+            #             formats['total'])
+            # col += 1
+            # sheet.write(row, col, 0, formats['total'])
+            # col += 1
+            # for tax in taxes_title:
+            #     if tax in titles or str.upper(tax) in titles and 'Exento' not in tax:
+            #         line = invoices.mapped('tax_line_ids').filtered(
+            #             lambda a: str.lower(a.tax_id.name) == str.lower(tax) or str.upper(
+            #                 a.tax_id.name) == tax).mapped(
+            #             'amount')
+            #         sheet.write(row, col, sum(line), formats['total'])
+            #         col += 1
+            # sheet.write(row, col, abs(sum(invoices.mapped('amount_total'))), formats['total'])
+        else:
+            exempt_sum = 0
+            facturas_filtradas = invoices.mapped('invoice_line_ids').filtered(
+                lambda a: 'Exento' in a.invoice_line_tax_ids.mapped(
+                    'name') or 'Exento - Venta' in a.invoice_line_tax_ids.mapped('name') or len(
+                    a.invoice_line_tax_ids) == 0)
+            for f in invoices:
+                exempt_sum += f.get_amount_exempt()
+            sheet.write(row, col, exempt_sum, formats['total'])  ## Total exento
+            col += 1
+            get_amount_neto = 0
+            for f in invoices:
+                get_amount_neto += f.get_amount_neto()
+            net_tax = get_amount_neto
+            sheet.write(row, col, net_tax, formats['total'])  ## Total tax
+            col += 1
+            amount_untaxed = 0
+            for f in invoices:
+                amount_untaxed += f.get_amount_untaxed()
+            sheet.write(row, col, amount_untaxed, formats['total'])
+            # if exempt:
+            #     sheet.write(row, col, sum(invoices.mapped('amount_untaxed_signed')), formats['total'])
+            # else:
+            #     sheet.write(row, col, sum(invoices.mapped('amount_untaxed_signed')), formats['total'])
+            col += 1
+            sheet.write(row, col, sum(
+                invoices.mapped('tax_line_ids').filtered(lambda a: 'IVA' in a.tax_id.name).mapped('amount')),
+                        formats['total'])
+            col += 1
+            sheet.write(row, col, 0, formats['total'])
+            col += 1
+            for tax in taxes_title:
+                if tax in titles or str.upper(tax) in titles and 'Exento' not in tax:
+                    line = invoices.mapped('tax_line_ids').filtered(
+                        lambda a: str.lower(a.tax_id.name) == str.lower(tax) or str.upper(
+                            a.tax_id.name) == tax).mapped(
+                        'amount')
+                    sheet.write(row, col, sum(line), formats['total'])
+                    col += 1
+            amount_total = 0
+            for f in invoices:
+                amount_total += f.get_amount_total()
+            sheet.write(row, col, abs(amount_total), formats['total'])
+        col = 0
+        amount_untaxed = 0
+        amount_total = 0
+        amount_tax = 0
+        for f in invoices:
+            amount_untaxed += abs(f.get_amount_untaxed())
+            amount_total += abs(f.get_amount_total())
+            amount_tax += abs(f.get_amount_tax())
+        return {
+            'sheet': sheet,
+            'row': row,
+            'total': {
+                'total': amount_total,
+                'net': amount_untaxed,
+                'tax': amount_tax,
+                'reten': sum(invoices.mapped('amount_retencion')),
+                'exempt': exempt_sum,
+            },
+            'count_invoice': count_invoice
+        }
