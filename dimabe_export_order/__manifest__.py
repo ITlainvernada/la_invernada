@@ -28,7 +28,6 @@
         'stock',
         'sale_stock',
         'l10n_cl_stock_picking',
-        'mblz_la_invernada'
     ],
 
     # always loaded
