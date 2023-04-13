@@ -362,7 +362,7 @@ for j in journal_class:
       ids.append(j.journal_id.id)
 vista = self.pool.get('ir.model.data').get_object(cr, uid, 'l10n_cl_fe', 'honorarios_form')
 arbol = self.pool.get('ir.model.data').get_object(cr, uid, 'l10n_cl_fe', 'honorarios_tree2')
-action = {
+return  {
             "name": "Honorarios",
               "type": "ir.actions.act_window",
               "view_mode": "tree,kanban,form",

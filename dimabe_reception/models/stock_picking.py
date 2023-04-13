@@ -378,7 +378,6 @@ class StockPicking(models.Model):
                                 'date': date.today(),
                             })
                 if m_move and m_move.move_line_ids and m_move.picking_id.picking_type_code == 'incoming':
-
                     for move_line in m_move.move_line_ids:
                         lot = self.env['stock.production.lot'].create({
                             'name': stock_picking.name,

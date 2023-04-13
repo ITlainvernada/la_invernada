@@ -27,6 +27,7 @@
         'account',
         'stock',
         'sale_stock',
+        'l10n_cl_stock_picking',
     ],
 
     # always loaded
@@ -46,7 +47,8 @@
         'views/views.xml',
         'report/dispatch_report.xml',
         'views/account_invoice.xml',
-        'views/custom_customer_orders_xls.xml'
+        'views/custom_customer_orders_xls.xml',
+        'views/sii_document_class.xml'
     ],
     # only loaded in demonstration mode
     'demo': [

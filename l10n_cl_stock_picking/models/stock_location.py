@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
-from odoo import models, fields, api, _
-from odoo.exceptions import UserError
 import logging
+
+from odoo import models, fields
+
 _logger = logging.getLogger(__name__)
 
 
@@ -9,10 +10,10 @@ class StockLocation(models.Model):
     _inherit = 'stock.location'
 
     sii_document_class_id = fields.Many2one(
-            'sii.document_class',
-            string='Document Type',
-            required=False,
-        )
+        'sii.document_class',
+        string='Document Type',
+        required=False,
+    )
     sequence_id = fields.Many2one(
             'ir.sequence',
             string='Entry Sequence',

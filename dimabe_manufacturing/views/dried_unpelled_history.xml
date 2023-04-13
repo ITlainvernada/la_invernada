@@ -80,6 +80,7 @@
                                     <field name="display_weight"/>
                                     <field name="serial_number" readonly="1"/>
                                     <field name="gross_weight"/>
+                                    <field name="serial_harvest"/>
                                     <button type="object" name="print_serial_label" string="Imprimir"/>
                                 </tree>
                             </field>

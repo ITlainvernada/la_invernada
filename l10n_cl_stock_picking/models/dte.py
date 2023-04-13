@@ -150,7 +150,9 @@ class stock_picking(models.Model):
             if not s.use_documents or s.location_id.restore_mode:
                 continue
             if not s.sii_document_number and s.location_id.sequence_id.is_dte:
-                s.sii_document_number = s.location_id.sequence_id.next_by_id()
+                if not s.skip_document_number:
+                    s.sii_document_number = s.document_class_id.get_last_caf_consumed()
+                s.document_class_id.verify_sii_document_number(s.sii_document_number)
                 document_number = (s.document_class_id.doc_code_prefix or '') + s.sii_document_number
                 s.name = document_number
             self.do_dte_send_picking()
@@ -468,7 +470,7 @@ class stock_picking(models.Model):
         if result[0].get('error'):
             raise UserError(result[0].get('error'))
         self.write({
-            'sii_xml_dte': result[0]['sii_xml_request'],
+            'sii_xml_dte': result[0]['sii_xml_dte'],
             'sii_barcode': result[0]['sii_barcode'],
         })
         return True
