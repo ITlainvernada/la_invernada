@@ -846,3 +846,4 @@ class AccountInvoiceXlsx(models.Model):
             'total': merge_format_total,
             'text_total': merge_format_total_text
         }
+
