@@ -18,7 +18,7 @@ odoo.define('dimabe_manufacturing.barcode_manager', function (require) {
                 if (!res.ok && !res.name) {
                     self.do_warn(res.message);
                 } else {
-                    self.reload.bind(self);
+                    self.do_action(res);
                 }
 
             })

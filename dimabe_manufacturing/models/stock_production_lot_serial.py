@@ -512,6 +512,8 @@ class StockProductionLotSerial(models.Model):
             if item.production_id and item.production_id.state != 'done':
                 production = self.env['mrp.production'].search([('id', '=', item.production_id.id)])
                 workorder = self.env['mrp.workorder'].search([('production_id', '=', item.production_id.id)])
+            res = super(StockProductionLotSerial, item).unlink()
+            if production:
                 workorder.sudo().write({
                     'out_weight': sum(
                         workorder.summary_out_serial_ids.mapped('display_weight')),
@@ -519,7 +521,6 @@ class StockProductionLotSerial(models.Model):
                         lambda a: a.product_id.categ_id.parent_id.name == 'Producto Terminado').mapped(
                         'display_weight'))
                 })
-            res = super(StockProductionLotSerial, item).unlink()
             lot.update_kg(lot.id)
             lot.get_and_update(lot.product_id.id)
             return res
