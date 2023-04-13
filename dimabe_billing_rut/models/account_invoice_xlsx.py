@@ -520,22 +520,6 @@ class AccountInvoiceXlsx(models.Model):
             sheet.write(row, col, tax, formats['total'])  ## Total imptos
             col += 1
             sheet.write(row, col, abs(sum(invoices.mapped('amount_total'))), formats['total'])
-
-            # sheet.write(row, col, sum(
-            #     invoices.mapped('tax_line_ids').filtered(lambda a: 'IVA' in a.tax_id.name).mapped('amount')),
-            #             formats['total'])
-            # col += 1
-            # sheet.write(row, col, 0, formats['total'])
-            # col += 1
-            # for tax in taxes_title:
-            #     if tax in titles or str.upper(tax) in titles and 'Exento' not in tax:
-            #         line = invoices.mapped('tax_line_ids').filtered(
-            #             lambda a: str.lower(a.tax_id.name) == str.lower(tax) or str.upper(
-            #                 a.tax_id.name) == tax).mapped(
-            #             'amount')
-            #         sheet.write(row, col, sum(line), formats['total'])
-            #         col += 1
-            # sheet.write(row, col, abs(sum(invoices.mapped('amount_total'))), formats['total'])
         else:
             exempt_sum = 0
             facturas_filtradas = invoices.mapped('invoice_line_ids').filtered(
@@ -615,10 +599,8 @@ class AccountInvoiceXlsx(models.Model):
         # if inv.reference:
         #     sheet.write(row, col, inv.reference, formats['string'])
         # col += 1
-        # if inv.number:
-        #     long_folio = len(str(max(inv.mapped('number')))) + 6
-        #     sheet.set_column(col, col, long_folio)
-        #     sheet.write(row, col, inv.number, formats['string'])
+        if inv.number:
+            sheet.write(row, col, inv.number, formats['string'])
         col += 1
         if inv.date:
             long_date = len(str(max(inv.mapped('date')))) + 3
