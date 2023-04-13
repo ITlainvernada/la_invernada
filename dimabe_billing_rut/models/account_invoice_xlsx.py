@@ -478,7 +478,7 @@ class AccountInvoiceXlsx(models.Model):
                 sheet.write(row + 3, col + 10, tax_total, formats['total'])
                 sheet.write(row + 3, col + 11, 0, formats['total']) #TODO totoales iva no recuperable
                 sheet.write(row + 3, col + 12, total_total, formats['total'])
-                sheet.autofit()
+        sheet.autofit()
         workbook.close()
         with open(file_name, "rb") as file:
             file_base64 = base64.b64encode(file.read())
