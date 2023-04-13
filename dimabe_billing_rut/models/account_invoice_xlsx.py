@@ -13,7 +13,7 @@ _logger = logging.getLogger('TEST report =======')
 # se creó una nueva clase para así permitir dejar la anterior en dimabe_billing_rut como historico
 
 class AccountInvoiceXlsx(models.Model):
-    _name = 'account.invoice.xlsx_mblz'
+    _name = 'account.invoice.xlsx'
 
     purchase_file = fields.Binary(
         "Libro de Compra")
