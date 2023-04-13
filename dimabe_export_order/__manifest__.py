@@ -27,7 +27,6 @@
         'account',
         'stock',
         'sale_stock',
-        'mblz_la_invernada'
     ],
 
     # always loaded
