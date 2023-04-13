@@ -598,7 +598,7 @@ class AccountInvoiceXlsx(models.Model):
             sheet.write(row, col, 'BH ' + inv.reference, formats['string'])
         # if inv.reference:
         #     sheet.write(row, col, inv.reference, formats['string'])
-        # col += 1
+        col += 1
         if inv.number:
             sheet.write(row, col, inv.number, formats['string'])
         col += 1
