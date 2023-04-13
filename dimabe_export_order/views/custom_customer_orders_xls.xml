@@ -10,7 +10,7 @@
                             <field name="for_year"/>
                     </group>
                     <footer>
-                        <button name="generate_orders_file" string="Generar XLSX" type="object" class="oe_highlight"/>
+                        <button name="generate_orders_file_v2" string="Generar XLSX" type="object" class="oe_highlight"/>
                         <button string="Cancel" class="btn btn-secondary" special="cancel"/>
                     </footer>
                 </form>
