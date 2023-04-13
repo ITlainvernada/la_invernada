@@ -514,8 +514,6 @@ class StockProductionLotSerial(models.Model):
                 workorder = self.env['mrp.workorder'].search([('production_id', '=', item.production_id.id)])
             res = super(StockProductionLotSerial, item).unlink()
             if production:
-                test = sum(
-                    workorder.summary_out_serial_ids.mapped('display_weight'))
                 workorder.sudo().write({
                     'out_weight': sum(
                         workorder.summary_out_serial_ids.mapped('display_weight')),
