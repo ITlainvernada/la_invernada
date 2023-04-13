@@ -478,7 +478,7 @@ class AccountInvoiceXlsx(models.Model):
                 sheet.write(row + 3, col + 10, tax_total, formats['total'])
                 sheet.write(row + 3, col + 11, 0, formats['total']) #TODO totoales iva no recuperable
                 sheet.write(row + 3, col + 12, total_total, formats['total'])
-
+                sheet.autofit()
         workbook.close()
         with open(file_name, "rb") as file:
             file_base64 = base64.b64encode(file.read())
@@ -634,7 +634,7 @@ class AccountInvoiceXlsx(models.Model):
         col += 1
         long_name = len(inv.partner_id.display_name) + 10
         sheet.set_column(col, col, long_name)
-        sheet.write(row, col, inv.partner_id.display_name, formats['folio'])
+        sheet.write(row, col, inv.partner_id.display_name, formats['string'])
         col += 2
 
         # exempt_taxes = inv.invoice_line_ids.filtered(lambda a: a.sii_code == 0 and a.amount == 0.0)
