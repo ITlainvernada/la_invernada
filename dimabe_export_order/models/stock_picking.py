@@ -349,7 +349,7 @@ class StockPicking(models.Model):
 
     freight_payment_term = fields.Many2one('custom.freight.payment.term',string="Termino de Pago Flete")
 
-    skip_document_number = fields.Boolean('Se omitirán folio?')
+#    skip_document_number = fields.Boolean('Se omitirán folio?')
 
     @api.onchange('picture')
     def get_pictures(self):
