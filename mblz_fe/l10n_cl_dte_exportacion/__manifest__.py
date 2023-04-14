@@ -21,7 +21,6 @@ Chile: Factura de Exportación Electrónica.
             'l10n_cl_fe',
     ],
     'data': [
-            'views/aduanas_formas_pago.xml',
             'views/aduanas_modalidades_venta.xml',
             'views/aduanas_paises.xml',
             'views/aduanas_puertos.xml',
