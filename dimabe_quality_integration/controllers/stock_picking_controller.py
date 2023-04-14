@@ -33,6 +33,7 @@ class StockPickingController(http.Controller):
                                         data.append({
                                             'ProducerCode': res.partner_id.id,
                                             'ProducerName': res.partner_id.name,
+                                            'ProducerVat': res.partner_id.document_number if res.partner_id.document_number else res.partner_id.client_identifier_value if res.partner_id.client_identifier_value else '',
                                             'VarietyName': res.move_ids_without_package[0].product_id.get_variety(),
                                             'LotNumber': res.name,
                                             'DispatchGuideNumber': res.guide_number,
