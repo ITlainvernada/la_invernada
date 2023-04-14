@@ -732,7 +732,7 @@
                                 <table style="width: 100%; font-size: 10px;">
                                     <tr>
                                         <th style="text-align: left;">Comentarios</th>
-                                        <th style="text-align: center;">:</th>
+                                        <td style="width:5px">:</td>
                                         <td colspan="3">
                                             <span t-field="d.remarks"/>
                                         </td>
