@@ -163,6 +163,8 @@ class MrpWorkorder(models.Model):
         compute='compute_start_date_show',
         required=False)
 
+    last_serial_consumed = fields.Char('Ultima serie consumido')
+
     @api.multi
     def compute_start_date_show(self):
         for item in self:
@@ -525,8 +527,9 @@ class MrpWorkorder(models.Model):
         self.process_serial(serial_number=self.confirmed_serial)
 
     def process_serial(self, serial_number, from_barcode=False):
+
         serial_number = serial_number.strip()
-        dict_write = {}
+        dict_write = {'last_serial_consumed': serial_number}
         serial = self.env['stock.production.lot.serial'].sudo().search(
             [('serial_number', '=', serial_number), ('stock_production_lot_id', '!=', False)])
         if not serial:
@@ -539,7 +542,7 @@ class MrpWorkorder(models.Model):
                         'message': 'La serie ingresada no es compatible con la lista de material de la produccion'}
             raise models.ValidationError(
                 "La serie ingresada no es compatible con la lista de material de la produccion")
-        if serial.consumed:
+        if serial.consumed or self.last_serial_consumed == serial_number:
             if from_barcode:
                 if serial.reserved_to_production_id.id == self.production_id.id:
                     return {'ok': False, "message": "La serie ya fue consumida en el proceso {}".format(
