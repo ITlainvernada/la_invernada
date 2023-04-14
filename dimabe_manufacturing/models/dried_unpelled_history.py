@@ -307,7 +307,7 @@ class DriedUnpelledHistory(models.Model):
         token = self.get_quality_login_token()
         if token:
             bearer = 'Bearer {}'.format(token)
-            url = 'https://calidadapi.lainvernada.com/api/LotFromDryers/add'
+            url = 'https://qacalidadapi.lainvernada.com/api/LotFromDryers/add'
             headers = {
                 "Content-Type": "application/json",
                 "Authorization": bearer
@@ -315,6 +315,7 @@ class DriedUnpelledHistory(models.Model):
             json_data = {
                 "ProducerCode": self.producer_id.id,
                 "ProducerName": self.producer_id.name,
+                "ProducerVat": self.partner_id.document_number if self.partner_id.document_number else self.partner_id.client_identifier_value if self.partner_id.client_identifier_value else '',
                 "VarietyName": self.in_product_variety,
                 "LotNumber": self.out_lot_id.name,
                 "DispatchGuideNumber": self.lot_guide_numbers,
