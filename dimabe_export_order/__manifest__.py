@@ -48,7 +48,8 @@
         'report/dispatch_report.xml',
         'views/account_invoice.xml',
         'views/custom_customer_orders_xls.xml',
-        'views/sii_document_class.xml'
+        'views/sii_document_class.xml',
+        'report/instructive_report_v2.xml'
     ],
     # only loaded in demonstration mode
     'demo': [
