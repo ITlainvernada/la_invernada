@@ -45,9 +45,10 @@ class CustomCustomerOrdersXls(models.TransientModel):
         to_date = datetime.datetime(self.for_year, 12, 31)
 
         order_ids = self.env['sale.order'].sudo().search(
-            [('create_date', '>=', from_date), ('create_date', '<=', to_date)], limit=20)
+            [('create_date', '>=', from_date), ('create_date', '<=', to_date)])
         total_fob_per_kg = total_fob = total_safe = total_freight = total_container = total_bl = \
-            total_commission = total_amount = total_kilogram = 0
+            total_commission = total_amount = total_kilogram = total_delivered = total_invoiced \
+            = total_price_unit = total_amount_usd = 0
 
         amount_total_invoice_ids = []
         other_fields_invoice_ids = []
@@ -175,10 +176,13 @@ class CustomCustomerOrdersXls(models.TransientModel):
                     sheet.write(row, col, line.product_id.get_calibers(), self.get_format(workbook))
                     col += 1
                     sheet.write(row, col, line.product_uom_qty, self.get_format(workbook, 'number'))
+                    total_kilogram += line.product_uom_qty
                     col += 1
                     sheet.write(row, col, line.qty_delivered, self.get_format(workbook, 'number'))
+                    total_delivered += line.qty_delivered
                     col += 1
                     sheet.write(row, col, line.qty_invoiced, self.get_format(workbook, 'number'))
+                    total_invoiced += line.qty_invoiced
                     col += 1
                     format_price = 'number_peso'
                     if line.currency_id.name == 'USD':
@@ -186,15 +190,16 @@ class CustomCustomerOrdersXls(models.TransientModel):
                     elif line.currency_id.name == 'EUR':
                         format_price = 'number_euro'
                     sheet.write(row, col, line.price_unit, self.get_format(workbook, format_price))
+
                     col += 1
                     sheet.write(row, col, line.price_subtotal, self.get_format(workbook, format_price))
+                    total_amount += line.price_subtotal
                     col += 1
                     amount_in_usd = 0
                     usd = self.env['res.currency'].sudo().search([('name', '=', 'USD')], limit=1)
                     if usd == line.currency_id:
                         amount_in_usd = line.price_unit * line.qty_invoiced
-                    else:
-                        print()
+                        total_amount_usd += amount_in_usd
                     sheet.write(row, col,amount_in_usd,self.get_format(workbook, 'number_usd'))
                     col += 1
                     if exist_account_invoice:
@@ -221,9 +226,11 @@ class CustomCustomerOrdersXls(models.TransientModel):
                     col += 1
                     if picking.commission:
                         sheet.write(row, col, picking.commission, self.get_format(workbook))
+
                     col += 1
                     if picking.total_commission:
                         sheet.write(row, col, picking.total_commission, self.get_format(workbook, 'number'))
+                        total_commission += picking.total_commission
                     col += 1
                     if picking.departure_port:
                         sheet.write(row, col, picking.departure_port.name, self.get_format(workbook))
@@ -288,9 +295,11 @@ class CustomCustomerOrdersXls(models.TransientModel):
                     col += 1
                     if picking.freight_value:
                         sheet.write(row, col, picking.freight_value, self.get_format(workbook, 'number'))
+                        total_freight += picking.freight_value
                     col += 1
                     # Valor Seguro
                     sheet.write(row, col, picking.safe_value, self.get_format(workbook, 'number'))
+                    total_safe += total_safe
                     col += 1
                     # FOB TOTAL
                     total_fob += picking.total_value if picking.total_value > 0 else 0
@@ -298,7 +307,7 @@ class CustomCustomerOrdersXls(models.TransientModel):
                                 self.get_format(workbook, 'number'))
                     col += 1
                     # FOB POR KILO
-
+                    total_fob_per_kg = picking.value_per_kilogram
                     sheet.write(row, col, picking.value_per_kilogram if picking.value_per_kilogram > 0 else 0,
                                 self.get_format(workbook, 'number'))
                     col += 1
@@ -312,18 +321,19 @@ class CustomCustomerOrdersXls(models.TransientModel):
                     col += 1
                     col = 0
                     row += 1
-                    sheet.write(row, 0, "Total", self.get_format(workbook, 'title_number'))
-                    # sheet.write(row, 20, total_kilogram, formats['title_number'])
-                    sheet.write_formula(row, 20, '=SUM(U2:U%s)' % (row - 1), self.get_format(workbook, 'title_number'))
-                    sheet.write(row, 22, '=SUM(W2:W%s)' % (row - 1), self.get_format(workbook, 'title_number'))
-                    sheet.write(row, 31, '=SUM(AF2:AF%s)' % (row - 1), self.get_format(workbook, 'title_number'))
-                    sheet.write(row, 42, total_bl, self.get_format(workbook, 'title_number'))
-                    sheet.write(row, 47, total_container, self.get_format(workbook, 'title_number'))
-                    sheet.write(row, 51, '=SUM(AZ2:AZ%s)' % (row - 1), self.get_format(workbook, 'title_number'))
-                    sheet.write(row, 52, '=SUM(BA2:BA%s)' % (row - 1), self.get_format(workbook, 'title_number'))
-                    sheet.write(row, 53, '=SUM(BB2:BB%s)' % (row - 1), self.get_format(workbook, 'title_number'))
-                    sheet.write(row, 54, '=SUM(BC2:BC%s)' % (row - 1), self.get_format(workbook, 'title_number'))
-
+        sheet.set_row(row, cell_format=self.get_format(workbook, 'title_number'))
+        sheet.write(row, 0, "Total", self.get_format(workbook, 'title_number'))
+        sheet.write(row, titles.index('Kilos'), total_kilogram, self.get_format(workbook, 'title_number'))
+        sheet.write(row, titles.index('Kilos Entregados'), total_delivered)
+        sheet.write(row, titles.index('Kilos facturados'), total_invoiced)
+        sheet.write(row, titles.index('Monto'), total_amount)
+        sheet.write(row, titles.index('Monto Facturado USD'), total_amount_usd)
+        sheet.write(row, titles.index('Valor Comisión'), total_commission)
+        sheet.write(row, titles.index('N° BL'), total_bl)
+        sheet.write(row, titles.index('N° Container'), total_container)
+        sheet.write(row, titles.index('Valor flete'), total_freight)
+        sheet.write(row, titles.index('Valor Seguro'), total_safe)
+        sheet.write(row, titles.index('Valor clausula total'), total_fob)
         sheet.autofit()
         workbook.close()
         with open(file_name, 'rb') as file:
