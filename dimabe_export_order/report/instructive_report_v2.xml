@@ -797,7 +797,6 @@
             </div>
         </t>
     </template>
-    <record id="dimabe_billing_rut.action_aga_instructive_report" model='ir.actions.report'>
-        <field name="report_name">dimabe_export_order.report_aga_instructive</field>
-    </record>
+    <report id="dimabe_billing_rut.action_aga_instructive_report" string="Instructivo AGA" model="stock.picking" report_type="qweb-pdf"
+            name="dimabe_export_order.report_aga_instructive" menu="True" paperformat="dimabe_billing_rut.paper_format_letter_custom"/>
 </odoo>
