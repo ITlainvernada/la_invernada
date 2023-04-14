@@ -733,7 +733,7 @@
                                     <tr>
                                         <th style="text-align: left;">Comentarios</th>
                                         <td style="width:5px">:</td>
-                                        <td colspan="3">
+                                        <td colspan="4">
                                             <span t-field="d.remarks"/>
                                         </td>
                                     </tr>
