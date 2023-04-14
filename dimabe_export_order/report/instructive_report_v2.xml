@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <template id="dimabe_billing_rut.report_aga_instructive">
+    <template id="dimabe_export_order.report_aga_instructive">
             <t t-call="web.html_container">
                 <div class="page" style="margin:auto;">
                     <t t-foreach="docs" t-as="d">
@@ -797,4 +797,7 @@
             </div>
         </t>
     </template>
+    <record id="dimabe_biling_rut.action_aga_instructive_report" model='ir.actions.report'>
+        <field name="report_name">dimabe_export_order.report_aga_instructive</field>
+    </record>
 </odoo>

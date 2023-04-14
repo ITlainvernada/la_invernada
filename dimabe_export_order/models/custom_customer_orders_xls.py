@@ -259,6 +259,7 @@ class CustomCustomerOrdersXls(models.TransientModel):
                     col += 1
                     if picking.bl_number:
                         sheet.write(row, col, picking.bl_number, self.get_format(workbook))
+                        total_bl += 1
                     col += 1
                     if picking.stacking:
                         sheet.write(row, col, picking.stacking, self.get_format(workbook))
@@ -274,6 +275,7 @@ class CustomCustomerOrdersXls(models.TransientModel):
                     col += 1
                     if picking.container_number:
                         sheet.write(row, col, picking.container_number, self.get_format(workbook))
+                        total_container += 1
                     col += 1
                     if picking.container_type:
                         sheet.write(row, col, picking.container_type.name, self.get_format(workbook))
@@ -310,6 +312,18 @@ class CustomCustomerOrdersXls(models.TransientModel):
                     col += 1
                     col = 0
                     row += 1
+                    sheet.write(row, 0, "Total", self.get_format(workbook, 'title_number'))
+                    # sheet.write(row, 20, total_kilogram, formats['title_number'])
+                    sheet.write_formula(row, 20, '=SUM(U2:U%s)' % (row - 1), self.get_format(workbook, 'title_number'))
+                    sheet.write(row, 22, '=SUM(W2:W%s)' % (row - 1), self.get_format(workbook, 'title_number'))
+                    sheet.write(row, 31, '=SUM(AF2:AF%s)' % (row - 1), self.get_format(workbook, 'title_number'))
+                    sheet.write(row, 42, total_bl, self.get_format(workbook, 'title_number'))
+                    sheet.write(row, 47, total_container, self.get_format(workbook, 'title_number'))
+                    sheet.write(row, 51, '=SUM(AZ2:AZ%s)' % (row - 1), self.get_format(workbook, 'title_number'))
+                    sheet.write(row, 52, '=SUM(BA2:BA%s)' % (row - 1), self.get_format(workbook, 'title_number'))
+                    sheet.write(row, 53, '=SUM(BB2:BB%s)' % (row - 1), self.get_format(workbook, 'title_number'))
+                    sheet.write(row, 54, '=SUM(BC2:BC%s)' % (row - 1), self.get_format(workbook, 'title_number'))
+
         sheet.autofit()
         workbook.close()
         with open(file_name, 'rb') as file:
