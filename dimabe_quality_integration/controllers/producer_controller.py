@@ -7,7 +7,7 @@ class producer_controller(http.Controller):
 
     @http.route('/api/vat_producer_by_lot', type='json', methods=['GET'], auth='token', cors='*')
     def get_producer_by_lot(self, year=None):
-        lot_ids = request.env['stock.production.lot'].search([('harvest', '=', year), ('is_prd_lot'. '=', False)])
+        lot_ids = request.env['stock.production.lot'].search([('harvest', '=', year), ('is_prd_lot', '=', False)])
         data = []
 
         for lot_id in lot_ids:
