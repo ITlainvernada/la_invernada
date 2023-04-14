@@ -14,7 +14,7 @@ class producer_controller(http.Controller):
             data.append(
                 {
                     'lot': lot_id.name,
-                    'vat': lot_id.partner_id.document_number if lot_id.partner_id.document_number else lot_id.partner_id.client_identifier_value if lot_id.partner_id.client_identifier_value else ''
+                    'vat': lot_id.producer_id.document_number if lot_id.producer_id.document_number else lot_id.producer_id.client_identifier_value if lot_id.producer_id.client_identifier_value else ''
                 }
             )
 
