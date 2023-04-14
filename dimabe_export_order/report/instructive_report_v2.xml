@@ -797,7 +797,7 @@
             </div>
         </t>
     </template>
-    <record id="dimabe_biling_rut.action_aga_instructive_report" model='ir.actions.report'>
+    <record id="dimabe_billing_rut.action_aga_instructive_report" model='ir.actions.report'>
         <field name="report_name">dimabe_export_order.report_aga_instructive</field>
     </record>
 </odoo>
