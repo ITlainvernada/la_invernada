@@ -153,10 +153,10 @@ class stock_picking(models.Model):
                     s.document_class_id.verify_sii_document_number(s.sii_document_number)
                     document_number = (s.document_class_id.doc_code_prefix or '') + s.sii_document_number
                     s.name = document_number
-                else:
-                    s.document_class_id.verify_sii_document_number(s.sii_document_number)
-                    document_number = (s.document_class_id.doc_code_prefix or '') + s.sii_document_number
-                    s.name = document_number
+            if s.skip_document_number:
+                s.document_class_id.verify_sii_document_number(s.sii_document_number)
+                document_number = (s.document_class_id.doc_code_prefix or '') + s.sii_document_number
+                s.name = document_number
             self.do_dte_send_picking()
         return res
 
@@ -472,7 +472,7 @@ class stock_picking(models.Model):
         if result[0].get('error'):
             raise UserError(result[0].get('error'))
         self.write({
-            'sii_xml_dte': result[0]['sii_xml_request'],
+            'sii_xml_dte': result[0]['sii_xml_dte'],
             'sii_barcode': result[0]['sii_barcode'],
         })
         return True
