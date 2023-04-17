@@ -3,3 +3,4 @@
 from . import quality_analysis_controller
 from . import stock_picking_controller
 from . import dry_process_controller
+from . import producer_controller

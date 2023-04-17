@@ -142,6 +142,8 @@ class stock_picking(models.Model):
     )
     dte_ticket = fields.Boolean(
         string="¿Formato Ticket?")
+    
+    skip_document_number = fields.Boolean('Se omitirán folio?')
 
     @api.multi
     def action_done(self):
