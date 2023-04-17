@@ -22,4 +22,5 @@ class SiiDocumentClass(models.Model):
                                self.env['dte.caf'].sudo().search([('sii_document_class', '=', self.sii_code)]))
         if int(document_number) > last_caf_charged:
             raise models.UserError(
-                'No cuenta con folio disponible para la tipo de documento {}'.format(self.display_name))
+                'No cuenta con folio disponible para la tipo de documento {} para el folio {}'.format(self.display_name,
+                                                                                                      document_number))
