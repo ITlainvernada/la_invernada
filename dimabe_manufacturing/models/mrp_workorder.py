@@ -527,7 +527,6 @@ class MrpWorkorder(models.Model):
         self.process_serial(serial_number=self.confirmed_serial)
 
     def process_serial(self, serial_number, from_barcode=False):
-
         serial_number = serial_number.strip()
         dict_write = {'last_serial_consumed': serial_number}
         serial = self.env['stock.production.lot.serial'].sudo().search(
