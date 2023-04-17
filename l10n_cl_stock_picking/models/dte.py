@@ -1,12 +1,10 @@
 # -*- coding: utf-8 -*-
+import logging
+from datetime import datetime
+
 from odoo import fields, models, api, _
 from odoo.exceptions import UserError
-from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT as DTF
 from odoo.tools import DEFAULT_SERVER_DATE_FORMAT as DF
-from datetime import datetime, timedelta, date
-from lxml import etree
-import pytz
-import logging
 
 _logger = logging.getLogger(__name__)
 
@@ -152,6 +150,10 @@ class stock_picking(models.Model):
             if not s.sii_document_number and s.location_id.sequence_id.is_dte:
                 if not s.skip_document_number:
                     s.sii_document_number = s.document_class_id.get_last_caf_consumed()
+                    s.document_class_id.verify_sii_document_number(s.sii_document_number)
+                    document_number = (s.document_class_id.doc_code_prefix or '') + s.sii_document_number
+                    s.name = document_number
+            if s.skip_document_number:
                 s.document_class_id.verify_sii_document_number(s.sii_document_number)
                 document_number = (s.document_class_id.doc_code_prefix or '') + s.sii_document_number
                 s.name = document_number
@@ -470,7 +472,7 @@ class stock_picking(models.Model):
         if result[0].get('error'):
             raise UserError(result[0].get('error'))
         self.write({
-            'sii_xml_dte': result[0]['sii_xml_dte'],
+            'sii_xml_dte': result[0]['sii_xml_request'],
             'sii_barcode': result[0]['sii_barcode'],
         })
         return True

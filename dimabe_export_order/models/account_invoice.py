@@ -69,6 +69,8 @@ class AccountInvoice(models.Model):
 
     port_terminal_origin = fields.Char(string="Terminal Portuario Origen")
 
+    currency_rate_recitfied = fields.Float('Tasa de Cambio (Rectificativas)')
+
     def _compute_order_ids(self):
         for item in self:
             orders = []
