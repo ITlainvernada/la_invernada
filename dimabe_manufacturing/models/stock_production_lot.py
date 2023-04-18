@@ -698,10 +698,6 @@ class StockProductionLot(models.Model):
             stock_quant = item.get_stock_quant()
             if len(stock_quant) > 0:
                 item.location_id = stock_quant.location_id
-            else:
-                location_id = self.env['stock.picking'].search([('name', '=', item.name)])
-                item.location_id = location_id.location_dest_id
-                return
             if item.stock_picking_id:
                 item.location_id = item.stock_picking_id.location_dest_id
                 return
@@ -718,6 +714,10 @@ class StockProductionLot(models.Model):
                 if item.stock_production_lot_serial_ids.mapped('production_id').state == 'done':
                     item.location_id = item.stock_production_lot_serial_ids.mapped('production_id').location_dest_id
                     return
+            else:
+                location_id = self.env['stock.picking'].search([('name', '=', item.name)])
+                item.location_id = location_id.location_dest_id
+                return
 
     @api.multi
     def _compute_serial_not_consumed(self):

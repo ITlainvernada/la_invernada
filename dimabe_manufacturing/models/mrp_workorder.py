@@ -181,7 +181,7 @@ class MrpWorkorder(models.Model):
 
     @api.multi
     def organize_move_line(self):
-        for move in self.production_id.move_raw_ids:
+        for move in self.production_id.move_raw_ids.filtered(lambda a: a.needs_lots):
             for active in move.active_move_line_ids:
                 active.unlink()
         for item in self.potential_serial_planned_ids.mapped('stock_production_lot_id'):
@@ -204,8 +204,7 @@ class MrpWorkorder(models.Model):
                                 'workorder_id': self.id,
                                 'production_id': self.production_id.id,
                                 'product_uom_id': stock_move.product_uom.id,
-                                'location_id': item.stock_production_lot_serial_ids.mapped(
-                                    'production_id').location_src_id.id if not item.location_id else item.location_id.id,
+                                'location_id': self.production_id.location_src_id.id,
                                 'location_dest_id': virtual_location_production_id.id
                             })
                         ]
@@ -222,8 +221,7 @@ class MrpWorkorder(models.Model):
                                 'workorder_id': self.id,
                                 'production_id': self.production_id.id,
                                 'product_uom_id': stock_move.product_uom.id,
-                                'location_id': item.stock_production_lot_serial_ids.mapped(
-                                    'production_id').location_src_id.id if not item.location_id else item.location_id.id,
+                                'location_id': self.production_id.location_src_id.id,
                                 'location_dest_id': virtual_location_production_id.id
                             })
                         ]
