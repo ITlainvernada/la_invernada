@@ -192,6 +192,7 @@ class MrpWorkorder(models.Model):
                 ('usage', '=', 'production'),
                 ('location_id.name', 'like', 'Virtual Locations')
             ])
+            location_src_id = self.production_id if not item.location_id else item.location_id
             if item not in stock_move.active_move_line_ids.mapped('lot_id'):
                 if not self.lot_produced_id:
                     stock_move.update({
@@ -206,8 +207,7 @@ class MrpWorkorder(models.Model):
                                 'workorder_id': self.id,
                                 'production_id': self.production_id.id,
                                 'product_uom_id': stock_move.product_uom.id,
-                                'location_id': item.stock_production_lot_serial_ids.mapped(
-                                    'production_id').location_src_id.id if not item.location_id else item.location_id.id,
+                                'location_id': location_src_id.id,
                                 'location_dest_id': virtual_location_production_id.id
                             })
                         ]
@@ -224,8 +224,7 @@ class MrpWorkorder(models.Model):
                                 'workorder_id': self.id,
                                 'production_id': self.production_id.id,
                                 'product_uom_id': stock_move.product_uom.id,
-                                'location_id': item.stock_production_lot_serial_ids.mapped(
-                                    'production_id').location_src_id.id if not item.location_id else item.location_id.id,
+                                'location_id': location_src_id.id,
                                 'location_dest_id': virtual_location_production_id.id
                             })
                         ]
@@ -256,8 +255,7 @@ class MrpWorkorder(models.Model):
                                 'workorder_id': self.id,
                                 'production_id': self.production_id.id,
                                 'product_uom_id': stock_move.product_uom.id,
-                                'location_id': item.stock_production_lot_serial_ids.mapped(
-                                    'production_id').location_src_id.id if not item.location_id else item.location_id.id,
+                                'location_id': self.production_id.location_src_id.id,
                                 'location_dest_id': virtual_location_production_id.id
                             })
                         ]
@@ -274,8 +272,7 @@ class MrpWorkorder(models.Model):
                                 'workorder_id': self.id,
                                 'production_id': self.production_id.id,
                                 'product_uom_id': stock_move.product_uom.id,
-                                'location_id': item.stock_production_lot_serial_ids.mapped(
-                                    'production_id').location_src_id.id if not item.location_id else item.location_id.id,
+                                'location_id': self.production_id.location_src_id.id,
                                 'location_dest_id': virtual_location_production_id.id
                             })
                         ]
