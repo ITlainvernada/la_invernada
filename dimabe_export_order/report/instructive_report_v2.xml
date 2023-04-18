@@ -452,7 +452,7 @@
                                     <th style="text-align:left;">KG. NETOS TOTALES</th>
                                     <td style="width:5px">:</td>
                                     <td style="text-align:left;">
-                                        <span t-field="d.net_weight_dispatch"/>
+                                        <span t-esc="d.get_done_weight()"/>
                                     </td>
                                 </tr>
                                 <tr>
@@ -712,52 +712,47 @@
                                 </tr>
                             </table>
                         </div>
-                            <!--<div style="width:100%;display:inline-block; border-right:1px solid;border-left:1px solid;border-bottom:1px solid;">
+                            <div style="width:100%;display:inline-block; border-right:1px solid;border-left:1px solid;border-bottom:1px solid;">
                                 <table style="width:100%;font-size:10px">
-                                    &lt;!&ndash;<tr>
+                                    <tr>
                                         <th style="text-align:left;width:200px">OBSERVACIONES</th>
                                         <td style="width:5px">:</td>
                                         <td style="text-align:left;">
-                                            <span t-field="d.note"/>
-                                        </td>
-                                    </tr>&ndash;&gt;
-                                    <tr>
-                                        <td style="font-weight: bold;">Cut Off</td>
-                                        <td style="width:5px">:</td>
-                                        <td style="text-align:left;"><span t-field="d.cut_off"/></td>
-                                    </tr>
-                                </table>
-                            </div>-->
-                            <div style="width:100%;display:inline-block; border-right:1px solid;border-left:1px solid;border-bottom:1px solid;">
-                                <table style="width: 100%; font-size: 10px;">
-                                    <tr>
-                                        <th style="text-align: left;">Comentarios</th>
-                                        <td colspan="4">
                                             <span t-field="d.remarks"/>
                                         </td>
                                     </tr>
                                 </table>
                             </div>
+                            <!--                            <div style="width:100%;display:inline-block; border-right:1px solid;border-left:1px solid;border-bottom:1px solid;">-->
+                            <!--                                <table style="width: 100%; font-size: 10px;">-->
+                            <!--                                    <tr>-->
+                            <!--                                        <th style="text-align: left;">Comentarios</th>-->
+                            <!--                                        <td colspan="4">-->
+                            <!--                                            <span t-field="d.remarks"/>-->
+                            <!--                                        </td>-->
+                            <!--                                    </tr>-->
+                            <!--                                </table>-->
+                            <!--                            </div>-->
                             <div style="width:100%;display:inline-block; border-right:1px solid;border-left:1px solid;border-bottom:1px solid;">
                                 <table style="width:100%;font-size:10px">
-                                <tr>
-                                    <th style="text-align:left;width:200px">DOCUMENTACIÓN REQUERIDA</th>
-                                    <td style="width:5px"></td>
-                                    <td style="text-align:left;"></td>
-                                    <td></td>
-                                    <td style="text-align: right;" rowspan="5"><img width="100px"
-                                                                                    style="margin-right:25px;"
-                                                                                    t-att-src="'data:image/png;base64,%s' % to_text(res_company.legal_representative_signature)"/></td>
-                                </tr>
-                                <tr>
-                                    <th style="text-align:left;">D.U.S 2DO.ENVIO</th>
-                                    <td style="width:5px">:</td>
-                                    <td style="text-align:left;">
-                                        <span t-field="d.dus_second_send"/>
-                                    </td>
-                                    <td></td>
-                                </tr>
-                                <tr>
+                                    <tr>
+                                        <th style="text-align:left;width:200px">DOCUMENTACIÓN REQUERIDA</th>
+                                        <td style="width:5px"></td>
+                                        <td style="text-align:left;"></td>
+                                        <td></td>
+                                        <td style="text-align: right;" rowspan="5"><img width="100px"
+                                                                                        style="margin-right:25px;"
+                                                                                        t-att-src="'data:image/png;base64,%s' % to_text(res_company.legal_representative_signature)"/></td>
+                                    </tr>
+                                    <tr>
+                                        <th style="text-align:left;">D.U.S 2DO.ENVIO</th>
+                                        <td style="width:5px">:</td>
+                                        <td style="text-align:left;">
+                                            <span t-field="d.dus_second_send"/>
+                                        </td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
                                     <th style="text-align:left;">CONOCIMIENTO DE EMBARQUE</th>
                                     <td style="width:5px">:</td>
                                     <td style="text-align:left;">

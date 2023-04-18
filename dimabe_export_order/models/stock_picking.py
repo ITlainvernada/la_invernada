@@ -1,9 +1,6 @@
-from odoo import models, fields, api, tools
-from datetime import datetime, timedelta
-from PIL import Image
-import io
-import base64
-import codecs
+from datetime import datetime
+
+from odoo import models, fields, api
 
 
 class StockPicking(models.Model):
@@ -345,11 +342,14 @@ class StockPicking(models.Model):
 
     humidity = fields.Char('Humedad')
 
-    withdrawal_deposit = fields.Many2one('custom.withdrawal.deposits',string="Depósito Retiro")
+    withdrawal_deposit = fields.Many2one('custom.withdrawal.deposits', string="Depósito Retiro")
 
-    freight_payment_term = fields.Many2one('custom.freight.payment.term',string="Termino de Pago Flete")
+    freight_payment_term = fields.Many2one('custom.freight.payment.term', string="Termino de Pago Flete")
 
     skip_document_number = fields.Boolean('Se omitirán folio?')
+
+    def get_done_weight(self):
+        return sum(line.qty_done for line in self.move_line_ids_without_package)
 
     @api.onchange('picture')
     def get_pictures(self):
