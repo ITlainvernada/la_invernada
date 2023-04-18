@@ -1,5 +1,6 @@
 from odoo import http
 from odoo.http import request
+from odoo.exceptions import UserError
 
 
 class WeightController(http.Controller):
@@ -7,18 +8,18 @@ class WeightController(http.Controller):
     @http.route('/api/weight_reception', type='json', methods=['POST'], auth='token', cors='*')
     def set_weight(self, lot_name, weight_value, type_weight):
         if type_weight not in ['gross', 'tare']:
-            return {'message': 'Tipo de peso no corresponde a brutos o tara'}
+            raise UserError('Tipo de peso no corresponde a brutos o tara')
         picking_id = request.env['stock.picking'].sudo().search([('name', '=', lot_name)])
         if not picking_id:
-            return {'message': 'Lote no encontrado'}
+            raise UserError('Lote no encontrado')
         if picking_id:
             if picking_id.picking_type_code != 'incoming':
-                return {'message': 'La operación seleccionada debe ser una recepción'}
+                raise UserError('La operación seleccionada debe ser una recepción')
             if picking_id.state == 'done':
-                raise {'message': 'Proceso de recepción finalizado'}
+                raise UserError('El proceso de recepción ya fue finalizado')
             if type_weight == 'tare':
                 if picking_id.gross_weight == 0:
-                    return {'message': 'Debe ingresa los kilos bruto'}
+                    raise UserError('Debe ingresa los kilos bruto')
                 picking_id.sudo().write({
                     'tare_weight': weight_value
                 })
