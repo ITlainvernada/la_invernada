@@ -1,6 +1,6 @@
 <odoo>
     <data>
-        <record id="xdte_invoice_form_2" model="ir.ui.view">
+        <record id="xdte_invoice_form_2_3" model="ir.ui.view">
             <field name="name">xdte account invoice</field>
             <field name="model">account.invoice</field>
             <field name="inherit_id" ref="account.invoice_form"/>
