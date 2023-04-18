@@ -1533,7 +1533,7 @@
             name="dimabe_billing_rut.report_transport_instructive" menu="True"
             paperformat="paper_format_letter_custom"/>
     <report id="action_aga_instructive_report" string="Instructivo AGA" model="account.invoice" report_type="qweb-pdf"
-            name="dimabe_billing_rut.report_aga_instructive" menu="True" paperformat="paper_format_letter_custom"/>
+            name="dimabe_billing_rut.report_aga_instructive" menu="False" paperformat="paper_format_letter_custom"/>
 
 
 </odoo>
