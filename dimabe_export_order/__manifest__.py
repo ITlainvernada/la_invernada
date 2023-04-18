@@ -28,7 +28,6 @@
         'stock',
         'sale_stock',
         'l10n_cl_stock_picking',
-        'dimabe_billing_rut'
     ],
 
     # always loaded
