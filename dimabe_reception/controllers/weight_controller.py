@@ -4,7 +4,7 @@ from odoo.http import request
 
 class WeightController(http.Controller):
 
-    @http.route('/api/weight_reception', type='json', methods=['GET'], auth='token', cors='*')
+    @http.route('/api/weight_reception', type='json', methods=['POST'], auth='token', cors='*')
     def set_weight(self, lot_name, weight_value, type_weight):
         if type_weight not in ['gross', 'tare']:
             return {'message': 'Tipo de peso no corresponde a brutos o tara'}
