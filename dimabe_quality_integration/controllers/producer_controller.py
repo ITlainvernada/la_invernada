@@ -6,7 +6,7 @@ import werkzeug
 class producer_controller(http.Controller):
 
     @http.route('/api/vat_producer_by_year', type='json', methods=['GET'], auth='token', cors='*')
-    def get_producer_by_lot(self, year=None):
+    def get_producer_by_lot_year(self, year=None):
         lot_ids = request.env['stock.production.lot'].search([('harvest', '=', year), ('is_prd_lot', '=', False)])
         data = []
 

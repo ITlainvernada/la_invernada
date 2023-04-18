@@ -99,6 +99,8 @@ class StockPicking(models.Model):
 
     show_guide_in_form = fields.Boolean('Mostrar guia de despacho', compute='compute_show_guide_in_form', store=True)
 
+    skip_document_number = fields.Boolean('Se omitirán folio?')
+
     @api.depends('picking_type_id')
     def compute_show_guide_in_form(self):
         for item in self:
