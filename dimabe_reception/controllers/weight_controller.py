@@ -1,6 +1,6 @@
 from odoo import http
-from odoo.http import request
 from odoo.exceptions import UserError
+from odoo.http import request
 
 
 class WeightController(http.Controller):
@@ -19,7 +19,10 @@ class WeightController(http.Controller):
                 raise UserError('El proceso de recepción ya fue finalizado')
             if type_weight == 'tare':
                 if picking_id.gross_weight == 0:
-                    raise UserError('Debe ingresa los kilos bruto')
+                    raise UserError('Debe ingresa los kilos brutos')
+                if picking_id.gross_weight <= weight_value:
+                    raise UserError(
+                        f'Los kilos tara no pueden ser mayores a los kilos bruto Kilos bruto : {picking_id.gross_weight}')
                 picking_id.sudo().write({
                     'tare_weight': weight_value
                 })

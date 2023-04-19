@@ -70,3 +70,7 @@ class SaleOrder(models.Model):
         for pick in self.picking_ids:
             pick.clean_reserved()
         return res
+
+    @api.multi
+    def test(self):
+        print(self.order_line.mapped('invoice_lines'))
