@@ -90,7 +90,7 @@ class AccountInvoiceXlsx(models.Model):
             for wk in array_worksheet:
                 sheet = wk['worksheet']
                 region = self.env['region.address'].search([('id', '=', 1)])
-                titles = ['Cod.SII', 'Folio', 'Cor.Interno', 'Fecha', 'RUT', 'Nombre', '#', 'NETO', 'IMPTO (11.5%)']
+                titles = ['Cod.SII', 'Folio', 'Cor.Interno', 'Fecha', 'RUT', 'Nombre', '#', 'NETO', 'IMPTO (13%)']
                 invoices_get_tax = self.env['account.invoice'].sudo().search(
                     [('dte_type_id', '!=', None), ('company_id', '=', self.company_get_id.id),
                      ('date', '>=', self.from_date), ('date', '<=', self.to_date)])
