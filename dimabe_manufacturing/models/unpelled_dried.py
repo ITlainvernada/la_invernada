@@ -267,7 +267,7 @@ class UnpelledDried(models.Model):
             'unpelled_dried_id': None,
             'history_id': history_id.id
         })
-        if '(S)' not in self.out_product_id:
+        if 'Servicio' not in self.out_product_id.categ_id.display_name:
             report_id = self.env['report.raw.lot'].sudo().search([('id', '=', history_id.out_lot_id.id)])
             if report_id:
                 report_id.manage_report()

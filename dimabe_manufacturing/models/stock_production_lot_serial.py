@@ -393,7 +393,8 @@ class StockProductionLotSerial(models.Model):
             if report_id:
                 report_id.manage_report()
             elif not report_id and res.stock_production_lot_id.is_dried_lot:
-                report_id.manage_report(res.stock_production_lot_id.id)
+                if 'Servicio' not in res.stock_production_lot_id.product_id.categ_id.display_name:
+                    report_id.manage_report(res.stock_production_lot_id.id)
             if res.display_weight == 0 and res.gross_weight == 0:
                 raise models.ValidationError('debe agregar un peso a la serie')
 
