@@ -315,6 +315,7 @@ class DriedUnpelledHistory(models.Model):
             json_data = {
                 "ProducerCode": self.producer_id.id,
                 "ProducerName": self.producer_id.name,
+                "ProducerVat": self.producer_id.document_number if self.producer_id.document_number else self.producer_id.client_identifier_value if self.producer_id.client_identifier_value else '',
                 "VarietyName": self.in_product_variety,
                 "LotNumber": self.out_lot_id.name,
                 "DispatchGuideNumber": self.lot_guide_numbers,
