@@ -25,7 +25,7 @@ class CustomCustomerOrdersXls(models.TransientModel):
             , 'Contrato Cliente',
                   'N° Pedido Odoo', 'N° Despacho Odoo', 'Estado Producción', 'Estatus Despacho',
                   'Estado A. Calidad', 'F. Envío al cliente', 'Especie', 'Variedad', 'Color', 'Producto', 'Calibre',
-                  'Kilos', 'Kilos Entregados', 'Kilos facturados', 'Precio', 'Monto', 'Monto Facturado USD',
+                  'Kilos', 'Kilos Entregados', 'Kilos facturados', 'Precio', 'Monto','Moneda', 'Monto Facturado USD',
                   'N° Factura', 'Cláusula',
                   'Envase',
                   'Modo de carga', 'Etiqueta Cliente', 'Marca', 'Agente', 'Comisión', 'Valor Comisión',
@@ -194,6 +194,8 @@ class CustomCustomerOrdersXls(models.TransientModel):
                     col += 1
                     sheet.write(row, col, line.price_subtotal, self.get_format(workbook, format_price))
                     total_amount += line.price_subtotal
+                    col += 1
+                    sheet.write(row, col, line.order_id.pricelist_id.currency_id.name, self.get_format(workbook))
                     col += 1
                     amount_in_usd = 0
                     usd = self.env['res.currency'].sudo().search([('name', '=', 'USD')], limit=1)
