@@ -28,15 +28,6 @@ class AccountInvoiceLine(models.Model):
 
     stock_picking_id = fields.Integer(string="Stock Picking Id", readonly="True")
 
-    # @api.onchange('invoice_line_tax_ids')
-    # def onchange_tax_ids(self):
-    #     # _logger.info('LOG:--->>> onchange taxline_ids {} invoice {}'.format(self.invoice_line_tax_ids, self.invoice_id))
-    #     if self.invoice_line_tax_ids.sii_type == 'R':
-    #         _logger.info('LOG:--->>> onchange tax_line_ids {} invoice {}'.format(self.invoice_id.tax_line_ids, self.invoice_id))
-    #         # self.invoice_id.update({
-    #         #     ''
-    #         # })
-
     @api.multi
     def unlink(self):
         orders_to_invoice = self.env['custom.orders.to.invoice'].search(
