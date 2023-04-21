@@ -365,3 +365,4 @@ class DriedUnpelledHistory(models.Model):
             stock_move_line.write({
                 'qty_done': item.out_serial_sum
             })
+
