@@ -389,7 +389,7 @@ class StockProductionLotSerial(models.Model):
                     'out_weight': sum(lot.stock_production_lot_serial_ids.mapped('display_weight'))
                 })
             res = super(StockProductionLotSerial, self).create(values_list)
-            report_id = self.env['report.raw.lot'].sudo().search([('lot_id.id', '=', res.stock_production_lot_id.id)])
+            report_id = self.env['report.raw.lot'].sudo().search([('lot_id.id', '=', res.stock_production_lot_id.id),('reception_weight','>',0)])
             if report_id:
                 report_id.manage_report()
             elif not report_id and res.stock_production_lot_id.is_dried_lot:
