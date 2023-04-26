@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <record id="sii_document_class_inherit_dimabe_export_order" model="ir.ui.view">
+            <field name="name">Tipo de documento</field>
+            <field name="model">sii.document_class</field>
+            <field name="inherit_id" ref="l10n_cl_fe.view_sii_document_class_tree"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='use_prefix']" position="after">
+                    <button type="object" name="get_last_caf_consumed" string="Prueba"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

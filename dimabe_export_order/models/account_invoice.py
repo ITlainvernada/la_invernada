@@ -1,13 +1,10 @@
-
-from odoo import models, fields, api
-import requests
-import json
+from odoo import models, fields
 
 
 class AccountInvoice(models.Model):
     _inherit = 'account.invoice'
 
-    #To Intructuives
+    # To Intructuives
 
     temperature = fields.Char('Temperatura')
 
@@ -15,11 +12,11 @@ class AccountInvoice(models.Model):
 
     humidity = fields.Char('Humedad')
 
-    withdrawal_deposit = fields.Many2one('custom.withdrawal.deposits',string="Depósito Retiro")
+    withdrawal_deposit = fields.Many2one('custom.withdrawal.deposits', string="Depósito Retiro")
 
-    freight_payment_term = fields.Many2one('custom.freight.payment.term',string="Termino de Pago Flete")
+    freight_payment_term = fields.Many2one('custom.freight.payment.term', string="Termino de Pago Flete")
 
-    safe_type = fields.Many2one('custom.safe.type',string="Tipo de Seguro")
+    safe_type = fields.Many2one('custom.safe.type', string="Tipo de Seguro")
 
     stacking = fields.Char(string="Stacking")
 
@@ -35,18 +32,18 @@ class AccountInvoice(models.Model):
 
     plant = fields.Many2one('res.partner', string="Planta")
 
-    quality_type = fields.Many2one('custom.quality.type',string="Calidad")
+    quality_type = fields.Many2one('custom.quality.type', string="Calidad")
 
     consolidation = fields.Char(string="Consolidación")
 
     total_container = fields.Integer(string="Total de Contenedores")
 
     notify_ids = fields.Many2many(
-            'res.partner',
-            domain=[('customer', '=', True)]
-        )
+        'res.partner',
+        domain=[('customer', '=', True)]
+    )
     custom_notify_ids = fields.Many2many('custom.notify', string="Notify (Custom)")
-    
+
     consignee_id = fields.Many2one(
         'res.partner',
         'Consignatario',
@@ -57,20 +54,22 @@ class AccountInvoice(models.Model):
 
     canning_types = fields.Char(string="Envases", compute="_compute_canning_types")
 
-    #To order report 
+    # To order report
 
     quality_status = fields.Selection([
-                    ('Pendiente','Pendiente'),
-                    ('Recibido','Recibido'),
-                    ('Enviado','Enviado'),
-                    ('Cancelado','Cancelado')
-            ], string="Estado Calidad")
+        ('Pendiente', 'Pendiente'),
+        ('Recibido', 'Recibido'),
+        ('Enviado', 'Enviado'),
+        ('Cancelado', 'Cancelado')
+    ], string="Estado Calidad")
 
     quality_remarks = fields.Text(string="Obs. Calidad")
 
     shipping_date_to_customer = fields.Date(string="Fecha Envío al Cliente")
 
     port_terminal_origin = fields.Char(string="Terminal Portuario Origen")
+
+    currency_rate_recitfied = fields.Float('Tasa de Cambio (Rectificativas)')
 
     def _compute_order_ids(self):
         for item in self:
@@ -82,8 +81,7 @@ class AccountInvoice(models.Model):
             for o in orders:
                 str_orders += o + ' '
             item.order_names = str_orders
-    
-    
+
     def _compute_canning_types(self):
         for item in self:
             cannings = []
@@ -96,5 +94,3 @@ class AccountInvoice(models.Model):
             for c in cannings:
                 str_cannings += c + ' '
             item.canning_types = str_cannings
-
-

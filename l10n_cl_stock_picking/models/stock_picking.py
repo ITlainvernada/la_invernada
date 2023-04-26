@@ -150,7 +150,6 @@ class StockPicking(models.Model):
     sii_document_number = fields.Char(
             string='Document Number',
             copy=False,
-            readonly=True,
         )
     responsability_id = fields.Many2one(
             'sii.responsability',

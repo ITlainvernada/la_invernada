@@ -1,12 +1,10 @@
 # -*- coding: utf-8 -*-
+import logging
+from datetime import datetime
+
 from odoo import fields, models, api, _
 from odoo.exceptions import UserError
-from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT as DTF
 from odoo.tools import DEFAULT_SERVER_DATE_FORMAT as DF
-from datetime import datetime, timedelta, date
-from lxml import etree
-import pytz
-import logging
 
 _logger = logging.getLogger(__name__)
 

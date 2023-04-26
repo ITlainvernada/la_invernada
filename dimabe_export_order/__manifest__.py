@@ -26,7 +26,9 @@
         'contacts',
         'account',
         'stock',
-        'sale_stock'
+        'sale_stock',
+        'l10n_cl_stock_picking',
+        'dimabe_billing_rut'
     ],
 
     # always loaded
@@ -46,7 +48,9 @@
         'views/views.xml',
         'report/dispatch_report.xml',
         'views/account_invoice.xml',
-        'views/custom_customer_orders_xls.xml'
+        'views/custom_customer_orders_xls.xml',
+        'views/sii_document_class.xml',
+        'report/instructive_report_v2.xml'
     ],
     # only loaded in demonstration mode
     'demo': [

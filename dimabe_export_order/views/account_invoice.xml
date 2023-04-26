@@ -1,14 +1,15 @@
 <odoo>
     <data>
-        <record id="xdte_invoice_form_2" model="ir.ui.view">
+        <record id="xdte_invoice_form_2_3" model="ir.ui.view">
             <field name="name">xdte account invoice</field>
             <field name="model">account.invoice</field>
             <field name="inherit_id" ref="account.invoice_form"/>
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='bl_number']" position="after">
-                    <field name="total_container"  attrs="{'invisible': [('dte_code', '!=', '110')]}"/>
+                    <field name="total_container" attrs="{'invisible': [('dte_code', '!=', '110')]}"/>
                 </xpath>
-                <xpath expr="//field[@name='tax_line_ids']" position="after" attrs="{'invisible': [('dte_code', '!=', '110')]}">
+                <xpath expr="//field[@name='tax_line_ids']" position="after"
+                       attrs="{'invisible': [('dte_code', '!=', '110')]}">
                     <group string="Información para Instructivos">
                         <group>
                             <field name="consignee_id" attrs="{'invisible': [('dte_code', '!=', '110')]}"/>

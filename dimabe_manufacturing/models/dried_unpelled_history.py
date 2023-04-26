@@ -307,7 +307,7 @@ class DriedUnpelledHistory(models.Model):
         token = self.get_quality_login_token()
         if token:
             bearer = 'Bearer {}'.format(token)
-            url = 'https://calidadapi.lainvernada.com/api/LotFromDryers/add'
+            url = 'https://qacalidadapi.lainvernada.com/api/LotFromDryers/add'
             headers = {
                 "Content-Type": "application/json",
                 "Authorization": bearer

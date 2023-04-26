@@ -264,8 +264,13 @@ class ReportRawLot(models.Model):
 
     def delete_position(self):
         for item in self:
-            report_ids = self.env['report.raw.lot'].sudo()
+            lot_id = item.lot_id.id
             item.unlink()
+            if lot_id:
+                report_id = self.env['report.raw.lot'].sudo().search(
+                    [('lot_id', '=', lot_id)], limit=1, order='create_date ASC')
+                if report_id:
+                    report_id.manage_report()
 
     @api.model
     def create(self, vals_list):
