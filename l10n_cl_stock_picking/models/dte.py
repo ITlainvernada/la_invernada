@@ -149,6 +149,11 @@ class stock_picking(models.Model):
         for s in self:
             if not s.use_documents or s.location_id.restore_mode:
                 continue
+            if s.location_id.sequence_id.is_dte:
+                s.sii_document_number = s.location_id.sequence_id.number_next_actual
+                s.document_class_id.verify_sii_document_number(s.sii_document_number)
+                document_number = (s.document_class_id.doc_code_prefix or '') + s.sii_document_number
+                s.name = document_number
             if not s.sii_document_number and s.location_id.sequence_id.is_dte:
                 if not s.skip_document_number:
                     s.sii_document_number = s.document_class_id.get_last_caf_consumed()
