@@ -407,14 +407,15 @@ class StockPicking(models.Model):
                             
 
                             if m_move.product_id.categ_id.is_mp or m_move.product_id.categ_id.is_pt or m_move == self.get_product_move():
-                                _logger.info('LOG: -->> generando proceso %s de %s' % (idx, len(m_move.move_line_ids)))
+                                
                                 total_qty = m_move.picking_id.get_canning_move().product_uom_qty
                                 # calculated_weight = stock_move_line.qty_done / total_qty
 
                                 if stock_move_line.lot_id:
-
+                                    _logger.info('LOG: -->> generando proceso %s de %s' % (idx + 1, len(m_move.move_line_ids)))
                                     default_value = stock_picking.avg_unitary_weight or 1
-                                    for i in range(int(total_qty)):
+                                    for idy, i in enumerate(range(int(total_qty))):
+                                        _logger.info('LOG: -->> iterando sobre cantidad %s de %s' % (idy + 1, int(total_qty)))
                                         if i == int(total_qty):
 
                                             diff = stock_picking.net_weight - (
