@@ -436,6 +436,7 @@ class StockPicking(models.Model):
                                                 'stock_production_lot_id': stock_move_line.lot_id.id,
                                                 'serial_number': '{}{}'.format(stock_move_line.lot_name, tmp[-3:])
                                             })
+                                    _logger.info('LOG: -->> escribiendo en stock_move_line  %s' % len(stock_move_line.lot_id.stock_production_lot_serial_ids))
                                     stock_move_line.lot_id.write({
                                         'available_kg': sum(
                                             stock_move_line.lot_id.stock_production_lot_serial_ids.mapped(
