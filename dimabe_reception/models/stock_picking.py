@@ -7,6 +7,10 @@ from odoo import models, api, fields
 from odoo.addons import decimal_precision as dp
 
 
+import logging
+_logger = logging.getLogger(__name__)
+
+
 class StockPicking(models.Model):
     _inherit = 'stock.picking'
     _order = 'date desc'
@@ -359,6 +363,7 @@ class StockPicking(models.Model):
                     stock_picking.validate_mp_reception()
                     stock_picking.truck_in_date = fields.datetime.now()
                 res = super(StockPicking, self).action_confirm()
+                _logger.info('LOG: -->> res etapa 1 %s' % res)
                 m_move = stock_picking.get_mp_move()
                 if not m_move:
                     m_move = stock_picking.get_pt_move()
