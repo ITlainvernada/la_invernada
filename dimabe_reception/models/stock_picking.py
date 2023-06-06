@@ -369,7 +369,9 @@ class StockPicking(models.Model):
                     m_move = stock_picking.get_pt_move()
                 if not m_move:
                     m_move = stock_picking.get_product_move()
+                _logger.info('LOG: -->> res etapa 2 %s' % res)
                 if m_move:
+                    
                     if not m_move.move_line_ids or len(m_move.move_line_ids) == 0:
                         for move in stock_picking.move_ids_without_package:
                             self.env['stock.move.line'].create({
@@ -382,6 +384,7 @@ class StockPicking(models.Model):
                                 'location_dest_id': stock_picking.location_dest_id.id,
                                 'date': date.today(),
                             })
+                    _logger.info('LOG: -->> res etapa 3 pasa  %s' % res)
                 if m_move and m_move.move_line_ids and m_move.picking_id.picking_type_code == 'incoming':
                     for move_line in m_move.move_line_ids:
                         lot = self.env['stock.production.lot'].create({
@@ -395,8 +398,10 @@ class StockPicking(models.Model):
                             move_line.update({
                                 'lot_id': lot.id
                             })
+                    _logger.info('LOG: -->> res etapa 4 pasa  %s' % res)
 
                     if m_move.product_id.tracking == 'lot' and not m_move.has_serial_generated:
+                        _logger.info('LOG: -->> res etapa 5 pasa  %s' % res)
 
                         for stock_move_line in m_move.move_line_ids:
 
@@ -434,6 +439,9 @@ class StockPicking(models.Model):
                                                 'display_weight'))
                                     })
                                     m_move.has_serial_generated = True
+                                    
+                                    
+                _logger.info('LOG: -->> res etapa 6 pasa  %s' % res)
                 return res
         else:
             return super(StockPicking, self).action_confirm()
