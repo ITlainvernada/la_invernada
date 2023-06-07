@@ -1,15 +1,15 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "Enpoints consulta pickings",
+    'name': "Endpoints consulta pickings",
 
     'summary': """
-       Enpoints consulta pickings""",
+       Endpoints consulta pickings""",
 
     'description': """
-        Enpoints consulta pickings
+        Endpoints consulta pickings
     """,
 
-    'author': "Mobilizev SPA, Felipe Angulo",
+    'author': "Mobilize SPA, Felipe Angulo",
     'website': "http://www.mobilize.cl",
     'category': 'Tools',
     'license': 'AGPL-3',
