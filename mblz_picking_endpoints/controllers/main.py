@@ -63,4 +63,6 @@ class StockPickingController(http.Controller):
             domain = [('state', 'in', ['done']), ('picking_type_code', '=', 'incoming')]
             picking_ids = request.env['stock.picking'].sudo().search(domain, limit=100)
             return json.dumps({
-                'ids': picking_ids.ids}, ensure_ascii=False)
+                'ids': picking_ids.ids,
+                'count': len(picking_ids)
+                }, ensure_ascii=False)
