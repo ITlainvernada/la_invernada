@@ -16,10 +16,11 @@ class StockPickingController(http.Controller):
     def _get_variety_info(self, moves, key):
         names = []
         for move in moves:
-            if key in ['default_code', 'display_name']:
-                names.append(move.product_id[key])
-            elif move[key]:
-                names.append(move[key])
+            if move.product_id.categ_id.is_mp:
+                if key in ['default_code', 'display_name']:
+                    names.append(move.product_id[key])
+                elif move[key]:
+                    names.append(move[key])
         return '/'.join(names)
     
     def _get_dry_kgs(self, picking_id):
@@ -57,7 +58,7 @@ class StockPickingController(http.Controller):
                 'ContainerType': self._get_container_info(picking_id.move_ids_without_package, 'product_name'),
                 'ArticleCode': self._get_variety_info(picking_id.move_ids_without_package, 'default_code'),
                 'ArticleDescription': self._get_variety_info(picking_id.move_ids_without_package, 'display_name'),
-                'DryKgs': 'N/A', 
+                'DryKgs': self._get_dry_kgs(picking_id), 
                 # 'QualityGreenId': 'N/A',
                 'ContainerWeight': self._get_container_info(picking_id.move_ids_without_package, 'weight'), ##peso del contenedor desde el procuto
                 'OdooUpdated': picking_id.write_date.strftime('%Y-%m-%d %H:%M:%S'),
