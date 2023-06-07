@@ -57,7 +57,7 @@ class StockPickingController(http.Controller):
             data = json.loads(decoded_data)
             if data:
                 limit = data.get('limit')
-            domain = [('suppplier', '=', True)]
+            domain = [('supplier', '=', True)]
             partner_ids = request.env['res.partner'].sudo().search(domain, limit=limit)
             return json.dumps([{
                     'odooId': partner_id.id,
