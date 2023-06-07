@@ -42,7 +42,7 @@ class StockPickingController(http.Controller):
                 'DryKgs': 'N/A',
                 'QualityGreenId': 'N/A',
                 'ContainerWeight': 'N/A',
-                'OdooUpdated': picking_id.create_date.strftime('%Y-%m-%d %H:%M:%S'),
+                'OdooUpdated': picking_id.write_date.strftime('%Y-%m-%d %H:%M:%S'),
                 'UpdatedAt': 'N/A'  
             } for picking_id in picking_ids]
 
@@ -50,6 +50,6 @@ class StockPickingController(http.Controller):
     def get_pickings(self):
         token = request.httprequest.headers['AUTHORIZATION'].split(' ')[1]
         if token and token == request.env['ir.config_parameter'].sudo().get_param('mblz_picking_endpoints.token'):
-            domain = []
+            domain = [('state', 'in', ['done']), ('picking_type_code', '=', 'incoming')]
             picking_ids = request.env['stock.picking'].sudo().search(domain, limit=100)
             return json.dumps(self._get_picking_data(picking_ids), ensure_ascii=False).encode('utf8')
