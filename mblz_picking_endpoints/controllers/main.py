@@ -42,7 +42,7 @@ class StockPickingController(http.Controller):
                 'DryKgs': 'N/A',
                 'QualityGreenId': 'N/A',
                 'ContainerWeight': 'N/A',
-                'OdooUpdated': picking_id.write_date.strftime('%Y-%m-%d %H:%M:%S'),
+                'OdooUpdated': picking_id.create_date.strftime('%Y-%m-%d %H:%M:%S'),
                 'UpdatedAt': 'N/A'  
             } for picking_id in picking_ids]
 
