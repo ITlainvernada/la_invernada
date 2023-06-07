@@ -56,11 +56,11 @@ class StockPickingController(http.Controller):
             picking_ids = request.env['stock.picking'].sudo().search(domain, limit=100)
             return json.dumps(self._get_picking_data(picking_ids), ensure_ascii=False)
     
-    @http.route('/api/v2/picking_ids', type='json', methods=['POST'], auth='public', cors='*')
-    def get_pickings(self):
-        token = request.httprequest.headers['AUTHORIZATION'].split(' ')[1]
-        if token and token == request.env['ir.config_parameter'].sudo().get_param('mblz_picking_endpoints.token'):
-            domain = [('state', 'in', ['done']), ('picking_type_code', '=', 'incoming')]
-            picking_ids = request.env['stock.picking'].sudo().search(domain, limit=100)
-            return json.dumps({
-                'ids': picking_ids.ids}, ensure_ascii=False)
+    # @http.route('/api/v2/picking_ids', type='json', methods=['POST'], auth='public', cors='*')
+    # def get_pickings(self):
+    #     token = request.httprequest.headers['AUTHORIZATION'].split(' ')[1]
+    #     if token and token == request.env['ir.config_parameter'].sudo().get_param('mblz_picking_endpoints.token'):
+    #         domain = [('state', 'in', ['done']), ('picking_type_code', '=', 'incoming')]
+    #         picking_ids = request.env['stock.picking'].sudo().search(domain, limit=100)
+    #         return json.dumps({
+    #             'ids': picking_ids.ids}, ensure_ascii=False)
