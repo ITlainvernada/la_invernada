@@ -54,4 +54,4 @@ class StockPickingController(http.Controller):
         if token and token == request.env['ir.config_parameter'].sudo().get_param('mblz_picking_endpoints.token'):
             domain = [('state', 'in', ['done']), ('picking_type_code', '=', 'incoming')]
             picking_ids = request.env['stock.picking'].sudo().search(domain, limit=100)
-            return json.dumps(self._get_picking_data(picking_ids), ensure_ascii=False).encode('utf8')
+            return json.dumps(self._get_picking_data(picking_ids), ensure_ascii=False)
