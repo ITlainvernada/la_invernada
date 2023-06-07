@@ -69,12 +69,21 @@ class StockPickingController(http.Controller):
     def get_pickings(self):
         token = request.httprequest.headers['AUTHORIZATION'].split(' ')[1]
         if token and token == request.env['ir.config_parameter'].sudo().get_param('mblz_picking_endpoints.token'):
+            limit = None
             decoded_data = request.httprequest.data.decode('utf-8')
             data = json.loads(decoded_data)
-            
-            domain = [('state', 'in', ['done']), ('picking_type_code', '=', 'incoming')]
-            picking_ids = request.env['stock.picking'].sudo().search(domain, limit=100)
-            return json.dumps(self._get_picking_data(picking_ids), ensure_ascii=False)
+            if data:
+                limit = data.get('limit')
+                if data.get('date'):
+                    domain = [
+                        ('state', 'in', ['done']), 
+                        ('picking_type_code', '=', 'incoming'),
+                        ('date_done', '>=', data.get('date'))
+                        ]
+                    if data.get('producerId'):
+                        domain.append(('partner_id', '=', int(data.get('producerId'))))
+                    picking_ids = request.env['stock.picking'].sudo().search(domain, limit=limit)
+                    return json.dumps(self._get_picking_data(picking_ids), ensure_ascii=False)
     
     # @http.route('/api/v2/picking_ids', type='json', methods=['POST'], auth='public', cors='*')
     # def get_pickings(self):
