@@ -568,7 +568,7 @@
                                 </div>
                                 <div>
                                     CROP (AÑO DE COSECHA):
-                                    <span t-field="serial.serial_harvest"/>
+                                    <span t-field="serial.harvest"/>
                                 </div>
                                 <div>
                                     PACKAGING DATE (FECHA DE ENVASADO):
