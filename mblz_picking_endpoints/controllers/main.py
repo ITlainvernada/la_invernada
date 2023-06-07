@@ -14,7 +14,9 @@ class StockPickingController(http.Controller):
     def _get_variety_info(self, moves, key):
         names = []
         for move in moves:
-            if move[key]:
+            if key in ['default_code', 'display_name']:
+                names.append(move.product_id[key])
+            elif move[key]:
                 names.append(move[key])
         return '/'.join(names)
     
