@@ -8,7 +8,9 @@ class StockPickingController(http.Controller):
         for move in moves:
             if not move.variety:
                 if key == 'product_name':
-                    return move.product_id.name
+                    return '%s (%s) kg' % (move.product_id.name, move.product_id.weight)
+                elif key == 'weight':
+                    return move.product_id.weight
                 return move[key]
             
     def _get_variety_info(self, moves, key):
@@ -20,10 +22,24 @@ class StockPickingController(http.Controller):
                 names.append(move[key])
         return '/'.join(names)
     
+    def _get_dry_kgs(self, picking_id):
+        if 'verde' not in str.lower(picking_id.picking_type_id.warehouse_id.name):
+            ##  kg netos - kg calida para materia primea seca
+            return picking_id.net_weight - picking_id.quality_weight
+        domain = [
+            ('state', 'in', ['done'])
+        ]
+        dried_process_id = request.env['unpelled.dried'].sudo().search(domain).filtered(lambda dp: picking_id.name in dp.in_lot_ids.mapped('name'))
+        if dried_process_id:
+            output_lot_name = dried_process_id.out_lot_id.name
+            output_picking_id = request.env['stock.picking'].sudo().search([('name', '=', output_lot_name)])
+            if output_picking_id:
+                return output_picking_id.net_weight - output_picking_id.quality_weight
+    
     def _get_picking_data(self, picking_ids):
         return [{
                 # 'ID_SQL': picking_id.id,
-                'ProducerCode': picking_id.sag_code,
+                'ProducerCode': picking_id.partner_id.sag_code,
                 'ProducerName': picking_id.partner_id.name,
                 'VarietyName': self._get_variety_info(picking_id.move_ids_without_package, 'variety'),
                 'LotNumber': picking_id.name,
@@ -41,9 +57,9 @@ class StockPickingController(http.Controller):
                 'ContainerType': self._get_container_info(picking_id.move_ids_without_package, 'product_name'),
                 'ArticleCode': self._get_variety_info(picking_id.move_ids_without_package, 'default_code'),
                 'ArticleDescription': self._get_variety_info(picking_id.move_ids_without_package, 'display_name'),
-                'DryKgs': 'N/A', ##  kg netos - kg calida para materia primea seca
+                'DryKgs': 'N/A', 
                 # 'QualityGreenId': 'N/A',
-                'ContainerWeight': 'N/A', ##peso del contenedor desde el procuto
+                'ContainerWeight': self._get_container_info(picking_id.move_ids_without_package, 'weight'), ##peso del contenedor desde el procuto
                 'OdooUpdated': picking_id.write_date.strftime('%Y-%m-%d %H:%M:%S'),
                 # 'UpdatedAt': 'N/A'  
             } for picking_id in picking_ids]
