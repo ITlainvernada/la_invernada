@@ -149,7 +149,7 @@ class StockPickingController(http.Controller):
                         ]
                     if data.get('producerId'):
                         domain.append(('partner_id', '=', int(data.get('producerId'))))
-                    process_ids = request.env['unpelled.dried'].sudo().search(domain, limit=limit).filtered(lambda p: p.in_lot_ids)
+                    process_ids = request.env['unpelled.dried'].sudo().search(domain, limit=limit)
                     return json.dumps({
                             'count': len(process_ids),
                             'records': self._get_process_data(process_ids)
