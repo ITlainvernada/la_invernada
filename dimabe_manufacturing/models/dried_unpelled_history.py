@@ -214,8 +214,12 @@ class DriedUnpelledHistory(models.Model):
                                                                                  order='finish_date')
                 oven_use_ids_to_init_date = self.env['oven.use'].sudo().search([('history_id', '=', item.id)],
                                                                                order='init_date')
-                item.init_date = oven_use_ids_to_init_date[0].init_date
-                item.finish_date = oven_use_ids_to_finish_date[-1].finish_date
+                if oven_use_ids_to_init_date:
+                    item.init_date = oven_use_ids_to_init_date[0].init_date
+                    item.finish_date = oven_use_ids_to_finish_date[-1].finish_date
+                else:
+                    item.init_date = False
+                    item.finish_date = False
 
     @api.multi
     def _compute_dried_oven_ids(self):
