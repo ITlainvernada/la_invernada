@@ -73,14 +73,19 @@ class StockPickingController(http.Controller):
     
     def _get_process_data(self, process_ids):
         return [{
-            # 'name': process_id.name,
             'InitDate': process_id.init_date.strftime('%Y-%m-%d %H:%M:%S'),
             'FinishDate': process_id.finish_date.strftime('%Y-%m-%d %H:%M:%S'),
             'LotIds': '|'.join(process_id.in_lot_ids.mapped('name')),
-            # 'state': process_id.state,
             'ProductName': process_id.in_product_id.name,
             'ProductId': process_id.in_product_id.id,
             # 'ProductVariety':
+            'OutLot': process_id.out_lot_id.name,
+            'ProducerName': process_id.producer_id.name,
+            'ProducerId': process_id.producer_id.id,
+            'TotalInWeight': process_id.total_in_weight,
+            'TotalOutWeight': process_id.total_out_weight,
+            'Performance': process_id.performance,
+            'OdooUpdatedAt': process_id.write_date.strftime('%Y-%m-%d %H:%M:%S')
         } for process_id in process_ids]
     
     @http.route('/api/v2/producers', type='json', methods=['POST'], auth='public', cors='*')
@@ -137,8 +142,8 @@ class StockPickingController(http.Controller):
                 limit = data.get('limit')
                 if data.get('date'):
                     domain = [
-                        ('state', 'in', ['done', 'process']), 
-                        ('create_date', '>=', data.get('date')),
+                        # ('state', 'in', ['done', 'process']), 
+                        ('init_date', '>=', data.get('date')),
                         ]
                     if data.get('producerId'):
                         domain.append(('producer_id', '=', int(data.get('producerId'))))
