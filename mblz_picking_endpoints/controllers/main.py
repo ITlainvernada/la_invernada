@@ -69,7 +69,10 @@ class StockPickingController(http.Controller):
         return [{
             'name': process_id.name,
             'InitDate': process_id.create_date.strftime('%Y-%m-%d %H:%M:%S'),
-            'LotIds': '|'.join(process_id.in_lot_ids.mapped('name'))
+            'LotIds': '|'.join(process_id.in_lot_ids.mapped('name')),
+            'state': process_id.state,
+            'ProductName': process_id.product_in_id.name,
+            'ProductId': process_id.product_in_id.id
             
         } for process_id in process_ids]
     
@@ -128,11 +131,11 @@ class StockPickingController(http.Controller):
                 if data.get('date'):
                     domain = [
                         ('state', 'in', ['done', 'process']), 
-                        ('create_date', '>=', data.get('date'))
+                        ('create_date', '>=', data.get('date')),
                         ]
                     if data.get('producerId'):
                         domain.append(('partner_id', '=', int(data.get('producerId'))))
-                    process_ids = request.env['unpelled.dried'].sudo().search(domain, limit=limit)
+                    process_ids = request.env['unpelled.dried'].sudo().search(domain, limit=limit).filtered(lambda p: p.in_lot_ids)
                     return json.dumps({
                             'count': len(process_ids),
                             'records': self._get_process_data(process_ids)
