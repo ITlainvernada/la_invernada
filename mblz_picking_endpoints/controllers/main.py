@@ -25,7 +25,7 @@ class StockPickingController(http.Controller):
     
     def _get_dry_kgs(self, picking_id):
         if 'verde' not in str.lower(picking_id.picking_type_id.warehouse_id.name):
-            ##  kg netos - kg calida para materia primea seca
+            ##  kg netos - kg calidad para materia prima seca
             return picking_id.net_weight - picking_id.quality_weight
         domain = [
             ('state', 'in', ['done'])
@@ -76,11 +76,14 @@ class StockPickingController(http.Controller):
                 limit = data.get('limit')
             domain = [('supplier', '=', True)]
             partner_ids = request.env['res.partner'].sudo().search(domain, limit=limit)
-            return json.dumps([{
-                    'odooId': partner_id.id,
-                    'name': partner_id.name,
-                    'producerCode': partner_id.sag_code
-                } for partner_id in partner_ids], ensure_ascii=False)
+            return json.dumps({
+                    'count': len(partner_ids),
+                    'records': [{
+                        'odooId': partner_id.id,
+                        'name': partner_id.name,
+                        'producerCode': partner_id.sag_code
+                    } for partner_id in partner_ids]
+                }, ensure_ascii=False)
 
     @http.route('/api/v2/pickings', type='json', methods=['POST'], auth='public', cors='*')
     def get_pickings(self):
@@ -100,13 +103,7 @@ class StockPickingController(http.Controller):
                     if data.get('producerId'):
                         domain.append(('partner_id', '=', int(data.get('producerId'))))
                     picking_ids = request.env['stock.picking'].sudo().search(domain, limit=limit)
-                    return json.dumps(self._get_picking_data(picking_ids), ensure_ascii=False)
-    
-    # @http.route('/api/v2/picking_ids', type='json', methods=['POST'], auth='public', cors='*')
-    # def get_pickings(self):
-    #     token = request.httprequest.headers['AUTHORIZATION'].split(' ')[1]
-    #     if token and token == request.env['ir.config_parameter'].sudo().get_param('mblz_picking_endpoints.token'):
-    #         domain = [('state', 'in', ['done']), ('picking_type_code', '=', 'incoming')]
-    #         picking_ids = request.env['stock.picking'].sudo().search(domain, limit=100)
-    #         return json.dumps({
-    #             'ids': picking_ids.ids}, ensure_ascii=False)
+                    return json.dumps({
+                            'count': len(picking_ids),
+                            'records': self._get_picking_data(picking_ids)
+                        }, ensure_ascii=False)
