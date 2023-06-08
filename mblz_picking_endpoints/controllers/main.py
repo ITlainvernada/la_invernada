@@ -27,9 +27,7 @@ class StockPickingController(http.Controller):
         if 'verde' not in str.lower(picking_id.picking_type_id.warehouse_id.name):
             ##  kg netos - kg calidad para materia prima seca
             return picking_id.net_weight - picking_id.quality_weight
-        domain = [
-            ('state', 'in', ['done', 'process'])
-        ]
+        domain=[('producer_id', '=', picking_id.partner_id.id)]
         dried_process_id = request.env['dried.unpelled.history'].sudo().search(domain).filtered(lambda dp: picking_id.name in dp.in_lot_ids.mapped('name'))
         if dried_process_id:
             output_lot_name = dried_process_id.out_lot_id.name
