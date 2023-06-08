@@ -681,9 +681,8 @@ class StockProductionLot(models.Model):
                 reception = self.env['stock.picking'].search([('name', '=', item.name)])
                 item.show_guide_number = str(reception.guide_number)
             if item.is_dried_lot:
-                dried = self.env['dried.unpelled.history'].search(
-                    [('out_lot_id', '=', item.id)])
-                item.show_guide_number = dried.lot_guide_numbers
+                dried = self.env['dried.unpelled.history'].search([('out_lot_id', '=', item.id)])
+                item.show_guide_number = '|'.join(dried.mapped('lot_guide_numbers'))
 
     @api.depends('stock_production_lot_serial_ids', 'available_kg')
     @api.multi
