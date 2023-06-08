@@ -117,7 +117,7 @@ class StockPickingController(http.Controller):
                         ('date_done', '>=', data.get('date'))
                         ]
                     if data.get('producerId'):
-                        domain.append(('partner_id', '=', int(data.get('producerId'))))
+                        domain.append(('partner_id', 'in', data.get('producerId')))
                     picking_ids = request.env['stock.picking'].sudo().search(domain, limit=limit)
                     return json.dumps({
                             'count': len(picking_ids),
@@ -140,7 +140,7 @@ class StockPickingController(http.Controller):
                     if data.get('old_version'):
                         domain.pop()
                     if data.get('producerId'):
-                        domain.append(('producer_id', '=', int(data.get('producerId'))))
+                        domain.append(('producer_id', 'in', data.get('producerId')))
                     process_ids = request.env['dried.unpelled.history'].sudo().search(domain, limit=limit).filtered(lambda p: p.init_date and p.init_date.strftime('%Y-%m-%d %H:%M:%S') >= data.get('date'))
                     
                     return json.dumps({
