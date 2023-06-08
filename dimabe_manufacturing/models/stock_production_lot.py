@@ -639,9 +639,8 @@ class StockProductionLot(models.Model):
             if item.stock_picking_id:
                 item.reception_weight = item.stock_picking_id.production_net_weight
             if item.is_dried_lot:
-                dried = self.env['dried.unpelled.history'].search(
-                    [('out_lot_id', '=', item.id)]).total_out_weight
-                item.reception_weight = dried
+                dried_ids = self.env['dried.unpelled.history'].search([('out_lot_id', '=', item.id)])
+                item.reception_weight = sum(dried_ids.mapped('total_out_weight'))
 
     @api.multi
     def check_duplicate(self):
