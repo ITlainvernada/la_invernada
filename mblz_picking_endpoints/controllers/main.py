@@ -65,7 +65,7 @@ class StockPickingController(http.Controller):
                 # 'UpdatedAt': 'N/A'  
             } for picking_id in picking_ids]
     
-    @http.route('/api/v2/producers', type='json', methods=['GET'], auth='public', cors='*')
+    @http.route('/api/v2/producers', type='json', methods=['POST'], auth='public', cors='*')
     def get_producers(self):
         token = request.httprequest.headers['AUTHORIZATION'].split(' ')[1]
         if token and token == request.env['ir.config_parameter'].sudo().get_param('mblz_picking_endpoints.token'):
