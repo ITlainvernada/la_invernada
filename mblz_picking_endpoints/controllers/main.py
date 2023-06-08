@@ -3,6 +3,11 @@ from odoo.exceptions import UserError
 from odoo.http import request
 import json
 
+
+import logging
+_logger = logging.getLogger(__name__)
+
+
 class StockPickingController(http.Controller):
     def _get_container_info(self, moves, key):
         for move in moves:
@@ -28,6 +33,7 @@ class StockPickingController(http.Controller):
             ##  kg netos - kg calidad para materia prima seca
             return picking_id.net_weight - picking_id.quality_weight
         domain = [('producer_id', '=', picking_id.partner_id.id)]
+        _logger.info('LOG: ->>> domian %s' % domain)
         dried_process_id = request.env['dried.unpelled.history'].sudo().search(domain).filtered(lambda dp: picking_id.name in dp.in_lot_ids.mapped('name'))
         if dried_process_id:
             output_lot_name = dried_process_id.out_lot_id.name
