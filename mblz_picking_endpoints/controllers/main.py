@@ -134,8 +134,8 @@ class StockPickingController(http.Controller):
                 limit = data.get('limit')
                 if data.get('date'):
                     domain = [
-                        ('init_date', '!=', False),
-                        ('init_date', '>=', data.get('date')),
+                        # ('init_date', '!=', False),
+                        ('create_date', '>=', data.get('date')),
                         ]
                     if data.get('producerId'):
                         domain.append(('producer_id', '=', int(data.get('producerId'))))
