@@ -36,8 +36,10 @@ class StockPickingController(http.Controller):
         _logger.info('LOG: ->>> domain %s' % domain)
         p_ids = request.env['dried.unpelled.history'].sudo().search(domain)
         in_lot = picking_id.name
+        _logger.info('LOG: ->> in_lot %s' % in_lot)
         for p_id in p_ids:
             lot_ids_names = p_id.in_lot_ids.mapped('name')
+            _logger.info('LOG: -->>> lot_name %s' % lot_ids_names)
             if in_lot in lot_ids_names:
                 output_lot_name = p_id.out_lot_id.name
                 output_picking_id = request.env['stock.picking'].sudo().search([('name', '=', output_lot_name)])
