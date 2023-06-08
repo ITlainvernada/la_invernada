@@ -78,7 +78,7 @@ class StockPickingController(http.Controller):
             'LotIds': '|'.join(process_id.in_lot_ids.mapped('name')),
             'ProductName': process_id.in_product_id.name,
             'ProductId': process_id.in_product_id.id,
-            # 'ProductVariety':
+            'ProductVariety': process_id.in_product_variety,
             'OutLot': process_id.out_lot_id.name,
             'ProducerName': process_id.producer_id.name,
             'ProducerId': process_id.producer_id.id,
