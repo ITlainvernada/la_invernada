@@ -73,20 +73,14 @@ class StockPickingController(http.Controller):
     
     def _get_process_data(self, process_ids):
         return [{
-            'name': process_id.name,
-            'InitDate': process_id.create_date.strftime('%Y-%m-%d %H:%M:%S'),
-            'LotIds': self._get_lot_ids(process_id),
-            'state': process_id.state,
-            'ProductName': process_id.product_in_id.name,
-            'ProductId': process_id.product_in_id.id,
-            # 'oven_use_ids': [{
-            #     'name': oven_use_id.name,
-            #     'init_date': oven_use_id.init_date.strftime('%Y-%m-%d %H:%M:%S'),
-            #     'finish_date': oven_use_id.finish_date.strftime('%Y-%m-%d %H:%M:%S'),
-            #     'used_lot_id': oven_use_id.used_lot_id.name,
-            #     'state': oven_use_id.state
-            # } for oven_use_id in process_id.oven_use_ids]
-            
+            # 'name': process_id.name,
+            'InitDate': process_id.init_date.strftime('%Y-%m-%d %H:%M:%S'),
+            'FinishDate': process_id.finish_date.strftime('%Y-%m-%d %H:%M:%S'),
+            'LotIds': '|'.join(process_id.in_lot_ids.mapped('name')),
+            # 'state': process_id.state,
+            'ProductName': process_id.in_product_id.name,
+            'ProductId': process_id.in_product_id.id,
+            # 'ProductVariety':
         } for process_id in process_ids]
     
     @http.route('/api/v2/producers', type='json', methods=['POST'], auth='public', cors='*')
@@ -148,7 +142,7 @@ class StockPickingController(http.Controller):
                         ]
                     if data.get('producerId'):
                         domain.append(('producer_id', '=', int(data.get('producerId'))))
-                    process_ids = request.env['unpelled.dried'].sudo().search(domain, limit=limit)
+                    process_ids = request.env['dried.unpelled.history'].sudo().search(domain, limit=limit)
                     return json.dumps({
                             'count': len(process_ids),
                             'records': self._get_process_data(process_ids)
