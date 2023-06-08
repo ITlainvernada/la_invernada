@@ -65,16 +65,16 @@ class StockPickingController(http.Controller):
                 # 'UpdatedAt': 'N/A'  
             } for picking_id in picking_ids]
     
-    def _get_lot_ids(self, process_id):
-        domain = [('unpelled_dried_id', '=', process_id.id)]
-        history_id = request.env['dried.unpelled.history'].sudo().search(domain)
-        if history_id:
-            return '|'.join(history_id.in_lot_ids.mapped('name'))
+    # def _get_lot_ids(self, process_id):
+    #     domain = [('unpelled_dried_id', '=', process_id.id)]
+    #     history_id = request.env['dried.unpelled.history'].sudo().search(domain)
+    #     if history_id:
+    #         return '|'.join(history_id.in_lot_ids.mapped('name'))
     
     def _get_process_data(self, process_ids):
         return [{
-            'InitDate': process_id.init_date.strftime('%Y-%m-%d %H:%M:%S'),
-            'FinishDate': process_id.finish_date.strftime('%Y-%m-%d %H:%M:%S'),
+            'InitDate': process_id.init_date.strftime('%Y-%m-%d %H:%M:%S') if process_id.init_date else False,
+            'FinishDate': process_id.finish_date.strftime('%Y-%m-%d %H:%M:%S') if process_id.finish_date else False,
             'LotIds': '|'.join(process_id.in_lot_ids.mapped('name')),
             'ProductName': process_id.in_product_id.name,
             'ProductId': process_id.in_product_id.id,
