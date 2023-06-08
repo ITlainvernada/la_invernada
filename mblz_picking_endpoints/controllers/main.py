@@ -39,9 +39,10 @@ class StockPickingController(http.Controller):
         _logger.info('LOG: ->> in_lot %s' % in_lot)
         for p_id in p_ids:
             lot_ids_names = p_id.in_lot_ids.mapped('name')
-            _logger.info('LOG: -->>> lot_name %s' % lot_ids_names)
+            # _logger.info('LOG: -->>> lot_name %s' % lot_ids_names)
             if in_lot in lot_ids_names:
                 output_lot_name = p_id.out_lot_id.name
+                _logger.info('LOG:--->> output_lot %s' % output_lot_name)
                 output_picking_id = request.env['stock.picking'].sudo().search([('name', '=', output_lot_name)])
                 if output_picking_id:
                     return output_picking_id.net_weight - output_picking_id.quality_weight
