@@ -33,13 +33,24 @@ class StockPickingController(http.Controller):
             ##  kg netos - kg calidad para materia prima seca
             return picking_id.net_weight - picking_id.quality_weight
         domain = [('producer_id', '=', picking_id.partner_id.id)]
-        _logger.info('LOG: ->>> domian %s' % domain)
-        dried_process_id = request.env['dried.unpelled.history'].sudo().search(domain).filtered(lambda dp: picking_id.name in dp.in_lot_ids.mapped('name'))
-        if dried_process_id:
-            output_lot_name = dried_process_id.out_lot_id.name
-            output_picking_id = request.env['stock.picking'].sudo().search([('name', '=', output_lot_name)])
-            if output_picking_id:
-                return output_picking_id.net_weight - output_picking_id.quality_weight
+        _logger.info('LOG: ->>> domain %s' % domain)
+        p_ids = request.env['dried.unpelled.history'].sudo().search(domain)
+        in_lot = picking_id.name
+        for p_id in p_ids:
+            lot_ids_names = p_id.in_lot_ids.mapped('name')
+            if in_lot in lot_ids_names:
+                output_lot_name = p_id.out_lot_id.name
+                output_picking_id = request.env['stock.picking'].sudo().search([('name', '=', output_lot_name)])
+                if output_picking_id:
+                    return output_picking_id.net_weight - output_picking_id.quality_weight
+                
+        # lots = p_id.in_lot_ids.mapped('name')
+        # dried_process_id = p_id.filtered(lambda dp: picking_id.name in dp.in_lot_ids.mapped('name'))
+        # if dried_process_id:
+        #     output_lot_name = dried_process_id.out_lot_id.name
+        #     output_picking_id = request.env['stock.picking'].sudo().search([('name', '=', output_lot_name)])
+        #     if output_picking_id:
+        #         return output_picking_id.net_weight - output_picking_id.quality_weight
     
     def _get_picking_data(self, picking_ids):
         return [{
