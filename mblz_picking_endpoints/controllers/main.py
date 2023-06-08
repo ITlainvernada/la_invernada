@@ -68,6 +68,7 @@ class StockPickingController(http.Controller):
             'InitDate': process_id.init_date.strftime('%Y-%m-%d %H:%M:%S') if process_id.init_date else False,
             'FinishDate': process_id.finish_date.strftime('%Y-%m-%d %H:%M:%S') if process_id.finish_date else False,
             'LotIds': '|'.join(process_id.in_lot_ids.mapped('name')),
+            'GuideNumbers': process_id.lot_guide_numbers,
             'ProductName': process_id.in_product_id.name,
             'ProductId': process_id.in_product_id.id,
             'ProductVariety': process_id.in_product_variety,
