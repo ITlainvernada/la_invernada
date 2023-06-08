@@ -682,7 +682,11 @@ class StockProductionLot(models.Model):
                 item.show_guide_number = str(reception.guide_number)
             if item.is_dried_lot:
                 dried = self.env['dried.unpelled.history'].search([('out_lot_id', '=', item.id)])
-                item.show_guide_number = '|'.join(dried.mapped('lot_guide_numbers'))
+                guide_numbers = []
+                for dried in dried:
+                    if dried.lot_guide_numbers:
+                        guide_numbers.append(str(dried.lot_guide_numbers))
+                item.show_guide_number = '|'.join(guide_numbers)
 
     @api.depends('stock_production_lot_serial_ids', 'available_kg')
     @api.multi
