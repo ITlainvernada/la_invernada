@@ -65,14 +65,28 @@ class StockPickingController(http.Controller):
                 # 'UpdatedAt': 'N/A'  
             } for picking_id in picking_ids]
     
+    def _get_lot_ids(self, process_id):
+        
+        return '|'.join(process_id.in_lot_ids.mapped('name'))
+    
     def _get_process_data(self, process_ids):
         return [{
             'name': process_id.name,
             'InitDate': process_id.create_date.strftime('%Y-%m-%d %H:%M:%S'),
-            'LotIds': '|'.join(process_id.in_lot_ids.mapped('name')),
+            'LotIds': self._get_lot_ids(process_id),
             'state': process_id.state,
             'ProductName': process_id.product_in_id.name,
-            'ProductId': process_id.product_in_id.id
+            'ProductId': process_id.product_in_id.id,
+            'oven_use_ids': [{
+                'name': oven_use_id.name,
+                'init_date': oven_use_id.init_date.strftime('%Y-%m-%d %H:%M:%S'),
+                'finish_date': oven_use_id.finish_date.strftime('%Y-%m-%d %H:%M:%S'),
+                'used_lot_id': oven_use_id.used_lot_id.name,
+                'state': oven_use_id.state
+                
+                
+                
+            } for oven_use_id in process_id.oven_use_ids]
             
         } for process_id in process_ids]
     
