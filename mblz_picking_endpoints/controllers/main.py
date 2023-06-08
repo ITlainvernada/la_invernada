@@ -33,30 +33,24 @@ class StockPickingController(http.Controller):
             ##  kg netos - kg calidad para materia prima seca
             return picking_id.net_weight - picking_id.quality_weight
         domain = [('producer_id', '=', picking_id.partner_id.id)]
-        _logger.info('LOG: ->>> domain %s' % domain)
         p_ids = request.env['dried.unpelled.history'].sudo().search(domain)
         in_lot = picking_id.name
-        _logger.info('LOG: ->> in_lot %s' % in_lot)
         for p_id in p_ids:
             lot_ids_names = p_id.in_lot_ids.mapped('name')
-            
-            # _logger.info('LOG: -->>> lot_name %s' % lot_ids_names)
             if in_lot in lot_ids_names:
                 return p_id.total_out_weight
-                # output_lot_name = p_id.out_lot_id.name
-                # _logger.info('LOG:--->> output_lot %s' % output_lot_name)
-                # output_picking_id = request.env['stock.picking'].sudo().search([('name', '=', output_lot_name)])
-                # if output_picking_id:
-                #     _logger.info('LOG:--->> picking de salida %s' % output_picking_id)
-                #     return output_picking_id.net_weight - output_picking_id.quality_weight
-                
-        # lots = p_id.in_lot_ids.mapped('name')
-        # dried_process_id = p_id.filtered(lambda dp: picking_id.name in dp.in_lot_ids.mapped('name'))
-        # if dried_process_id:
-        #     output_lot_name = dried_process_id.out_lot_id.name
-        #     output_picking_id = request.env['stock.picking'].sudo().search([('name', '=', output_lot_name)])
-        #     if output_picking_id:
-        #         return output_picking_id.net_weight - output_picking_id.quality_weight
+    
+    def _get_dry_lot_id(self, picking_id):
+        if 'verde' not in str.lower(picking_id.picking_type_id.warehouse_id.name):
+            ##  kg netos - kg calidad para materia prima seca
+            return picking_id.name
+        domain = [('producer_id', '=', picking_id.partner_id.id)]
+        p_ids = request.env['dried.unpelled.history'].sudo().search(domain)
+        in_lot = picking_id.name
+        for p_id in p_ids:
+            lot_ids_names = p_id.in_lot_ids.mapped('name')
+            if in_lot in lot_ids_names:
+                return p_id.out_lot_id.name
     
     def _get_picking_data(self, picking_ids):
         return [{
@@ -83,6 +77,7 @@ class StockPickingController(http.Controller):
                 # 'QualityGreenId': 'N/A',
                 'ContainerWeight': self._get_container_info(picking_id.move_ids_without_package, 'weight'), ##peso del contenedor desde el procuto
                 'OdooUpdated': picking_id.write_date.strftime('%Y-%m-%d %H:%M:%S'),
+                'DryLotId': self._get_dry_lot_id(picking_id)
                 # 'UpdatedAt': 'N/A'  
             } for picking_id in picking_ids]
     
