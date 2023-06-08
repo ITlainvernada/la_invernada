@@ -28,7 +28,7 @@ class StockPickingController(http.Controller):
             ##  kg netos - kg calidad para materia prima seca
             return picking_id.net_weight - picking_id.quality_weight
         domain = [
-            ('state', 'in', ['done'])
+            ('state', 'in', ['done', 'process'])
         ]
         dried_process_id = request.env['unpelled.dried'].sudo().search(domain).filtered(lambda dp: picking_id.name in dp.in_lot_ids.mapped('name'))
         if dried_process_id:
@@ -64,6 +64,12 @@ class StockPickingController(http.Controller):
                 'OdooUpdated': picking_id.write_date.strftime('%Y-%m-%d %H:%M:%S'),
                 # 'UpdatedAt': 'N/A'  
             } for picking_id in picking_ids]
+    
+    def _get_process_data(self, process_ids):
+        return [{
+            'name': process_id.name
+            
+        } for process_id in process_ids]
     
     @http.route('/api/v2/producers', type='json', methods=['POST'], auth='public', cors='*')
     def get_producers(self):
@@ -106,4 +112,26 @@ class StockPickingController(http.Controller):
                     return json.dumps({
                             'count': len(picking_ids),
                             'records': self._get_picking_data(picking_ids)
+                        }, ensure_ascii=False)
+    
+    @http.route('/api/v2/dried_process', type='json', methods=['POST'], auth='public', cors='*')
+    def get_dried_process(self):
+        token = request.httprequest.headers['AUTHORIZATION'].split(' ')[1]
+        if token and token == request.env['ir.config_parameter'].sudo().get_param('mblz_picking_endpoints.token'):
+            limit = None
+            decoded_data = request.httprequest.data.decode('utf-8')
+            data = json.loads(decoded_data)
+            if data:
+                limit = data.get('limit')
+                if data.get('date'):
+                    domain = [
+                        ('state', 'in', ['done', 'process']), 
+                        ('create_date', '>=', data.get('date'))
+                        ]
+                    if data.get('producerId'):
+                        domain.append(('partner_id', '=', int(data.get('producerId'))))
+                    process_ids = request.env['unpelled.dried'].sudo().search(domain, limit=limit)
+                    return json.dumps({
+                            'count': len(process_ids),
+                            'records': self._get_process_data(process_ids)
                         }, ensure_ascii=False)
