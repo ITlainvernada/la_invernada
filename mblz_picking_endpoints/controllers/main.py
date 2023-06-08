@@ -66,8 +66,10 @@ class StockPickingController(http.Controller):
             } for picking_id in picking_ids]
     
     def _get_lot_ids(self, process_id):
-        
-        return '|'.join(process_id.in_lot_ids.mapped('name'))
+        domain = [('unpelled_dried_id', '=', process_id.id)]
+        history_id = request.env['dried.unpelled.history'].sudo().search(domain)
+        if history_id:
+            return '|'.join(history_id.in_lot_ids.mapped('name'))
     
     def _get_process_data(self, process_ids):
         return [{
@@ -77,16 +79,13 @@ class StockPickingController(http.Controller):
             'state': process_id.state,
             'ProductName': process_id.product_in_id.name,
             'ProductId': process_id.product_in_id.id,
-            'oven_use_ids': [{
-                'name': oven_use_id.name,
-                'init_date': oven_use_id.init_date.strftime('%Y-%m-%d %H:%M:%S'),
-                'finish_date': oven_use_id.finish_date.strftime('%Y-%m-%d %H:%M:%S'),
-                'used_lot_id': oven_use_id.used_lot_id.name,
-                'state': oven_use_id.state
-                
-                
-                
-            } for oven_use_id in process_id.oven_use_ids]
+            # 'oven_use_ids': [{
+            #     'name': oven_use_id.name,
+            #     'init_date': oven_use_id.init_date.strftime('%Y-%m-%d %H:%M:%S'),
+            #     'finish_date': oven_use_id.finish_date.strftime('%Y-%m-%d %H:%M:%S'),
+            #     'used_lot_id': oven_use_id.used_lot_id.name,
+            #     'state': oven_use_id.state
+            # } for oven_use_id in process_id.oven_use_ids]
             
         } for process_id in process_ids]
     
