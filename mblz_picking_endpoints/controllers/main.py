@@ -134,14 +134,14 @@ class StockPickingController(http.Controller):
                 limit = data.get('limit')
                 if data.get('date'):
                     domain = [
-                        ('create_date', '>=', data.get('date')),
+                        ('init_date', '>=', data.get('date')),
                         ('is_old_version', '=', False)
                         ]
                     if data.get('old_version'):
                         domain.pop()
                     if data.get('producerId'):
                         domain.append(('producer_id', '=', int(data.get('producerId'))))
-                    process_ids = request.env['dried.unpelled.history'].sudo().search(domain, limit=limit)
+                    process_ids = request.env['dried.unpelled.history'].sudo().search(domain, limit=limit).filtered(lambda p: p.init_date)
                     
                     return json.dumps({
                             'count': len(process_ids),
