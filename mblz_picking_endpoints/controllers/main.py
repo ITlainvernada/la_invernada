@@ -30,7 +30,7 @@ class StockPickingController(http.Controller):
         domain = [
             ('state', 'in', ['done', 'process'])
         ]
-        dried_process_id = request.env['unpelled.dried'].sudo().search(domain).filtered(lambda dp: picking_id.name in dp.in_lot_ids.mapped('name'))
+        dried_process_id = request.env['dried.unpelled.history'].sudo().search(domain).filtered(lambda dp: picking_id.name in dp.in_lot_ids.mapped('name'))
         if dried_process_id:
             output_lot_name = dried_process_id.out_lot_id.name
             output_picking_id = request.env['stock.picking'].sudo().search([('name', '=', output_lot_name)])
@@ -64,12 +64,6 @@ class StockPickingController(http.Controller):
                 'OdooUpdated': picking_id.write_date.strftime('%Y-%m-%d %H:%M:%S'),
                 # 'UpdatedAt': 'N/A'  
             } for picking_id in picking_ids]
-    
-    # def _get_lot_ids(self, process_id):
-    #     domain = [('unpelled_dried_id', '=', process_id.id)]
-    #     history_id = request.env['dried.unpelled.history'].sudo().search(domain)
-    #     if history_id:
-    #         return '|'.join(history_id.in_lot_ids.mapped('name'))
     
     def _get_process_data(self, process_ids):
         return [{
@@ -142,7 +136,6 @@ class StockPickingController(http.Controller):
                 limit = data.get('limit')
                 if data.get('date'):
                     domain = [
-                        # ('state', 'in', ['done', 'process']), 
                         ('init_date', '>=', data.get('date')),
                         ]
                     if data.get('producerId'):
