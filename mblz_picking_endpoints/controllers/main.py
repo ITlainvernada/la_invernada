@@ -67,7 +67,9 @@ class StockPickingController(http.Controller):
     
     def _get_process_data(self, process_ids):
         return [{
-            'name': process_id.name
+            'name': process_id.name,
+            'InitDate': process_id.create_date.strftime('%Y-%m-%d %H:%M:%S'),
+            'LotIds': '|'.join(process_id.in_lot_ids.mapped('name'))
             
         } for process_id in process_ids]
     
