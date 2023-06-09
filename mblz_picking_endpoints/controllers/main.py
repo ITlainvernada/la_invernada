@@ -61,7 +61,7 @@ class StockPickingController(http.Controller):
                 'LotNumber': picking_id.name,
                 'DispatchGuideNumber': picking_id.guide_number,
                 'ReceptionDate': picking_id.date_done.strftime('%Y-%m-%d %H:%M:%S'), ##TODO
-                'ReceptionKgs': picking_id.gross_weight,
+                'ReceptionKgs': picking_id.net_weight,
                 'Season': picking_id.harvest,
                 'QualityNumber': 'N/A', ##TODO
                 # 'Warehouse': picking_id.location_dest_id.name,
