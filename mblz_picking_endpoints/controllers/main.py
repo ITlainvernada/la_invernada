@@ -62,8 +62,9 @@ class StockPickingController(http.Controller):
                 'DispatchGuideNumber': picking_id.guide_number,
                 'ReceptionDate': picking_id.date_done.strftime('%Y-%m-%d %H:%M:%S'), ##TODO
                 'ReceptionKgs': picking_id.net_weight,
+                'ReceptionGrossWeight': picking_id.gross_weight,
                 'Season': picking_id.harvest,
-                'QualityNumber': 'N/A', ##TODO
+                # 'QualityNumber': 'N/A', ##TODO
                 # 'Warehouse': picking_id.location_dest_id.name,
                 'QualityWeight': picking_id.quality_weight,
                 'ContainerQuantity': self._get_container_info(picking_id.move_ids_without_package, 'quantity_done'),
