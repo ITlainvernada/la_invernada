@@ -18,7 +18,7 @@ class CustomTemporarySerial(models.Model):
 
     best_before_date = fields.Date('Consumir antes de')
 
-    harvest = fields.Integer('Año de Cosecha')
+    harvest = fields.Integer('Año de Cosecha', default=datetime.datetime.now().year)
 
     canning_id = fields.Many2one('product.product', 'Envase')
 
