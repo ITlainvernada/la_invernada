@@ -1,5 +1,6 @@
 from odoo import models, fields, api
 from odoo.addons import decimal_precision as dp
+import datetime
 
 
 class CustomTemporarySerial(models.Model):
