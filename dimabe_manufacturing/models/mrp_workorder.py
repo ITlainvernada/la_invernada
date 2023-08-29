@@ -479,7 +479,7 @@ class MrpWorkorder(models.Model):
         serial_number = serial_number.strip()
         dict_write = {'last_serial_consumed': serial_number}
         serial = self.env['stock.production.lot.serial'].sudo().search(
-            [('serial_number', '=', serial_number), ('stock_production_lot_id', '!=', False)])
+            [('serial_number', '=', serial_number), ('stock_production_lot_id', '!=', False)], limit=1, order='create_date DESC')
         if not serial:
             if from_barcode:
                 return {'ok': False, 'message': 'La serie ingresada no existe'}
