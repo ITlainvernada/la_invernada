@@ -19,6 +19,7 @@ class AccountInvoice(models.Model):
             currency_id = self.currency_id
             rates = currency_id.rate_ids.search([('name', '=', date)])
             if len(rates) == 0:
+                # if currency_id.
                 currency_id.get_rate_by_date(date)
 
             # rates = self.env['res.currency.rate'].search([('name', '<=', date)])

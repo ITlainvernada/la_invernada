@@ -186,8 +186,7 @@ class StockProductionLotSerial(models.Model):
 
     origin_process = fields.Char(string='Proceso de origen')
 
-    serial_harvest = fields.Integer('Cosecha',
-                                    default=datetime.datetime.now().year)
+    serial_harvest = fields.Integer('Cosecha', default=datetime.datetime.now().year)
 
     def set_origin_process(self, harvest):
         serial_ids = self.env['stock.production.lot.serial'].sudo().search([('serial_harvest', '=', harvest)])
