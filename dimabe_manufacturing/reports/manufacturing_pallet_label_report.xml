@@ -4,38 +4,20 @@
             <div class="page">
                 <t t-foreach="docs" t-as="o">
                     <table style="text-align:left;">
-                        <t t-if="'Sin' in o.product_id.get_species()">
-                            <tr>
-                                <th style="text-align:center;">
-                                    <h1>
-                                        <span style="font-size:40px;">PALLET</span>
-                                    </h1>
-                                </th>
-                                <td style="text-align: right !important;">
-                                    <h1>
-                                        <span style="font-size:40px;" t-field="o.name"/>
-                                    </h1>
-                                </td>
-                            </tr>
-                        </t>
-                        <t t-else="">
-                            <tr>
-                                <th style="text-align:center;">
-                                    <h1>
-                                        <span style="font-size:40px;">PALLET</span>
-                                    </h1>
-                                </th>
-                                <td style="text-align: right !important;">
-                                    <h1>
-                                        <span style="font-size:40px;" t-field="o.name"/>
-                                    </h1>
-                                </td>
-                            </tr>
-                        </t>
                         <tr>
-                            <td>
-                                <![CDATA[&nbsp;]]>
+                            <th style="text-align:center;">
+                                <h2>
+                                    <span style="font-size:35px;">PALLET</span>
+                                </h2>
+                            </th>
+                            <td style="text-align: right !important;">
+                                <h2>
+                                    <span style="font-size:35px;" t-field="o.name"/>
+                                </h2>
                             </td>
+                        </tr>
+                        <tr>
+                            <td/>
                         </tr>
                         <tr>
                             <th colspan="2">
@@ -80,8 +62,7 @@
                         <tr>
                             <td colspan="2" style="text-align:center !important;">
                                 <br/>
-                                <img
-                                        t-att-src="'%s/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % (o.get_full_url(), 'Code128',o.name,550, 70)"
+                                <img t-att-src="'%s/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % (o.get_full_url(), 'Code128',o.name,550, 60)"
                                 />
                                 <span t-field="o.name"/>
                             </td>
