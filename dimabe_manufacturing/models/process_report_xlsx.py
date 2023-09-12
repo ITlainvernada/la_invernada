@@ -38,7 +38,7 @@ class ProcessReport(models.TransientModel):
         date_format = workbook.add_format({'num_format': 'dd/mmmm/yyyy'})
         sheet = workbook.add_worksheet(process_id.name)
         processes = self.env['mrp.workorder'].search([('workcenter_id.id','=',self.process_id.id)])
-        processes = processes.filtered(lambda a: a.create_date.year == self.year)
+        processes = processes.filtered(lambda a: a.create_date.year == self.year) ##1000
         row = 0
         col = 0
 

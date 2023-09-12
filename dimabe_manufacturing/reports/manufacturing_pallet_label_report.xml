@@ -3,18 +3,17 @@
         <t t-call="web.html_container">
             <div class="page">
                 <t t-foreach="docs" t-as="o">
-
                     <table style="text-align:left;">
                         <t t-if="'Sin' in o.product_id.get_species()">
                             <tr>
                                 <th style="text-align:center;">
                                     <h1>
-                                        <span style="font-size:45px;">PALLET</span>
+                                        <span style="font-size:40px;">PALLET</span>
                                     </h1>
                                 </th>
                                 <td style="text-align: right !important;">
                                     <h1>
-                                        <span style="font-size:45px;" t-field="o.name"/>
+                                        <span style="font-size:40px;" t-field="o.name"/>
                                     </h1>
                                 </td>
                             </tr>
@@ -23,12 +22,12 @@
                             <tr>
                                 <th style="text-align:center;">
                                     <h1>
-                                        <span style="font-size:55px;">PALLET</span>
+                                        <span style="font-size:40px;">PALLET</span>
                                     </h1>
                                 </th>
                                 <td style="text-align: right !important;">
                                     <h1>
-                                        <span style="font-size:55px;" t-field="o.name"/>
+                                        <span style="font-size:40px;" t-field="o.name"/>
                                     </h1>
                                 </td>
                             </tr>

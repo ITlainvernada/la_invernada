@@ -3,7 +3,7 @@
         <t t-call="web.html_container">
             <div class="page">
                 <t t-foreach="docs" t-as="lot_serial_id">
-                    <div style="text-align:right;font-size:7px;">
+                    <div style="text-align:right;font-size:8px;">
                         <t t-if="'Con' in lot_serial_id.product_id.get_species()">
                             <strong>CONTAINS INSHELL WALNUT - CONTIENE NUEZ CON CÁSCARA</strong>
                         </t>
@@ -142,7 +142,7 @@
         <t t-call="web.html_container">
             <div class="page">
                 <t t-foreach="docs" t-as="lot_serial_id">
-                    <div style="text-align:right;font-size:7px;">
+                    <div style="text-align:right;font-size:8px;">
                         <t t-if="'Con' in lot_serial_id.product_id.get_species()">
                             <strong>CONTAINS INSHELL WALNUT - CONTIENE NUEZ CON CÁSCARA</strong>
                         </t>
@@ -274,7 +274,7 @@
         <t t-call="web.html_container">
             <div class="page">
                 <t t-foreach="docs" t-as="doc">
-                    <div style="text-align:right;font-size:7px;">
+                    <div style="text-align:right;font-size:8px;">
                         <t t-if="'Con' in doc.product_id.get_species()">
                             <strong>CONTAINS INSHELL WALNUT - CONTIENE NUEZ CON CÁSCARA</strong>
                         </t>
@@ -492,7 +492,7 @@
         <t t-call="web.html_container">
             <div class="page">
                 <t t-foreach="docs" t-as="serial">
-                    <div style="text-align:right;font-size:7px;">
+                    <div style="text-align:right;font-size:8px;">
                         <t t-if="'Con' in serial.product_id.get_species()">
                             <strong>CONTAINS INSHELL WALNUT - CONTIENE NUEZ CON CÁSCARA</strong>
                         </t>
